@@ -23,11 +23,11 @@
         <bean class="org.opennms.integration.api.sample.MyAlarmLifecycleListener"/>
     </service>
 
-    <service interface="org.opennms.integration.api.v1.config.EventConfExtension">
+    <service interface="org.opennms.integration.api.v1.config.events.EventConfExtension">
         <bean class="org.opennms.integration.api.sample.MyEventConfExtension"/>
     </service>
 
-    <service interface="org.opennms.integration.api.v1.config.SyslogMatchExtension">
+    <service interface="org.opennms.integration.api.v1.config.syslog.SyslogMatchExtension">
         <bean class="org.opennms.integration.api.sample.MySyslogMatchExtension"/>
     </service>
 

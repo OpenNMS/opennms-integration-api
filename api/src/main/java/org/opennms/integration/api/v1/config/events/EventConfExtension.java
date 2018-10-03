@@ -26,12 +26,14 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.model;
+package org.opennms.integration.api.v1.config.events;
 
-public interface EventParameter {
+import java.util.List;
 
-    String getName();
+import org.opennms.integration.api.v1.config.events.EventDefinition;
 
-    String getValue();
+public interface EventConfExtension {
+
+    List<EventDefinition> getEventDefinitions();
 
 }

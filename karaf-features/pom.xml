@@ -88,6 +88,15 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>org.opennms.integration.api</groupId>
+            <artifactId>api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opennms.integration.api</groupId>
+            <artifactId>xml</artifactId>
+        </dependency>
+
         <!-- Framework distribution -->
         <dependency>
             <groupId>org.apache.karaf.features</groupId>

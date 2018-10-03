@@ -30,7 +30,7 @@ package org.opennms.integration.api.sample;
 
 import java.util.List;
 
-import org.opennms.integration.api.v1.config.SyslogMatchExtension;
+import org.opennms.integration.api.v1.config.syslog.SyslogMatchExtension;
 import org.opennms.integration.api.v1.config.syslog.SyslogMatch;
 import org.opennms.integration.api.xml.ClasspathSyslogMatchLoader;
 

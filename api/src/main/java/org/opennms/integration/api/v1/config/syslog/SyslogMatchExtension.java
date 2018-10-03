@@ -26,11 +26,9 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.config;
+package org.opennms.integration.api.v1.config.syslog;
 
 import java.util.List;
-
-import org.opennms.integration.api.v1.config.syslog.SyslogMatch;
 
 public interface SyslogMatchExtension {
 

@@ -30,7 +30,7 @@ package org.opennms.integration.api.sample;
 
 import java.util.List;
 
-import org.opennms.integration.api.v1.config.EventConfExtension;
+import org.opennms.integration.api.v1.config.events.EventConfExtension;
 import org.opennms.integration.api.v1.config.events.EventDefinition;
 import org.opennms.integration.api.xml.ClasspathEventDefinitionLoader;
 

@@ -14,17 +14,14 @@
         <dependency>
             <groupId>org.opennms.integration.api</groupId>
             <artifactId>api</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.opennms.integration.api</groupId>
             <artifactId>xml</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.opennms.integration.api</groupId>
             <artifactId>test-api</artifactId>
-            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
