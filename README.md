@@ -1,4 +1,4 @@
-# OpenNMS Integration API
+# OpenNMS Integration API [![CircleCI](https://circleci.com/gh/OpenNMS/opennms-integration-api.svg?style=svg)](https://circleci.com/gh/OpenNMS/opennms-integration-api)
 
 This project aims to make it easier to write plugins and extensions to OpenNMS by introducing a stable interface against which these can be written.
 Versions of OpenNMS and Meridian will then implement at least one major version of the API.
