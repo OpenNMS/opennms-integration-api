@@ -1,0 +1,13 @@
+<syslogd-configuration-group xmlns="http://xmlns.opennms.org/xsd/config/syslog">
+    <ueiList>
+        <ueiMatch>
+            <match type="regex" expression="%CDP-4-NATIVE_VLAN_MISMATCH\s*: Native VLAN mismatch discovered on (\S+) \((\d+)\), with (\S+) (\S+) \((\d+)\)" />
+            <uei>uei.opennms.org/vendor/cisco/syslog/nativeVlanMismatch</uei>
+            <parameter-assignment matching-group="1" parameter-name="aIfDescr" />
+            <parameter-assignment matching-group="2" parameter-name="aVlan" />
+            <parameter-assignment matching-group="3" parameter-name="zHostname" />
+            <parameter-assignment matching-group="4" parameter-name="zIfDescr" />
+            <parameter-assignment matching-group="5" parameter-name="zVlan" />
+        </ueiMatch>
+    </ueiList>
+</syslogd-configuration-group>
