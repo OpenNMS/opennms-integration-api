@@ -145,6 +145,9 @@ public class ClasspathEventDefinitionLoader extends ClasspathXmlLoader<Events> {
     }
 
     private static Mask toMask(org.opennms.integration.api.xml.schema.eventconf.Mask eMask) {
+        if (eMask == null) {
+            return null;
+        }
         final List<MaskElement> maskElements = eMask.getMaskelements().stream()
                 .map(ClasspathEventDefinitionLoader::toMaskElemement)
                 .collect(Collectors.toList());
@@ -237,6 +240,9 @@ public class ClasspathEventDefinitionLoader extends ClasspathXmlLoader<Events> {
     }
 
     private static AlarmData toAlarmData(org.opennms.integration.api.xml.schema.eventconf.AlarmData alarm) {
+        if (alarm == null) {
+            return null;
+        }
         final List<UpdateField> updateFields = alarm.getUpdateFields().stream()
                 .map(ClasspathEventDefinitionLoader::toUpdateField)
                 .collect(Collectors.toList());
