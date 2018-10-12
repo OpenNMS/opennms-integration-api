@@ -30,31 +30,12 @@ package org.opennms.integration.api.v1.config.events;
 
 import java.util.List;
 
-import org.opennms.integration.api.v1.model.Severity;
+public interface Varbind {
 
-public interface EventDefinition {
+    String getTextualConvention();
 
-    /**
-     * Definitions are ordered by priority in ascending fashion.
-     *
-     * @return the priority for this definition
-     */
-    int getPriority();
+    Integer getNumber();
 
-    String getUei();
-
-    String getLabel();
-
-    Severity getSeverity();
-
-    String getDescription();
-
-    LogMessage getLogMessage();
-
-    AlarmData getAlarmData();
-
-    Mask getMask();
-
-    List<Parameter> getParameters();
+    List<String> getValues();
 
 }

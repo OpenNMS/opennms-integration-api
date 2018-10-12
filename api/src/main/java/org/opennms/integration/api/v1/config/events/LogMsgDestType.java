@@ -28,33 +28,16 @@
 
 package org.opennms.integration.api.v1.config.events;
 
-import java.util.List;
+public enum LogMsgDestType {
+    LOGNDISPLAY,
+    DISPLAYONLY,
+    LOGONLY,
+    SUPPRESS,
+    DONOTPERSIST,
+    DISCARDTRAPS;
 
-import org.opennms.integration.api.v1.model.Severity;
-
-public interface EventDefinition {
-
-    /**
-     * Definitions are ordered by priority in ascending fashion.
-     *
-     * @return the priority for this definition
-     */
-    int getPriority();
-
-    String getUei();
-
-    String getLabel();
-
-    Severity getSeverity();
-
-    String getDescription();
-
-    LogMessage getLogMessage();
-
-    AlarmData getAlarmData();
-
-    Mask getMask();
-
-    List<Parameter> getParameters();
-
+    @Override
+    public String toString() {
+        return this.name().toLowerCase();
+    }
 }

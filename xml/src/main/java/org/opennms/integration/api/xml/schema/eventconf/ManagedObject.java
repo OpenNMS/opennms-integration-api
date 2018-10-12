@@ -26,35 +26,44 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.config.events;
+package org.opennms.integration.api.xml.schema.eventconf;
 
-import java.util.List;
+import java.io.Serializable;
+import java.util.Objects;
 
-import org.opennms.integration.api.v1.model.Severity;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 
-public interface EventDefinition {
+@XmlRootElement(name="managed-object")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class ManagedObject implements Serializable {
 
-    /**
-     * Definitions are ordered by priority in ascending fashion.
-     *
-     * @return the priority for this definition
-     */
-    int getPriority();
+    private static final long serialVersionUID = 2730940973072568755L;
 
-    String getUei();
+    @XmlAttribute(name="type", required=true)
+    private String type;
 
-    String getLabel();
+    public String getType() {
+        return type;
+    }
 
-    Severity getSeverity();
+    public void setType(String type) {
+        this.type = type;
+    }
 
-    String getDescription();
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ManagedObject that = (ManagedObject) o;
+        return Objects.equals(type, that.type);
+    }
 
-    LogMessage getLogMessage();
-
-    AlarmData getAlarmData();
-
-    Mask getMask();
-
-    List<Parameter> getParameters();
-
+    @Override
+    public int hashCode() {
+        return Objects.hash(type);
+    }
 }
+

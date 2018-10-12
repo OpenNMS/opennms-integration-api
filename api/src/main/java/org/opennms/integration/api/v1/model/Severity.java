@@ -26,35 +26,40 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.config.events;
+package org.opennms.integration.api.v1.model;
 
-import java.util.List;
+public enum Severity {
+    INDETERMINATE(1, "Indeterminate"),
+    CLEARED(2, "Cleared"),
+    NORMAL(3, "Normal"),
+    WARNING(4, "Warning"),
+    MINOR(5, "Minor"),
+    MAJOR(6, "Major"),
+    CRITICAL(7, "Critical");
 
-import org.opennms.integration.api.v1.model.Severity;
+    private int id;
+    private String label;
 
-public interface EventDefinition {
+    Severity(final int id, final String label) {
+        this.id = id;
+        this.label = label;
+    }
 
-    /**
-     * Definitions are ordered by priority in ascending fashion.
-     *
-     * @return the priority for this definition
-     */
-    int getPriority();
+    public int getId() {
+        return id;
+    }
 
-    String getUei();
+    public String getLabel() {
+        return label;
+    }
 
-    String getLabel();
-
-    Severity getSeverity();
-
-    String getDescription();
-
-    LogMessage getLogMessage();
-
-    AlarmData getAlarmData();
-
-    Mask getMask();
-
-    List<Parameter> getParameters();
+    public static Severity get(final String label) {
+        for (Severity s : Severity.values()) {
+            if (s.getLabel().equalsIgnoreCase(label)) {
+                return s;
+            }
+        }
+        return Severity.INDETERMINATE;
+    }
 
 }

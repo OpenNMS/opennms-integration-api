@@ -71,6 +71,8 @@ public class AlarmData implements Serializable {
     @XmlElement(name="update-field", required=false)
     private List<UpdateField> m_updateFields = new ArrayList<>();
 
+    @XmlElement(name="managed-object", required=false)
+    private ManagedObject m_managedObject;
 
     public String getReductionKey() {
         return m_reductionKey;
@@ -130,6 +132,14 @@ public class AlarmData implements Serializable {
         if (updateFields != null) m_updateFields.addAll(updateFields);
     }
 
+    public ManagedObject getManagedObject() {
+        return m_managedObject;
+    }
+
+    public void setManagedObject(ManagedObject managedObject) {
+        m_managedObject = managedObject;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(m_reductionKey,
@@ -138,7 +148,8 @@ public class AlarmData implements Serializable {
                             m_autoClean,
                             m_x733AlarmType,
                             m_x733ProbableCause,
-                            m_updateFields);
+                            m_updateFields,
+                            m_managedObject);
     }
 
     @Override
@@ -154,7 +165,8 @@ public class AlarmData implements Serializable {
                     Objects.equals(this.m_autoClean, that.m_autoClean) &&
                     Objects.equals(this.m_x733AlarmType, that.m_x733AlarmType) &&
                     Objects.equals(this.m_x733ProbableCause, that.m_x733ProbableCause) &&
-                    Objects.equals(this.m_updateFields, that.m_updateFields);
+                    Objects.equals(this.m_updateFields, that.m_updateFields) &&
+                    Objects.equals(this.m_managedObject, that.m_managedObject);
         }
         return false;
     }

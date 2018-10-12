@@ -30,8 +30,6 @@ package org.opennms.integration.api.v1.config.events;
 
 import java.util.List;
 
-import org.opennms.integration.api.v1.config.events.EventDefinition;
-
 public interface EventConfExtension {
 
     List<EventDefinition> getEventDefinitions();

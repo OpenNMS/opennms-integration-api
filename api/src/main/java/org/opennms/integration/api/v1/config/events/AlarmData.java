@@ -30,31 +30,18 @@ package org.opennms.integration.api.v1.config.events;
 
 import java.util.List;
 
-import org.opennms.integration.api.v1.model.Severity;
+public interface AlarmData {
 
-public interface EventDefinition {
+    String getReductionKey();
 
-    /**
-     * Definitions are ordered by priority in ascending fashion.
-     *
-     * @return the priority for this definition
-     */
-    int getPriority();
+    AlarmType getType();
 
-    String getUei();
+    String getClearKey();
 
-    String getLabel();
+    boolean isAutoClean();
 
-    Severity getSeverity();
+    List<UpdateField> getUpdateFields();
 
-    String getDescription();
-
-    LogMessage getLogMessage();
-
-    AlarmData getAlarmData();
-
-    Mask getMask();
-
-    List<Parameter> getParameters();
+    ManagedObject getManagedObject();
 
 }

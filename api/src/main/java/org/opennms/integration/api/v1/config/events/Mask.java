@@ -30,31 +30,10 @@ package org.opennms.integration.api.v1.config.events;
 
 import java.util.List;
 
-import org.opennms.integration.api.v1.model.Severity;
+public interface Mask {
 
-public interface EventDefinition {
+    List<MaskElement> getMaskElements();
 
-    /**
-     * Definitions are ordered by priority in ascending fashion.
-     *
-     * @return the priority for this definition
-     */
-    int getPriority();
-
-    String getUei();
-
-    String getLabel();
-
-    Severity getSeverity();
-
-    String getDescription();
-
-    LogMessage getLogMessage();
-
-    AlarmData getAlarmData();
-
-    Mask getMask();
-
-    List<Parameter> getParameters();
+    List<Varbind> getVarbinds();
 
 }

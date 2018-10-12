@@ -28,33 +28,18 @@
 
 package org.opennms.integration.api.v1.config.events;
 
-import java.util.List;
+public enum AlarmType {
+    PROBLEM(1),
+    RESOLUTION(2),
+    PROBLEM_WITHOUT_RESOLUTION(3);
 
-import org.opennms.integration.api.v1.model.Severity;
+    private final int id;
 
-public interface EventDefinition {
+    AlarmType(int id) {
+        this.id = id;
+    }
 
-    /**
-     * Definitions are ordered by priority in ascending fashion.
-     *
-     * @return the priority for this definition
-     */
-    int getPriority();
-
-    String getUei();
-
-    String getLabel();
-
-    Severity getSeverity();
-
-    String getDescription();
-
-    LogMessage getLogMessage();
-
-    AlarmData getAlarmData();
-
-    Mask getMask();
-
-    List<Parameter> getParameters();
-
+    public int getId() {
+        return id;
+    }
 }
