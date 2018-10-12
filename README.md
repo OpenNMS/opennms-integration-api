@@ -33,11 +33,12 @@ This API is designed to follow [Semantic Versioning](https://semver.org/).
 
 ### Add support for exposing
 
- * Alarm lifecycle listener
- * Topology provider
- * Service Collector
+ * Coordination API
  * Service Monitor
+ * Service Collector
  * Provisiond Detector
+ * Topology provider
  * Notification strategy
  * Time Series Persistence strategy
+ * Ticketer
 

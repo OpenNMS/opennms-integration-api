@@ -26,18 +26,53 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.model;
+package org.opennms.integration.api.v1.model.beans;
 
-import java.util.List;
+import java.util.Objects;
 
-public interface InMemoryEvent {
+import org.opennms.integration.api.v1.model.SnmpInterface;
 
-    String getUei();
+public class SnmpInterfaceBean implements SnmpInterface {
+    private String ifDescr;
+    private Integer ifIndex;
 
-    String getSource();
+    @Override
+    public String getIfDescr() {
+        return ifDescr;
+    }
 
-    List<EventParameter> getParameters();
+    public void setIfDescr(String ifDescr) {
+        this.ifDescr = ifDescr;
+    }
 
-    List<EventParameter> getParametersByName(String name);
+    @Override
+    public Integer getIfIndex() {
+        return ifIndex;
+    }
 
+    public void setIfIndex(Integer ifIndex) {
+        this.ifIndex = ifIndex;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SnmpInterfaceBean that = (SnmpInterfaceBean) o;
+        return Objects.equals(ifDescr, that.ifDescr) &&
+                Objects.equals(ifIndex, that.ifIndex);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ifDescr, ifIndex);
+    }
+
+    @Override
+    public String toString() {
+        return "SnmpInterfaceBean{" +
+                "ifDescr='" + ifDescr + '\'' +
+                ", ifIndex=" + ifIndex +
+                '}';
+    }
 }

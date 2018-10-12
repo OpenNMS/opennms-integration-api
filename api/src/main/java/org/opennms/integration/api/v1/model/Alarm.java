@@ -41,6 +41,8 @@ public interface Alarm {
 
     Integer getId();
 
+    Node getNode();
+
     String getManagedObjectInstance();
 
     String getManagedObjectType();

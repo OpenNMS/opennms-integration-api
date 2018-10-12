@@ -26,18 +26,50 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.model;
+package org.opennms.integration.api.v1.model.beans;
 
-import java.util.List;
+import java.util.Objects;
 
-public interface InMemoryEvent {
+import org.opennms.integration.api.v1.model.EventParameter;
 
-    String getUei();
+public class EventParameterBean implements EventParameter {
+    private final String name;
+    private final String value;
 
-    String getSource();
+    public EventParameterBean(String name, String value) {
+        this.name = Objects.requireNonNull(name);
+        this.value = value;
+    }
 
-    List<EventParameter> getParameters();
+    @Override
+    public String getName() {
+        return name;
+    }
 
-    List<EventParameter> getParametersByName(String name);
+    @Override
+    public String getValue() {
+        return value;
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EventParameterBean that = (EventParameterBean) o;
+        return Objects.equals(name, that.name) &&
+                Objects.equals(value, that.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, value);
+    }
+
+    @Override
+    public String toString() {
+        return "EventParameterBean{" +
+                "name='" + name + '\'' +
+                ", value='" + value + '\'' +
+                '}';
+    }
 }
