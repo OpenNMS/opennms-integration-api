@@ -246,6 +246,7 @@ public class ClasspathEventDefinitionLoader extends ClasspathXmlLoader<Events> {
         final List<UpdateField> updateFields = alarm.getUpdateFields().stream()
                 .map(ClasspathEventDefinitionLoader::toUpdateField)
                 .collect(Collectors.toList());
+        final AlarmType type = AlarmType.fromId(alarm.getAlarmType());
         final ManagedObject managedObject = toManagedObject(alarm.getManagedObject());
         final AlarmData alarmData = new AlarmData() {
             @Override
@@ -255,7 +256,7 @@ public class ClasspathEventDefinitionLoader extends ClasspathXmlLoader<Events> {
 
             @Override
             public AlarmType getType() {
-                return null;
+                return type;
             }
 
             @Override

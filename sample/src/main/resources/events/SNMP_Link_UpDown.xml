@@ -16,7 +16,9 @@
             with the trap.&lt;/p></descr>
         <logmsg dest="logndisplay">Agent Interface Down (linkDown Trap) enterprise:%id% (%id%) on interface %parm[#1]%</logmsg>
         <severity>Minor</severity>
-        <alarm-data reduction-key="%uei%:%dpname%:%nodeid%:%parm[ifIndex]%" alarm-type="1"/>
+        <alarm-data reduction-key="%uei%:%dpname%:%nodeid%:%parm[ifIndex]%" alarm-type="1">
+            <managed-object type="mytype"/>
+        </alarm-data>
         <parameter name="ifIndex" value="%parm[#1]%" expand="true"/>
     </event>
     <event>
@@ -36,7 +38,9 @@
             returned with the trap.&lt;/p></descr>
         <logmsg dest="logndisplay">Agent Interface Up (linkUp Trap) enterprise:%id% (%id%) on interface %parm[#1]%</logmsg>
         <severity>Normal</severity>
-        <alarm-data reduction-key="%uei%:%dpname%:%nodeid%:%parm[ifIndex]%" alarm-type="2" clear-key="uei.opennms.org/generic/traps/SNMP_Link_Down:%dpname%:%nodeid%:%parm[ifIndex]%"/>
+        <alarm-data reduction-key="%uei%:%dpname%:%nodeid%:%parm[ifIndex]%" alarm-type="2" clear-key="uei.opennms.org/generic/traps/SNMP_Link_Down:%dpname%:%nodeid%:%parm[ifIndex]%">
+            <managed-object type="mytype"/>
+        </alarm-data>
         <parameter name="ifIndex" value="%parm[#1]%" expand="true"/>
     </event>
 </events>

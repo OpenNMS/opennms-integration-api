@@ -39,6 +39,17 @@ public enum AlarmType {
         this.id = id;
     }
 
+    public static AlarmType fromId(Integer id) {
+        if (id != null) {
+            for (AlarmType type : AlarmType.values()) {
+                if (type.id == id) {
+                    return type;
+                }
+            }
+        }
+        return PROBLEM;
+    }
+
     public int getId() {
         return id;
     }

@@ -35,6 +35,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import java.util.List;
 
 import org.junit.Test;
+import org.opennms.integration.api.v1.config.events.AlarmType;
 import org.opennms.integration.api.v1.config.events.EventDefinition;
 
 public class MyEventConfExtensionTest {
@@ -44,7 +45,14 @@ public class MyEventConfExtensionTest {
         MyEventConfExtension myEventConfExtension = new MyEventConfExtension();
         List<EventDefinition> eventDefinitions = myEventConfExtension.getEventDefinitions();
         assertThat(eventDefinitions, hasSize(2));
-        assertThat(eventDefinitions.get(0).getUei(), equalTo("uei.opennms.org/generic/traps/SNMP_Link_Down"));
-        assertThat(eventDefinitions.get(1).getUei(), equalTo("uei.opennms.org/generic/traps/SNMP_Link_Up"));
+        EventDefinition linkDown = eventDefinitions.get(0);
+        assertThat(linkDown.getUei(), equalTo("uei.opennms.org/generic/traps/SNMP_Link_Down"));
+        assertThat(linkDown.getAlarmData().getManagedObject().getType(), equalTo("mytype"));
+        assertThat(linkDown.getAlarmData().getType(), equalTo(AlarmType.PROBLEM));
+
+        EventDefinition linkUp = eventDefinitions.get(1);
+        assertThat(linkUp.getUei(), equalTo("uei.opennms.org/generic/traps/SNMP_Link_Up"));
+        assertThat(linkUp.getAlarmData().getManagedObject().getType(), equalTo("mytype"));
+        assertThat(linkUp.getAlarmData().getType(), equalTo(AlarmType.RESOLUTION));
     }
 }
