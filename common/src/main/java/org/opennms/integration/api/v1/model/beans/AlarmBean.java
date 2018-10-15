@@ -28,11 +28,14 @@
 
 package org.opennms.integration.api.v1.model.beans;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import org.opennms.integration.api.v1.model.Alarm;
 import org.opennms.integration.api.v1.model.Node;
+import org.opennms.integration.api.v1.model.Severity;
 
 public class AlarmBean implements Alarm {
     private String reductionKey;
@@ -41,7 +44,9 @@ public class AlarmBean implements Alarm {
     private String managedObjectInstance;
     private String managedObjectType;
     private String type;
+    private Severity severity;
     private Map<String,String> attributes;
+    private List<Alarm> relatedAlarms = new LinkedList<>();
 
     @Override
     public String getReductionKey() {
@@ -101,6 +106,25 @@ public class AlarmBean implements Alarm {
         return attributes;
     }
 
+    @Override
+    public Severity getSeverity() {
+        return severity;
+    }
+
+    public void setSeverity(Severity severity) {
+        this.severity = severity;
+    }
+
+    @Override
+    public boolean isSituation() {
+        return getRelatedAlarms().size() > 0;
+    }
+
+    @Override
+    public List<Alarm> getRelatedAlarms() {
+        return relatedAlarms;
+    }
+
     public void setAttributes(Map<String, String> attributes) {
         this.attributes = attributes;
     }
@@ -116,12 +140,13 @@ public class AlarmBean implements Alarm {
                 Objects.equals(managedObjectInstance, alarmBean.managedObjectInstance) &&
                 Objects.equals(managedObjectType, alarmBean.managedObjectType) &&
                 Objects.equals(type, alarmBean.type) &&
+                Objects.equals(relatedAlarms, alarmBean.relatedAlarms) &&
                 Objects.equals(attributes, alarmBean.attributes);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(reductionKey, id, node, managedObjectInstance, managedObjectType, type, attributes);
+        return Objects.hash(reductionKey, id, node, managedObjectInstance, managedObjectType, type, relatedAlarms, attributes);
     }
 
     @Override
@@ -133,6 +158,7 @@ public class AlarmBean implements Alarm {
                 ", managedObjectInstance='" + managedObjectInstance + '\'' +
                 ", managedObjectType='" + managedObjectType + '\'' +
                 ", type='" + type + '\'' +
+                ", relatedAlarms='" + relatedAlarms + '\'' +
                 ", attributes=" + attributes +
                 '}';
     }

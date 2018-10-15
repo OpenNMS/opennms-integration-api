@@ -26,34 +26,14 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.model;
+package org.opennms.integration.api.v1.dao;
 
 import java.util.List;
-import java.util.Map;
 
-/**
- * An immutable alarm.
- *
- * @author jwhite
- */
-public interface Alarm {
+import org.opennms.integration.api.v1.model.Alarm;
 
-    String getReductionKey();
+public interface AlarmDao {
 
-    Integer getId();
-
-    Node getNode();
-
-    String getManagedObjectInstance();
-
-    String getManagedObjectType();
-
-    Map<String,String> getAttributes();
-
-    Severity getSeverity();
-
-    boolean isSituation();
-
-    List<Alarm> getRelatedAlarms();
+    List<Alarm> getAlarms();
 
 }

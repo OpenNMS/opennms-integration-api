@@ -28,15 +28,19 @@
 
 package org.opennms.integration.api.v1.model.beans;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 import org.opennms.integration.api.v1.model.Node;
+import org.opennms.integration.api.v1.model.SnmpInterface;
 
 public class NodeBean implements Node {
     private Integer id;
     private String foreignSource;
     private String foreignId;
     private String label;
+    private List<SnmpInterface> snmpInterfaces = new LinkedList<>();
 
     @Override
     public Integer getId() {
@@ -70,6 +74,11 @@ public class NodeBean implements Node {
         return label;
     }
 
+    @Override
+    public List<SnmpInterface> getSnmpInterfaces() {
+        return null;
+    }
+
     public void setLabel(String label) {
         this.label = label;
     }
@@ -82,12 +91,13 @@ public class NodeBean implements Node {
         return Objects.equals(id, nodeBean.id) &&
                 Objects.equals(foreignSource, nodeBean.foreignSource) &&
                 Objects.equals(foreignId, nodeBean.foreignId) &&
-                Objects.equals(label, nodeBean.label);
+                Objects.equals(label, nodeBean.label) &&
+                Objects.equals(snmpInterfaces, nodeBean.snmpInterfaces);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, foreignSource, foreignId, label);
+        return Objects.hash(id, foreignSource, foreignId, label, snmpInterfaces);
     }
 
     @Override
@@ -97,6 +107,7 @@ public class NodeBean implements Node {
                 ", foreignSource='" + foreignSource + '\'' +
                 ", foreignId='" + foreignId + '\'' +
                 ", label='" + label + '\'' +
+                ", snmpInterfaces='" + snmpInterfaces + '\'' +
                 '}';
     }
 }

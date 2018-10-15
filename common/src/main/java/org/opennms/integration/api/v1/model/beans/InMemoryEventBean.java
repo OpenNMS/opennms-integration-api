@@ -36,10 +36,12 @@ import java.util.stream.Collectors;
 
 import org.opennms.integration.api.v1.model.EventParameter;
 import org.opennms.integration.api.v1.model.InMemoryEvent;
+import org.opennms.integration.api.v1.model.Severity;
 
 public class InMemoryEventBean implements InMemoryEvent {
     private final String uei;
     private final String source;
+    private Severity severity;
     private List<EventParameter> parameters;
 
     public InMemoryEventBean(String uei, String source) {
@@ -55,6 +57,15 @@ public class InMemoryEventBean implements InMemoryEvent {
     @Override
     public String getSource() {
         return source;
+    }
+
+    @Override
+    public Severity getSeverity() {
+        return severity;
+    }
+
+    public void setSeverity(Severity severity) {
+        this.severity = severity;
     }
 
     @Override
@@ -90,12 +101,13 @@ public class InMemoryEventBean implements InMemoryEvent {
         InMemoryEventBean that = (InMemoryEventBean) o;
         return Objects.equals(uei, that.uei) &&
                 Objects.equals(source, that.source) &&
+                Objects.equals(severity, that.severity) &&
                 Objects.equals(parameters, that.parameters);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uei, source, parameters);
+        return Objects.hash(uei, source, severity, parameters);
     }
 
     @Override
@@ -103,6 +115,7 @@ public class InMemoryEventBean implements InMemoryEvent {
         return "InMemoryEventBean{" +
                 "uei='" + uei + '\'' +
                 ", source='" + source + '\'' +
+                ", severity='" + severity + '\'' +
                 ", parameters=" + parameters +
                 '}';
     }

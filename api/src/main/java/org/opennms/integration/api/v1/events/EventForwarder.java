@@ -26,34 +26,14 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.model;
+package org.opennms.integration.api.v1.events;
 
-import java.util.List;
-import java.util.Map;
+import org.opennms.integration.api.v1.model.InMemoryEvent;
 
-/**
- * An immutable alarm.
- *
- * @author jwhite
- */
-public interface Alarm {
+public interface EventForwarder {
 
-    String getReductionKey();
+    void sendAsync(InMemoryEvent event);
 
-    Integer getId();
-
-    Node getNode();
-
-    String getManagedObjectInstance();
-
-    String getManagedObjectType();
-
-    Map<String,String> getAttributes();
-
-    Severity getSeverity();
-
-    boolean isSituation();
-
-    List<Alarm> getRelatedAlarms();
+    void sendSync(InMemoryEvent event);
 
 }

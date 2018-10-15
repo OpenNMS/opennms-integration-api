@@ -36,6 +36,8 @@ public interface InMemoryEvent {
 
     String getSource();
 
+    Severity getSeverity();
+
     List<EventParameter> getParameters();
 
     List<EventParameter> getParametersByName(String name);

@@ -28,6 +28,8 @@
 
 package org.opennms.integration.api.v1.model;
 
+import java.util.List;
+
 public interface Node {
 
     Integer getId();
@@ -37,5 +39,7 @@ public interface Node {
     String getForeignId();
 
     String getLabel();
+
+    List<SnmpInterface> getSnmpInterfaces();
 
 }
