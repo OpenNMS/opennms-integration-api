@@ -28,7 +28,7 @@
 
 package org.opennms.integration.api.v1.model.beans;
 
-import java.util.HashMap;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -50,6 +50,10 @@ public class AlarmBean implements Alarm {
     private Severity severity;
     private Map<String,String> attributes = new LinkedHashMap<>();
     private List<Alarm> relatedAlarms = new LinkedList<>();
+    private String logMessage;
+    private String description;
+    private Date lastEventTime;
+    private Date firstEventTime;
 
     public AlarmBean() { }
 
@@ -68,6 +72,10 @@ public class AlarmBean implements Alarm {
             alarm.getAttributes().forEach((key, value) -> attributes.put(key, value));
         }
         relatedAlarms = alarm.getRelatedAlarms();
+        logMessage = alarm.getLogMessage();
+        description = alarm.getDescription();
+        lastEventTime = alarm.getLastEventTime();
+        firstEventTime = alarm.getFirstEventTime();
     }
 
     @Override
@@ -152,23 +160,64 @@ public class AlarmBean implements Alarm {
     }
 
     @Override
+    public String getLogMessage() {
+        return logMessage;
+    }
+
+    public void setLogMessage(String logMessage) {
+        this.logMessage = logMessage;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Override
+    public Date getLastEventTime() {
+        return lastEventTime;
+    }
+
+    public void setLastEventTime(Date lastEventTime) {
+        this.lastEventTime = lastEventTime;
+    }
+
+    @Override
+    public Date getFirstEventTime() {
+        return firstEventTime;
+    }
+
+    public void setFirstEventTime(Date firstEventTime) {
+        this.firstEventTime = firstEventTime;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AlarmBean alarmBean = (AlarmBean) o;
-        return Objects.equals(reductionKey, alarmBean.reductionKey) &&
+        return lastEventTime == alarmBean.lastEventTime &&
+                firstEventTime == alarmBean.firstEventTime &&
+                Objects.equals(reductionKey, alarmBean.reductionKey) &&
                 Objects.equals(id, alarmBean.id) &&
                 Objects.equals(node, alarmBean.node) &&
                 Objects.equals(managedObjectInstance, alarmBean.managedObjectInstance) &&
                 Objects.equals(managedObjectType, alarmBean.managedObjectType) &&
-                Objects.equals(type, alarmBean.type) &&
+                type == alarmBean.type &&
+                severity == alarmBean.severity &&
+                Objects.equals(attributes, alarmBean.attributes) &&
                 Objects.equals(relatedAlarms, alarmBean.relatedAlarms) &&
-                Objects.equals(attributes, alarmBean.attributes);
+                Objects.equals(logMessage, alarmBean.logMessage) &&
+                Objects.equals(description, alarmBean.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(reductionKey, id, node, managedObjectInstance, managedObjectType, type, relatedAlarms, attributes);
+        return Objects.hash(reductionKey, id, node, managedObjectInstance, managedObjectType, type, severity, attributes, relatedAlarms, logMessage, description, lastEventTime, firstEventTime);
     }
 
     @Override
@@ -179,9 +228,14 @@ public class AlarmBean implements Alarm {
                 ", node=" + node +
                 ", managedObjectInstance='" + managedObjectInstance + '\'' +
                 ", managedObjectType='" + managedObjectType + '\'' +
-                ", type='" + type + '\'' +
-                ", relatedAlarms='" + relatedAlarms + '\'' +
+                ", type=" + type +
+                ", severity=" + severity +
                 ", attributes=" + attributes +
+                ", relatedAlarms=" + relatedAlarms +
+                ", logMessage='" + logMessage + '\'' +
+                ", description='" + description + '\'' +
+                ", lastEventTime=" + lastEventTime +
+                ", firstEventTime=" + firstEventTime +
                 '}';
     }
 }

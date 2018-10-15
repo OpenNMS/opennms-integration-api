@@ -28,6 +28,7 @@
 
 package org.opennms.integration.api.v1.model;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -59,5 +60,13 @@ public interface Alarm {
     boolean isSituation();
 
     List<Alarm> getRelatedAlarms();
+
+    String getLogMessage();
+
+    String getDescription();
+
+    Date getLastEventTime();
+
+    Date getFirstEventTime();
 
 }
