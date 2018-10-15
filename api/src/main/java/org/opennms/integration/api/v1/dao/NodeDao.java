@@ -34,6 +34,8 @@ import org.opennms.integration.api.v1.model.Node;
 
 public interface NodeDao {
 
+    List<Node> getNodes();
+
     Long getNodeCount();
 
     List<Integer> getNodeIds();

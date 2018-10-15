@@ -31,6 +31,8 @@ package org.opennms.integration.api.v1.model;
 import java.util.List;
 import java.util.Map;
 
+import org.opennms.integration.api.v1.config.events.AlarmType;
+
 /**
  * An immutable alarm.
  *
@@ -43,6 +45,8 @@ public interface Alarm {
     Integer getId();
 
     Node getNode();
+
+    AlarmType getType();
 
     String getManagedObjectInstance();
 

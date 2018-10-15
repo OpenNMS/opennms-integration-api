@@ -28,11 +28,14 @@
 
 package org.opennms.integration.api.v1.model.beans;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.opennms.integration.api.v1.config.events.AlarmType;
 import org.opennms.integration.api.v1.model.Alarm;
 import org.opennms.integration.api.v1.model.Node;
 import org.opennms.integration.api.v1.model.Severity;
@@ -43,10 +46,29 @@ public class AlarmBean implements Alarm {
     private Node node;
     private String managedObjectInstance;
     private String managedObjectType;
-    private String type;
+    private AlarmType type;
     private Severity severity;
-    private Map<String,String> attributes;
+    private Map<String,String> attributes = new LinkedHashMap<>();
     private List<Alarm> relatedAlarms = new LinkedList<>();
+
+    public AlarmBean() { }
+
+    public AlarmBean(Alarm alarm) {
+        if (alarm == null) {
+            return;
+        }
+        reductionKey = alarm.getReductionKey();
+        id = alarm.getId();
+        node = alarm.getNode();
+        managedObjectInstance = alarm.getManagedObjectInstance();
+        managedObjectType = alarm.getManagedObjectType();
+        type = alarm.getType();
+        severity = alarm.getSeverity();
+        if (alarm.getAttributes() != null) {
+            alarm.getAttributes().forEach((key, value) -> attributes.put(key, value));
+        }
+        relatedAlarms = alarm.getRelatedAlarms();
+    }
 
     @Override
     public String getReductionKey() {
@@ -93,11 +115,11 @@ public class AlarmBean implements Alarm {
         this.managedObjectType = managedObjectType;
     }
 
-    public String getType() {
+    public AlarmType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(AlarmType type) {
         this.type = type;
     }
 
