@@ -1,7 +1,7 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2018 The OpenNMS Group, Inc.
+ * Copyright (C) 2018-2018 The OpenNMS Group, Inc.
  * OpenNMS(R) is Copyright (C) 1999-2018 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
@@ -28,30 +28,8 @@
 
 package org.opennms.integration.api.v1.health;
 
-public interface HealthCheck {
+public interface Context {
 
-    /**
-     * The description of the {@link HealthCheck}, e.g. "Connecting to OpenNMS ReST API".
-     * This is used when visualizing the progress or result of the checks.
-     *
-     * @return The string, describing the check.
-     */
-    String getDescription();
-
-    /**
-     * Implements the check itself, e.g. Connecting to a HTTP Endpoint.
-     *
-     * As the method is called by the HealthCheckService, it is advised that all timeout restrictions
-     * etc are handled by the service instead of the {@link HealthCheck} implementation.
-     *
-     * Implementations might throw an Exception, which should be handled by the HealthCheckService as well.
-     *
-     * The response indicates if the check was successful, or encountered other problems. If null is returned,
-     * the HealthCheckService should consider this as {@link Status#Unknown}.
-     *
-     * @return The response indicating the Success/Failure/Timeout/etc of the check
-     * @throws Exception In case of an error
-     */
-    Response perform(Context context) throws Exception;
+    long getTimeout();
 
 }

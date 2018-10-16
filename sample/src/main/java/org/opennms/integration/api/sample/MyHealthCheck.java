@@ -28,6 +28,7 @@
 
 package org.opennms.integration.api.sample;
 
+import org.opennms.integration.api.v1.health.Context;
 import org.opennms.integration.api.v1.health.HealthCheck;
 import org.opennms.integration.api.v1.health.Response;
 import org.opennms.integration.api.v1.health.ResponseBean;
@@ -40,7 +41,7 @@ public class MyHealthCheck implements HealthCheck {
     }
 
     @Override
-    public Response perform() {
+    public Response perform(Context context) {
         return new ResponseBean(Status.Success);
     }
 }
