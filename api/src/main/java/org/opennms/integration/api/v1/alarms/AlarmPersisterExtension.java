@@ -53,6 +53,7 @@ public interface AlarmPersisterExtension {
      * @param alarm the alarm that was created
      * @param event the event that triggered the alarm
      * @param dbEvent the database entity associated with the given event
+     * @return an updated alarm, if the entity should be updated, or null otherwise
      */
     Alarm afterAlarmCreated(Alarm alarm, InMemoryEvent event, DatabaseEvent dbEvent);
 
@@ -63,6 +64,7 @@ public interface AlarmPersisterExtension {
      * @param alarm the alarm that was update
      * @param event the event that triggered the update to the alarm
      * @param dbEvent the database entity associated with the given event
+     * @return an updated alarm, if the entity should be updated, or null otherwise
      */
     Alarm afterAlarmUpdated(Alarm alarm, InMemoryEvent event, DatabaseEvent dbEvent);
 
