@@ -44,7 +44,7 @@ public class MyEventConfExtensionTest {
     public void canReadEventDefinitionsFromExtension() {
         MyEventConfExtension myEventConfExtension = new MyEventConfExtension();
         List<EventDefinition> eventDefinitions = myEventConfExtension.getEventDefinitions();
-        assertThat(eventDefinitions, hasSize(2));
+        assertThat(eventDefinitions, hasSize(4));
         EventDefinition linkDown = eventDefinitions.get(0);
         assertThat(linkDown.getUei(), equalTo("uei.opennms.org/generic/traps/SNMP_Link_Down"));
         assertThat(linkDown.getAlarmData().getManagedObject().getType(), equalTo("mytype"));

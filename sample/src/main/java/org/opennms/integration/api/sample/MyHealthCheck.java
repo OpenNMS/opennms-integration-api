@@ -28,20 +28,62 @@
 
 package org.opennms.integration.api.sample;
 
+import java.util.Objects;
+
+import org.opennms.integration.api.v1.events.EventForwarder;
 import org.opennms.integration.api.v1.health.Context;
 import org.opennms.integration.api.v1.health.HealthCheck;
 import org.opennms.integration.api.v1.health.Response;
 import org.opennms.integration.api.v1.health.ResponseBean;
 import org.opennms.integration.api.v1.health.Status;
+import org.opennms.integration.api.v1.model.beans.InMemoryEventBean;
 
+/**
+ * This health check verifies that:
+ *  1) We can send events
+ *  2) The module can extend the event configuration
+ *  3) We can get modify the alarms via the org.opennms.integration.api.v1.alarms.AlarmPersisterExtension interface
+ *  4) We get callbacks for the alarms via the org.opennms.integration.api.v1.alarms.AlarmLifecycleListener interface
+ */
 public class MyHealthCheck implements HealthCheck {
-    @Override
-    public String getDescription() {
-        return "OpenNMS Integration API :: Sample Project";
+
+    private static final String EVENT_SOURCE = "OIA :: Sample Project :: Health Check";
+
+    private final SampleAlarmManager alarmManager;
+    private final EventForwarder eventForwarder;
+
+    public MyHealthCheck(SampleAlarmManager alarmManager, EventForwarder eventForwarder) {
+        this.alarmManager = Objects.requireNonNull(alarmManager);
+        this.eventForwarder = Objects.requireNonNull(eventForwarder);
     }
 
     @Override
-    public Response perform(Context context) {
-        return new ResponseBean(Status.Success);
+    public String getDescription() {
+        return EVENT_SOURCE;
+    }
+
+    @Override
+    public Response perform(Context context) throws Exception {
+        try (SampleAlarmManager.AlarmTestSession session = alarmManager.newSession()) {
+            InMemoryEventBean trigger = new InMemoryEventBean(SampleAlarmManager.TRIGGER_UEI, EVENT_SOURCE);
+            // Add a parameter to make the alarm unique to this session
+            trigger.addParameter(SampleAlarmManager.SESSION_ID_PARM_NAME, session.getSessionId());
+            // Forward the event synchronously
+            eventForwarder.sendSync(trigger);
+
+            // Wait for the trigger
+            session.waitForTrigger();
+
+            // Now send the corresponding clear
+            InMemoryEventBean clear = new InMemoryEventBean(SampleAlarmManager.CLEAR_UEI, EVENT_SOURCE);
+            // Add a parameter to make the alarm unique to this session
+            clear.addParameter(SampleAlarmManager.SESSION_ID_PARM_NAME, session.getSessionId());
+            // Forward the event synchronously
+            eventForwarder.sendSync(clear);
+
+            // Wait for the trigger
+            session.waitForClear();
+            return new ResponseBean(Status.Success);
+        }
     }
 }

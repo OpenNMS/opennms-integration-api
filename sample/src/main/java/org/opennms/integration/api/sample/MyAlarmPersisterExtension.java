@@ -28,6 +28,8 @@
 
 package org.opennms.integration.api.sample;
 
+import java.util.Objects;
+
 import org.opennms.integration.api.v1.alarms.AlarmPersisterExtension;
 import org.opennms.integration.api.v1.model.Alarm;
 import org.opennms.integration.api.v1.model.DatabaseEvent;
@@ -39,10 +41,16 @@ public class MyAlarmPersisterExtension implements AlarmPersisterExtension {
 
     private static final Logger LOG = LoggerFactory.getLogger(MyAlarmPersisterExtension.class);
 
+    private final SampleAlarmManager alarmManager;
+
+    public MyAlarmPersisterExtension(SampleAlarmManager alarmManager) {
+        this.alarmManager = Objects.requireNonNull(alarmManager);
+    }
+
     @Override
     public Alarm afterAlarmCreated(Alarm alarm, InMemoryEvent event, DatabaseEvent dbEvent) {
         LOG.info("afterAlarmCreated({}, {}, {})", alarm, event, dbEvent);
-        return null;
+        return alarmManager.afterAlarmCreated(alarm,event,dbEvent);
     }
 
     @Override

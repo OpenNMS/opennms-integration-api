@@ -38,7 +38,8 @@ public class MyEventConfExtension implements EventConfExtension {
 
     private final ClasspathEventDefinitionLoader classpathEventDefinitionLoader = new ClasspathEventDefinitionLoader(
             MyEventConfExtension.class,
-            "SNMP_Link_UpDown.xml");
+            "SNMP_Link_UpDown.xml",
+            "sample.xml");
 
     @Override
     public List<EventDefinition> getEventDefinitions() {

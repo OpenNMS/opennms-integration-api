@@ -29,6 +29,7 @@
 package org.opennms.integration.api.sample;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.opennms.integration.api.v1.alarms.AlarmLifecycleListener;
 import org.opennms.integration.api.v1.model.Alarm;
@@ -37,6 +38,12 @@ import org.slf4j.LoggerFactory;
 
 public class MyAlarmLifecycleListener implements AlarmLifecycleListener {
     private static final Logger LOG = LoggerFactory.getLogger(MyAlarmLifecycleListener.class);
+
+    private final SampleAlarmManager alarmManager;
+
+    public MyAlarmLifecycleListener(SampleAlarmManager alarmManager) {
+        this.alarmManager = Objects.requireNonNull(alarmManager);
+    }
 
     @Override
     public void handleAlarmSnapshot(List<Alarm> alarms) {
@@ -47,6 +54,7 @@ public class MyAlarmLifecycleListener implements AlarmLifecycleListener {
     public void handleNewOrUpdatedAlarm(Alarm alarm) {
         LOG.info("handleNewOrUpdatedAlarm called for alarm with id: {} and reduction key: {}",
                 alarm.getId(), alarm.getReductionKey());
+        alarmManager.handleNewOrUpdatedAlarm(alarm);
     }
 
     @Override

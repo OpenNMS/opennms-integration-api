@@ -44,4 +44,6 @@ public interface DatabaseEvent {
 
     List<EventParameter> getParameters();
 
+    List<EventParameter> getParametersByName(String name);
+
 }

@@ -1,0 +1,24 @@
+<events xmlns="http://xmlns.opennms.org/xsd/eventconf">
+    <event>
+        <uei>uei.opennms.org/oia/sample/trigger</uei>
+        <event-label>OIA: Trigger</event-label>
+        <descr>A problem has been triggered.</descr>
+        <logmsg dest="logndisplay">A problem has been triggered for session #%parm[sessionId]%.</logmsg>
+        <severity>Warning</severity>
+        <alarm-data reduction-key="%uei%:%parm[sessionId]%" alarm-type="1">
+            <managed-object type="my-mo-type"/>
+        </alarm-data>
+        <parameter name="my-custom-parameter" value="my-constant-value" />
+    </event>
+    <event>
+        <uei>uei.opennms.org/oia/sample/clear</uei>
+        <event-label>OIA: Clear</event-label>
+        <descr>A problem has been cleared.</descr>
+        <logmsg dest="logndisplay">A problem has been cleared for session #%parm[sessionId]%.</logmsg>
+        <severity>Cleared</severity>
+        <alarm-data reduction-key="%uei%:%parm[sessionId]%" alarm-type="2" clear-key="uei.opennms.org/oia/sample/trigger:%parm[sessionId]%">
+            <managed-object type="my-mo-type"/>
+        </alarm-data>
+        <parameter name="my-custom-parameter" value="my-other-constant-value" />
+    </event>
+</events>

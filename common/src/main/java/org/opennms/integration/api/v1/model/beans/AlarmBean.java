@@ -37,6 +37,7 @@ import java.util.Objects;
 
 import org.opennms.integration.api.v1.config.events.AlarmType;
 import org.opennms.integration.api.v1.model.Alarm;
+import org.opennms.integration.api.v1.model.DatabaseEvent;
 import org.opennms.integration.api.v1.model.Node;
 import org.opennms.integration.api.v1.model.Severity;
 
@@ -54,6 +55,7 @@ public class AlarmBean implements Alarm {
     private String description;
     private Date lastEventTime;
     private Date firstEventTime;
+    private DatabaseEvent lastEvent;
 
     public AlarmBean() { }
 
@@ -81,6 +83,7 @@ public class AlarmBean implements Alarm {
         description = alarm.getDescription();
         lastEventTime = alarm.getLastEventTime();
         firstEventTime = alarm.getFirstEventTime();
+        lastEvent = alarm.getLastEvent();
     }
 
     @Override
@@ -201,13 +204,20 @@ public class AlarmBean implements Alarm {
     }
 
     @Override
+    public DatabaseEvent getLastEvent() {
+        return lastEvent;
+    }
+
+    public void setLastEvent(DatabaseEvent lastEvent) {
+        this.lastEvent = lastEvent;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AlarmBean alarmBean = (AlarmBean) o;
-        return lastEventTime == alarmBean.lastEventTime &&
-                firstEventTime == alarmBean.firstEventTime &&
-                Objects.equals(reductionKey, alarmBean.reductionKey) &&
+        return Objects.equals(reductionKey, alarmBean.reductionKey) &&
                 Objects.equals(id, alarmBean.id) &&
                 Objects.equals(node, alarmBean.node) &&
                 Objects.equals(managedObjectInstance, alarmBean.managedObjectInstance) &&
@@ -217,12 +227,15 @@ public class AlarmBean implements Alarm {
                 Objects.equals(attributes, alarmBean.attributes) &&
                 Objects.equals(relatedAlarms, alarmBean.relatedAlarms) &&
                 Objects.equals(logMessage, alarmBean.logMessage) &&
-                Objects.equals(description, alarmBean.description);
+                Objects.equals(description, alarmBean.description) &&
+                Objects.equals(lastEventTime, alarmBean.lastEventTime) &&
+                Objects.equals(firstEventTime, alarmBean.firstEventTime) &&
+                Objects.equals(lastEvent, alarmBean.lastEvent);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(reductionKey, id, node, managedObjectInstance, managedObjectType, type, severity, attributes, relatedAlarms, logMessage, description, lastEventTime, firstEventTime);
+        return Objects.hash(reductionKey, id, node, managedObjectInstance, managedObjectType, type, severity, attributes, relatedAlarms, logMessage, description, lastEventTime, firstEventTime, lastEvent);
     }
 
     @Override
@@ -241,6 +254,7 @@ public class AlarmBean implements Alarm {
                 ", description='" + description + '\'' +
                 ", lastEventTime=" + lastEventTime +
                 ", firstEventTime=" + firstEventTime +
+                ", lastEvent=" + lastEvent +
                 '}';
     }
 }

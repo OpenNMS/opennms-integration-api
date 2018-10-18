@@ -70,4 +70,6 @@ public interface Alarm {
 
     Date getFirstEventTime();
 
+    DatabaseEvent getLastEvent();
+
 }
