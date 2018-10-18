@@ -3,10 +3,14 @@
         http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
 
     <reference id="runtimeInfo" interface="org.opennms.integration.api.v1.runtime.RuntimeInfo" />
+    <reference id="alarmDao" interface="org.opennms.integration.api.v1.dao.AlarmDao" />
     <reference id="nodeDao" interface="org.opennms.integration.api.v1.dao.NodeDao" />
     <reference id="snmpInterfaceDao" interface="org.opennms.integration.api.v1.dao.SnmpInterfaceDao" />
+    <reference id="eventForwarder" interface="org.opennms.integration.api.v1.events.EventForwarder" />
+
     <bean id="myInfoLogger" class="org.opennms.integration.api.sample.MyInfoLogger" >
         <argument ref="runtimeInfo"/>
+        <argument ref="alarmDao"/>
         <argument ref="nodeDao"/>
         <argument ref="snmpInterfaceDao"/>
     </bean>

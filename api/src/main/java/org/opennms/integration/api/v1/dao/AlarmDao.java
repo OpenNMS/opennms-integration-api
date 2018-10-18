@@ -41,6 +41,8 @@ import org.opennms.integration.api.v1.model.Alarm;
 @Consumable
 public interface AlarmDao {
 
+    Long getAlarmCount();
+
     List<Alarm> getAlarms();
 
 }

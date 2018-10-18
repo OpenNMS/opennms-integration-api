@@ -30,6 +30,7 @@ package org.opennms.integration.api.sample;
 
 import java.util.Objects;
 
+import org.opennms.integration.api.v1.dao.AlarmDao;
 import org.opennms.integration.api.v1.dao.NodeDao;
 import org.opennms.integration.api.v1.dao.SnmpInterfaceDao;
 import org.opennms.integration.api.v1.runtime.RuntimeInfo;
@@ -44,14 +45,15 @@ public class MyInfoLogger {
 
     private static final Logger LOG = LoggerFactory.getLogger(MyInfoLogger.class);
 
-    public MyInfoLogger(RuntimeInfo runtimeInfo, NodeDao nodeDao, SnmpInterfaceDao snmpInterfaceDao) {
+    public MyInfoLogger(RuntimeInfo runtimeInfo, NodeDao nodeDao, SnmpInterfaceDao snmpInterfaceDao, AlarmDao alarmDao) {
         Objects.requireNonNull(runtimeInfo);
 
         LOG.info("Plugin running in container: {} (meridian={}) with version: {}.",
                 runtimeInfo.getContainer(), runtimeInfo.isMeridian(), runtimeInfo.getVersion());
 
-        LOG.info("Database contains {} nodes and {} SNMP interfaces.",
+        LOG.info("Database contains {} nodes, {} SNMP interfaces and {} alarms.",
                 nodeDao.getNodeCount(),
-                snmpInterfaceDao.getSnmpInterfaceCount());
+                snmpInterfaceDao.getSnmpInterfaceCount(),
+                alarmDao.getAlarmCount());
     }
 }
