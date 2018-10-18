@@ -28,8 +28,15 @@
 
 package org.opennms.integration.api.v1.runtime;
 
+/**
+ * Enumeration of the container (JVM) in which the API is currently running.
+ *
+ * @author jwhite
+ * @since 1.0.0
+ */
 public enum Container {
     OPENNMS,
     MINION,
-    SENTINEL;
+    SENTINEL,
+    OTHER;
 }

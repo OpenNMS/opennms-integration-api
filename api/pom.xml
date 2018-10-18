@@ -8,4 +8,6 @@
     <artifactId>api</artifactId>
     <name>OpenNMS Integration API :: API</name>
     <packaging>bundle</packaging>
+
+    <!-- This bundle should have minimal dependencies - beware of the impact if you do add something here! -->
 </project>

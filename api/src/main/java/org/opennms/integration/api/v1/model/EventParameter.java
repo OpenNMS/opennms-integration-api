@@ -28,6 +28,12 @@
 
 package org.opennms.integration.api.v1.model;
 
+/**
+ * An immutable event parameter.
+ *
+ * @author jwhite
+ * @since 1.0.0
+ */
 public interface EventParameter {
 
     String getName();

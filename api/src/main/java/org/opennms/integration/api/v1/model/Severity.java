@@ -28,6 +28,11 @@
 
 package org.opennms.integration.api.v1.model;
 
+/**
+ * Alarm/event severity.
+ *
+ * @since 1.0.0
+ */
 public enum Severity {
     INDETERMINATE(1, "Indeterminate"),
     CLEARED(2, "Cleared"),

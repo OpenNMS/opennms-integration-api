@@ -28,8 +28,15 @@
 
 package org.opennms.integration.api.v1.dao;
 
+import org.opennms.integration.api.v1.annotations.Consumable;
 import org.opennms.integration.api.v1.model.SnmpInterface;
 
+/**
+ * Lookup SNMP interfaces.
+ *
+ * @since 1.0.0
+ */
+@Consumable
 public interface SnmpInterfaceDao {
 
     Long getSnmpInterfaceCount();

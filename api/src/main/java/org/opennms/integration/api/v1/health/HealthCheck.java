@@ -28,6 +28,15 @@
 
 package org.opennms.integration.api.v1.health;
 
+import org.opennms.integration.api.v1.annotations.Exposable;
+
+/**
+ * Check it.
+ *
+ * @author mvrueden
+ * @since 1.0.0
+ */
+@Exposable
 public interface HealthCheck {
 
     /**

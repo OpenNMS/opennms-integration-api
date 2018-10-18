@@ -28,6 +28,11 @@
 
 package org.opennms.integration.api.v1.config.events;
 
+/**
+ * Fields to update when reducing a new event on the alarm.
+ *
+ * @since 1.0.0
+ */
 public interface UpdateField {
 
     String getName();

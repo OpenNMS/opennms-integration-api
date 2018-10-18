@@ -28,6 +28,11 @@
 
 package org.opennms.integration.api.v1.config.events;
 
+/**
+ * Log message destinations.
+ *
+ * @since 1.0.0
+ */
 public enum LogMsgDestType {
     LOGNDISPLAY,
     DISPLAYONLY,

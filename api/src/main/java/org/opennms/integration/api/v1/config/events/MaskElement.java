@@ -30,6 +30,11 @@ package org.opennms.integration.api.v1.config.events;
 
 import java.util.List;
 
+/**
+ * Mask element.
+ *
+ * @since 1.0.0
+ */
 public interface MaskElement {
 
     String getName();

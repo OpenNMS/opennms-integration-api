@@ -28,6 +28,11 @@
 
 package org.opennms.integration.api.v1.config.events;
 
+/**
+ * Managed object to which the alarms should be associated.
+ *
+ * @since 1.0.0
+ */
 public interface ManagedObject {
 
     String getType();

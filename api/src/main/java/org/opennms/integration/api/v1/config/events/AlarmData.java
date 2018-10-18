@@ -30,6 +30,11 @@ package org.opennms.integration.api.v1.config.events;
 
 import java.util.List;
 
+/**
+ * Defines the alarm for a given event definition.
+ *
+ * @since 1.0.0
+ */
 public interface AlarmData {
 
     String getReductionKey();

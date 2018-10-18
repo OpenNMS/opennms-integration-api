@@ -28,6 +28,12 @@
 
 package org.opennms.integration.api.v1.health;
 
+/**
+ * Common implementation of the {@link Response} interface.
+ *
+ * @author mvrueden
+ * @since 1.0.0
+ */
 public class ResponseBean implements Response {
 
     // The status

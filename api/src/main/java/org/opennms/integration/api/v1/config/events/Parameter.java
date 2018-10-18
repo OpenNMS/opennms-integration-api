@@ -28,6 +28,11 @@
 
 package org.opennms.integration.api.v1.config.events;
 
+/**
+ * Parameters which are automatically added to the event.
+ *
+ * @since 1.0.0
+ */
 public interface Parameter {
 
     String getName();

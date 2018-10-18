@@ -28,6 +28,17 @@
 
 package org.opennms.integration.api.v1.runtime;
 
+import org.opennms.integration.api.v1.annotations.Consumable;
+
+/**
+ * Provides statistics about the current runtime environment.
+ *
+ * This interface is made available by the API inte
+ *
+ * @author jwhite
+ * @since 1.0.0
+ */
+@Consumable
 public interface RuntimeInfo {
 
     Version getVersion();

@@ -30,6 +30,11 @@ package org.opennms.integration.api.v1.config.events;
 
 import java.util.List;
 
+/**
+ * A mask (i.e. filter) to use for a given event definition.
+ *
+ * @since 1.0.0
+ */
 public interface Mask {
 
     List<MaskElement> getMaskElements();

@@ -28,6 +28,12 @@
 
 package org.opennms.integration.api.v1.runtime;
 
+/**
+ * Product version.
+ *
+ * @author jwhite
+ * @since 1.0.0
+ */
 public interface Version extends Comparable<Version> {
 
     int getMajor();

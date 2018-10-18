@@ -32,6 +32,7 @@ package org.opennms.integration.api.v1.health;
  * The status of the {@link HealthCheck}.
  *
  * @author mvrueden
+ * @since 1.0.0
  */
 public enum Status {
     // Unknown: Not possible to determine the status

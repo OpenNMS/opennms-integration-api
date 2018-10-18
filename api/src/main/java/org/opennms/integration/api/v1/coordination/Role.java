@@ -30,6 +30,9 @@ package org.opennms.integration.api.v1.coordination;
 
 /**
  * The valid roles when participating in a redundant cluster.
+ *
+ * @author mbrooks
+ * @since 1.0.0
  */
 public enum Role {
     UNKNOWN,

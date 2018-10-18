@@ -30,6 +30,11 @@ package org.opennms.integration.api.v1.config.events;
 
 import java.util.List;
 
+/**
+ * Varbind against which to filter the event.
+ *
+ * @since 1.0.0
+ */
 public interface Varbind {
 
     String getTextualConvention();

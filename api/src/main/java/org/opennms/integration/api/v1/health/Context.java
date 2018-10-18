@@ -28,6 +28,12 @@
 
 package org.opennms.integration.api.v1.health;
 
+/**
+ * Context related to the health check that is being performed.
+ *
+ * @author mvrueden
+ * @since 1.0.0
+ */
 public interface Context {
 
     long getTimeout();

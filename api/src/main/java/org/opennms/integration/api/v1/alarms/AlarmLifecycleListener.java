@@ -30,19 +30,42 @@ package org.opennms.integration.api.v1.alarms;
 
 import java.util.List;
 
+import org.opennms.integration.api.v1.annotations.Exposable;
 import org.opennms.integration.api.v1.model.Alarm;
 
 /**
- * Allows implementations to be notified when alarms are updated.
+ * Get callbacks alarms are updated.
  *
+ * Implementations must be non-blocking - blocking will impact other listeners.
+ *
+ * @author jwhite
  * @since 1.0.0
  */
+@Exposable
 public interface AlarmLifecycleListener {
 
+    /**
+     * Periodically invoked with the complete list of alarms as stored in the database.
+     *
+     * This can be used for synchronizing the current state against the database.
+     *
+     * @param alarms authoritative list of alarms
+     */
     void handleAlarmSnapshot(List<Alarm> alarms);
 
+    /**
+     * Invoked when an alarm is created or updated.
+     *
+     * @param alarm the alarm
+     */
     void handleNewOrUpdatedAlarm(Alarm alarm);
 
+    /**
+     * Invoked when an alarm is deleted.
+     *
+     * @param alarmId the database id of the deleted alarm
+     * @param reductionKey the reduction key of the deleted alarm
+     */
     void handleDeletedAlarm(int alarmId, String reductionKey);
 
 }

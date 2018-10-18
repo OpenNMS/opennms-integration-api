@@ -30,6 +30,9 @@ package org.opennms.integration.api.v1.coordination;
 
 /**
  * A manager that is responsible for registering and deregistering clients for a given domain.
+ *
+ * @author mbrooks
+ * @since 1.0.0
  */
 public interface DomainManager {
     /**

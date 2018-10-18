@@ -28,6 +28,11 @@
 
 package org.opennms.integration.api.v1.config.events;
 
+/**
+ * Different types of alarms.
+ *
+ * @since 1.0.0
+ */
 public enum AlarmType {
     PROBLEM(1),
     RESOLUTION(2),

@@ -32,6 +32,11 @@ import java.util.List;
 
 import org.opennms.integration.api.v1.model.Severity;
 
+/**
+ * An event definition.
+ *
+ * @since 1.0.0
+ */
 public interface EventDefinition {
 
     /**

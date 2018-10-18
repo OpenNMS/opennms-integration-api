@@ -30,6 +30,9 @@ package org.opennms.integration.api.v1.health;
 
 /**
  * The response of a health check.
+ *
+ * @author mvrueden
+ * @since 1.0.0
  */
 public interface Response {
 

@@ -30,8 +30,15 @@ package org.opennms.integration.api.v1.dao;
 
 import java.util.List;
 
+import org.opennms.integration.api.v1.annotations.Consumable;
 import org.opennms.integration.api.v1.model.Node;
 
+/**
+ * Lookup nodes.
+ *
+ * @since 1.0.0
+ */
+@Consumable
 public interface NodeDao {
 
     List<Node> getNodes();

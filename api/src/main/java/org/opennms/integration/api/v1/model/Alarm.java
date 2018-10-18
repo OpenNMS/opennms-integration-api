@@ -38,6 +38,7 @@ import org.opennms.integration.api.v1.config.events.AlarmType;
  * An immutable alarm.
  *
  * @author jwhite
+ * @since 1.0.0
  */
 public interface Alarm {
 

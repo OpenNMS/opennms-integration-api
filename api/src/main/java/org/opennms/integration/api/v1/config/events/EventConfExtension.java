@@ -30,6 +30,14 @@ package org.opennms.integration.api.v1.config.events;
 
 import java.util.List;
 
+import org.opennms.integration.api.v1.annotations.Exposable;
+
+/**
+ * Used to expose event definitions.
+ *
+ * @since 1.0.0
+ */
+@Exposable
 public interface EventConfExtension {
 
     List<EventDefinition> getEventDefinitions();

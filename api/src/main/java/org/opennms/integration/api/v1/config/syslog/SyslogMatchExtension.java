@@ -30,6 +30,14 @@ package org.opennms.integration.api.v1.config.syslog;
 
 import java.util.List;
 
+import org.opennms.integration.api.v1.annotations.Exposable;
+
+/**
+ * Used to expose syslog matches.
+ *
+ * @since 1.0.0
+ */
+@Exposable
 public interface SyslogMatchExtension {
 
     List<SyslogMatch> getSyslogMatches();

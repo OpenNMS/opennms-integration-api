@@ -30,6 +30,12 @@ package org.opennms.integration.api.v1.model;
 
 import java.util.List;
 
+/**
+ * An immutable in-memory event.
+ *
+ * @author jwhite
+ * @since 1.0.0
+ */
 public interface InMemoryEvent {
 
     String getUei();

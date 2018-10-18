@@ -30,6 +30,9 @@ package org.opennms.integration.api.v1.coordination;
 
 /**
  * Defines the callbacks invoked by a {@link DomainManager} when a registrant changes roles.
+ *
+ * @author mbrooks
+ * @since 1.0.0
  */
 @FunctionalInterface
 public interface RoleChangeHandler {

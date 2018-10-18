@@ -28,6 +28,12 @@
 
 package org.opennms.integration.api.v1.model;
 
+/**
+ * An immutable SNMP interface.
+ *
+ * @author jwhite
+ * @since 1.0.0
+ */
 public interface SnmpInterface {
 
     String getIfDescr();

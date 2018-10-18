@@ -21,6 +21,7 @@ This API is designed to follow [Semantic Versioning](https://semver.org/).
  * DAOs
    * Node
    * SNMP Interface
+ * Coordination API
 
 ### Expose
 
@@ -33,7 +34,6 @@ This API is designed to follow [Semantic Versioning](https://semver.org/).
 
 ### Add support for exposing
 
- * Coordination API
  * Service Monitor
  * Service Collector
  * Provisiond Detector
@@ -41,4 +41,3 @@ This API is designed to follow [Semantic Versioning](https://semver.org/).
  * Notification strategy
  * Time Series Persistence strategy
  * Ticketer
-

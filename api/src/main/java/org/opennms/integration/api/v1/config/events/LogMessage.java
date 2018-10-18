@@ -28,6 +28,11 @@
 
 package org.opennms.integration.api.v1.config.events;
 
+/**
+ * The log message to use for a given event definition.
+ *
+ * @since 1.0.0
+ */
 public interface LogMessage {
 
     String getContent();

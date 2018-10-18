@@ -26,41 +26,14 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.config.syslog;
-
-import java.util.List;
+package org.opennms.integration.api.v1.annotations;
 
 /**
- * Used to match a syslog message and generate a corresponding event.
+ * Interfaces marked with this annotation are made available for consumption for users of the API.
  *
+ * Support for the different containers will vary on the implementation.
+ *
+ * @author jwhite
  * @since 1.0.0
  */
-public interface SyslogMatch {
-
-    /**
-     * Matches are ordered by priority in ascending fashion.
-     *
-     * @return the priority for this definition
-     */
-    int getPriority();
-
-    /**
-     * The regular expression used to match the messages.
-     *
-     * @return a regular expression
-     */
-    String getMatchExpression();
-
-    /**
-     * UEI to use for the generated events
-     * @return an event uei
-     */
-    String getUei();
-
-    /**
-     * Used to pull matches from the match expression into event parameters.
-     * @return a list of parameter assignments
-     */
-    List<ParameterAssignment> getParameterAssignments();
-
-}
+public @interface Consumable { }

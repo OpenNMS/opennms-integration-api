@@ -28,6 +28,11 @@
 
 package org.opennms.integration.api.v1.config.syslog;
 
+/**
+ * Assign a group extracted from the regex to a parameter.
+ *
+ * @since 1.0.0
+ */
 public interface ParameterAssignment {
 
     int getGroupNumber();

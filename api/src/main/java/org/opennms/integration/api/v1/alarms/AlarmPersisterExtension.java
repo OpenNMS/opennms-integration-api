@@ -28,9 +28,11 @@
 
 package org.opennms.integration.api.v1.alarms;
 
+import org.opennms.integration.api.v1.annotations.Exposable;
 import org.opennms.integration.api.v1.model.Alarm;
 import org.opennms.integration.api.v1.model.DatabaseEvent;
 import org.opennms.integration.api.v1.model.InMemoryEvent;
+import org.opennms.integration.api.v1.runtime.Container;
 
 /**
  * This interface allows extensions to modify the alarm
@@ -43,7 +45,9 @@ import org.opennms.integration.api.v1.model.InMemoryEvent;
  * Implementations must be thread safe since alarmd will issue these callbacks over many threads.
  *
  * @author jwhite
+ * @since 1.0.0
  */
+@Exposable
 public interface AlarmPersisterExtension {
 
     /**

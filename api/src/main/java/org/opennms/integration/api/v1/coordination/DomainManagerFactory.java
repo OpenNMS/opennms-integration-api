@@ -28,10 +28,16 @@
 
 package org.opennms.integration.api.v1.coordination;
 
+import org.opennms.integration.api.v1.annotations.Consumable;
+
 /**
  * A factory responsible for supplying {@link DomainManager managers} for given domains. Implementations of this class
  * must accept a given domain and return the appropriate manager instance for that domain.
+ *
+ * @author mbrooks
+ * @since 1.0.0
  */
+@Consumable
 public interface DomainManagerFactory {
     /**
      * Get the {@link DomainManager} for the given domain. Domains must consist of only alphanumeric characters and

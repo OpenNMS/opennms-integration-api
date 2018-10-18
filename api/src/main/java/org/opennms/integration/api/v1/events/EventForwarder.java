@@ -28,12 +28,30 @@
 
 package org.opennms.integration.api.v1.events;
 
+import org.opennms.integration.api.v1.annotations.Consumable;
 import org.opennms.integration.api.v1.model.InMemoryEvent;
 
+/**
+ * Forward events.
+ *
+ * @since 1.0.0
+ */
+@Consumable
 public interface EventForwarder {
 
+    /**
+     * Send the given event asynchronously.
+     *
+     * @param event event to send
+     */
     void sendAsync(InMemoryEvent event);
 
+    /**
+     * Send the given event synchronously - blocking until all of the event receivers
+     * which are interested in the event have handled the event.
+     *
+     * @param event event to send
+     */
     void sendSync(InMemoryEvent event);
 
 }
