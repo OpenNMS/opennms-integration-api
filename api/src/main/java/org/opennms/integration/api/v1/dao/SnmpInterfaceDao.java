@@ -41,6 +41,14 @@ public interface SnmpInterfaceDao {
 
     Long getSnmpInterfaceCount();
 
-    SnmpInterface findByNodeIdAndDescription(Integer nodeId, String description);
+    /**
+     * Attempts to find an SNMP interface on a node with the given id
+     * that has a ifDescr or ifName matching the given argument.
+     *
+     * @param nodeId node id
+     * @param descrOrName the ifDescr or ifName to match
+     * @return a {@link SnmpInterface} or {@code null} if none was found
+     */
+    SnmpInterface findByNodeIdAndDescrOrName(Integer nodeId, String descrOrName);
 
 }

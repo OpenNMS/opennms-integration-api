@@ -57,6 +57,11 @@ public class AlarmBean implements Alarm {
 
     public AlarmBean() { }
 
+    /**
+     * Copy constructor.
+     *
+     * @param alarm alarm to copy
+     */
     public AlarmBean(Alarm alarm) {
         if (alarm == null) {
             return;

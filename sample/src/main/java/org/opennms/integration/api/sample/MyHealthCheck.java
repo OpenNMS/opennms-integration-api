@@ -37,7 +37,7 @@ import org.opennms.integration.api.v1.health.Status;
 public class MyHealthCheck implements HealthCheck {
     @Override
     public String getDescription() {
-        return "Sample Project";
+        return "OpenNMS Integration API :: Sample Project";
     }
 
     @Override

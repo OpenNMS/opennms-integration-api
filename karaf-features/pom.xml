@@ -96,6 +96,11 @@
             <groupId>org.opennms.integration.api</groupId>
             <artifactId>xml</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.opennms.integration.api.sample</groupId>
+            <artifactId>sample-project</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- Framework distribution -->
         <dependency>

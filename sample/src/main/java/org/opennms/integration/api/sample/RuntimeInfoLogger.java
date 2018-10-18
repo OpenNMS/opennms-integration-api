@@ -40,7 +40,7 @@ public class RuntimeInfoLogger {
     public RuntimeInfoLogger(RuntimeInfo runtimeInfo) {
         Objects.requireNonNull(runtimeInfo);
 
-        LOG.info("Plugin running in container: {} (meridian={}) with version: {}.",
+        LOG.info("Plugin running in container: {} (Meridian={}) with version: {}.",
                 runtimeInfo.getContainer(), runtimeInfo.isMeridian(), runtimeInfo.getVersion());
     }
 }

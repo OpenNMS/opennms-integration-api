@@ -74,7 +74,7 @@ public class ClasspathXmlLoader<T> {
                     }
                 }
             } catch (IOException e) {
-                LOG.warn("Failed to load " + fileName, e);
+                LOG.warn("Failed to load {}. Skipping.", fileName, e);
             }
         }
         return allObjects;

@@ -37,6 +37,12 @@ import org.opennms.integration.api.v1.config.syslog.SyslogMatch;
 import org.opennms.integration.api.xml.schema.syslog.SyslogdConfigurationGroup;
 import org.opennms.integration.api.xml.schema.syslog.UeiMatch;
 
+/**
+ * Used to load XML syslog matches from the class-path.
+ *
+ * @author jwhite
+ * @since 1.0.0
+ */
 public class ClasspathSyslogMatchLoader extends ClasspathXmlLoader<SyslogdConfigurationGroup> {
 
     public ClasspathSyslogMatchLoader(Class<?> clazz, String... fileNames) {

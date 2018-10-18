@@ -49,6 +49,12 @@ import org.opennms.integration.api.xml.schema.eventconf.LogDestType;
 import org.opennms.integration.api.xml.schema.eventconf.Logmsg;
 import org.opennms.integration.api.xml.schema.eventconf.Maskelement;
 
+/**
+ * Used to load XML event definitions from the class-path.
+ *
+ * @author jwhite
+ * @since 1.0.0
+ */
 public class ClasspathEventDefinitionLoader extends ClasspathXmlLoader<Events> {
 
     public ClasspathEventDefinitionLoader(Class<?> clazz, String... fileNames) {

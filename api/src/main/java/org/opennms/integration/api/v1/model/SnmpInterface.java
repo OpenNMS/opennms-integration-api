@@ -38,6 +38,8 @@ public interface SnmpInterface {
 
     String getIfDescr();
 
+    String getIfName();
+
     Integer getIfIndex();
 
 }

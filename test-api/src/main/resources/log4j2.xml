@@ -6,15 +6,6 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="org.apache.kafka" level="INFO">
-            <AppenderRef ref="Console"/>
-        </Logger>
-        <Logger name="org.apache.zookeeper" level="WARN">
-            <AppenderRef ref="Console"/>
-        </Logger>
-        <Logger name="kafka" level="WARN">
-            <AppenderRef ref="Console"/>
-        </Logger>
         <Root level="DEBUG">
             <AppenderRef ref="Console"/>
         </Root>

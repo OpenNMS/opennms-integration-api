@@ -34,6 +34,7 @@ import org.opennms.integration.api.v1.model.SnmpInterface;
 
 public class SnmpInterfaceBean implements SnmpInterface {
     private String ifDescr;
+    private String ifName;
     private Integer ifIndex;
 
     @Override
@@ -43,6 +44,15 @@ public class SnmpInterfaceBean implements SnmpInterface {
 
     public void setIfDescr(String ifDescr) {
         this.ifDescr = ifDescr;
+    }
+
+    @Override
+    public String getIfName() {
+        return ifName;
+    }
+
+    public void setIfName(String ifName) {
+        this.ifName = ifName;
     }
 
     @Override
@@ -60,18 +70,20 @@ public class SnmpInterfaceBean implements SnmpInterface {
         if (o == null || getClass() != o.getClass()) return false;
         SnmpInterfaceBean that = (SnmpInterfaceBean) o;
         return Objects.equals(ifDescr, that.ifDescr) &&
+                Objects.equals(ifName, that.ifName) &&
                 Objects.equals(ifIndex, that.ifIndex);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ifDescr, ifIndex);
+        return Objects.hash(ifDescr, ifName, ifIndex);
     }
 
     @Override
     public String toString() {
         return "SnmpInterfaceBean{" +
                 "ifDescr='" + ifDescr + '\'' +
+                ", ifName=" + ifName +
                 ", ifIndex=" + ifIndex +
                 '}';
     }

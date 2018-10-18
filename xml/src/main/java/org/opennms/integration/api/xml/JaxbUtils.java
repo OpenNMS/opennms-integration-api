@@ -35,7 +35,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-public class JaxbUtils {
+class JaxbUtils {
 
     public static String toXml(Object o, Class<?> clazz) {
         try {
