@@ -7,7 +7,7 @@
     <reference id="nodeDao" interface="org.opennms.integration.api.v1.dao.NodeDao" />
     <reference id="snmpInterfaceDao" interface="org.opennms.integration.api.v1.dao.SnmpInterfaceDao" />
     <reference id="eventForwarder" interface="org.opennms.integration.api.v1.events.EventForwarder" />
-
+    <reference id="detectorClient" interface="org.opennms.integration.api.v1.detectors.DetectorClient" />
 
     <bean id="alarmManager" class="org.opennms.integration.api.sample.SampleAlarmManager"/>
 
@@ -22,6 +22,7 @@
         <bean class="org.opennms.integration.api.sample.MyHealthCheck">
             <argument ref="alarmManager"/>
             <argument ref="eventForwarder"/>
+            <argument ref="detectorClient"/>
         </bean>
     </service>
 
@@ -43,6 +44,10 @@
 
     <service interface="org.opennms.integration.api.v1.config.syslog.SyslogMatchExtension">
         <bean class="org.opennms.integration.api.sample.MySyslogMatchExtension"/>
+    </service>
+
+    <service interface="org.opennms.integration.api.v1.detectors.ServiceDetectorFactory">
+        <bean class="org.opennms.integration.api.sample.SampleDetectorFactory"/>
     </service>
 
 </blueprint>
