@@ -34,6 +34,8 @@ import java.util.Map;
 
 import org.opennms.integration.api.v1.detectors.DetectRequest;
 import org.opennms.integration.api.v1.detectors.ServiceDetectorFactory;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.PropertyAccessorFactory;
 
 public class SampleDetectorFactory implements ServiceDetectorFactory<SampleDetector> {
 
@@ -41,8 +43,12 @@ public class SampleDetectorFactory implements ServiceDetectorFactory<SampleDetec
     public static  String PROTOCOL_VALUE  = "rmi";
 
     @Override
-    public SampleDetector createDetector() {
-        return new SampleDetector();
+    public SampleDetector createDetector(Map<String, String> properties) {
+
+        SampleDetector sampleDetector = new SampleDetector();
+        BeanWrapper wrapper = PropertyAccessorFactory.forBeanPropertyAccess(sampleDetector);
+        wrapper.setPropertyValues(properties);
+        return sampleDetector;
     }
 
     @Override

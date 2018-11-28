@@ -41,14 +41,25 @@ import org.opennms.integration.api.v1.annotations.Exposable;
 public interface ServiceDetectorFactory<T extends ServiceDetector> {
 
     /**
-     * Instantiates a new detector.
-     * <p>
-     * Detectors are treated as protoypes.
+     * Instantiates a new detector and set bean properties.
+     * One of the ways to set bean properties is by using Spring BeanWrapper.
+     * <pre>
+     * {@code
+     *         BeanWrapper wrapper = PropertyAccessorFactory.forBeanPropertyAccess(serviceDetector);
+     *         wrapper.setPropertyValues(properties);
+     * }
+     * </pre>
+     * Detectors are treated as protoypes meaning there will be a new instance of detector each time createDetector gets called.
+     * @param properties  are used to set properties on detector bean.
+     *
+     * @return a new @{@link ServiceDetector}.
      */
-    T createDetector();
+    T createDetector(Map<String, String> properties);
 
     /**
      * Used by the detector registry to track and index the detector types.
+     *
+     * @return a @{@link Class} for the detector.
      */
     Class<T> getDetectorClass();
 

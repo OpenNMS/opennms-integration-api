@@ -28,5 +28,16 @@
             <artifactId>test-api</artifactId>
             <scope>test</scope>
         </dependency>
+      <dependency>
+        <groupId>org.apache.servicemix.bundles</groupId>
+        <artifactId>org.apache.servicemix.bundles.spring-beans</artifactId>
+        <version>${spring.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.servicemix.bundles</groupId>
+        <artifactId>org.apache.servicemix.bundles.spring-core</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
     </dependencies>
 </project>
