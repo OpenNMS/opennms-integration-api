@@ -28,6 +28,8 @@
 
 package org.opennms.integration.api.sample;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,6 +37,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.opennms.integration.api.v1.model.Alarm;
+import org.opennms.integration.api.v1.model.AlarmFeedback;
 import org.opennms.integration.api.v1.model.DatabaseEvent;
 import org.opennms.integration.api.v1.model.EventParameter;
 import org.opennms.integration.api.v1.model.InMemoryEvent;
@@ -56,6 +59,7 @@ public class SampleAlarmManager {
 
     private final Map<Long, AlarmTestSession> sessionsById = new ConcurrentHashMap<>();
 
+    private final List<AlarmFeedback> feedback = new ArrayList<>();
 
     public AlarmTestSession newSession() {
         final long sessionId = sessionIdGenerator.incrementAndGet();
@@ -94,6 +98,12 @@ public class SampleAlarmManager {
         }
     }
 
+    public void handleFeedback(AlarmFeedback feedback) {
+        // Not doing anything with the feedback here other than logging and storing it
+        LOG.info("Received feedback {}.", feedback);
+        this.feedback.add(feedback);
+    }
+    
     private AlarmTestSession getSessionFor(Alarm alarm) {
         final DatabaseEvent event = alarm.getLastEvent();
         if (event == null) {

@@ -45,4 +45,10 @@
         <bean class="org.opennms.integration.api.sample.MySyslogMatchExtension"/>
     </service>
 
+    <service interface="org.opennms.integration.api.v1.feedback.AlarmFeedbackListener">
+        <bean class="org.opennms.integration.api.sample.MyAlarmFeedbackListener">
+            <argument ref="alarmManager"/>
+        </bean>
+    </service>
+
 </blueprint>
