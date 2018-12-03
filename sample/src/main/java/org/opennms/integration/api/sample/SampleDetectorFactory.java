@@ -28,14 +28,15 @@
 
 package org.opennms.integration.api.sample;
 
+import static org.opennms.integration.api.sample.SampleDetector.DEFAULT_PASSWORD_PROPERTY;
+import static org.opennms.integration.api.sample.SampleDetector.DEFAULT_USERNAME_PROPERTY;
+
 import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.opennms.integration.api.v1.detectors.DetectRequest;
 import org.opennms.integration.api.v1.detectors.ServiceDetectorFactory;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.PropertyAccessorFactory;
 
 public class SampleDetectorFactory implements ServiceDetectorFactory<SampleDetector> {
 
@@ -46,8 +47,12 @@ public class SampleDetectorFactory implements ServiceDetectorFactory<SampleDetec
     public SampleDetector createDetector(Map<String, String> properties) {
 
         SampleDetector sampleDetector = new SampleDetector();
-        BeanWrapper wrapper = PropertyAccessorFactory.forBeanPropertyAccess(sampleDetector);
-        wrapper.setPropertyValues(properties);
+        if(properties.get(DEFAULT_USERNAME_PROPERTY) != null) {
+            sampleDetector.setUsername(properties.get(DEFAULT_USERNAME_PROPERTY));
+        }
+        if(properties.get(DEFAULT_PASSWORD_PROPERTY) != null) {
+            sampleDetector.setPassword(properties.get(DEFAULT_PASSWORD_PROPERTY));
+        }
         return sampleDetector;
     }
 

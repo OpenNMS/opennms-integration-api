@@ -2,7 +2,7 @@
     <parent>
         <groupId>org.opennms.integration.api</groupId>
         <artifactId>api-project</artifactId>
-        <version>1.0.0-alpha1-SNAPSHOT</version>
+        <version>1.0.0-alpha2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opennms.integration.api.sample</groupId>
@@ -28,16 +28,5 @@
             <artifactId>test-api</artifactId>
             <scope>test</scope>
         </dependency>
-      <dependency>
-        <groupId>org.apache.servicemix.bundles</groupId>
-        <artifactId>org.apache.servicemix.bundles.spring-beans</artifactId>
-        <version>${spring.version}</version>
-        <scope>compile</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.servicemix.bundles</groupId>
-        <artifactId>org.apache.servicemix.bundles.spring-core</artifactId>
-        <version>${spring.version}</version>
-      </dependency>
     </dependencies>
 </project>

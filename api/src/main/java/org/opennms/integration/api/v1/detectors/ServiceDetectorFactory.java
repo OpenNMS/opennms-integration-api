@@ -42,7 +42,8 @@ public interface ServiceDetectorFactory<T extends ServiceDetector> {
 
     /**
      * Instantiates a new detector and set bean properties.
-     * One of the ways to set bean properties is by using Spring BeanWrapper.
+     * Bean properties like "port", "username" can be set on detector from properties.
+     * They can be set individually by calling each setter or by using Spring Beanwrapper as below.
      * <pre>
      * {@code
      *         BeanWrapper wrapper = PropertyAccessorFactory.forBeanPropertyAccess(serviceDetector);
