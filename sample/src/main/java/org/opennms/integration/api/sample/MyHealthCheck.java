@@ -28,6 +28,7 @@
 
 package org.opennms.integration.api.sample;
 
+import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -41,6 +42,8 @@ import org.opennms.integration.api.v1.health.Response;
 import org.opennms.integration.api.v1.health.ResponseBean;
 import org.opennms.integration.api.v1.health.Status;
 import org.opennms.integration.api.v1.model.beans.InMemoryEventBean;
+import org.opennms.integration.api.v1.pollers.PollerResult;
+import org.opennms.integration.api.v1.pollers.ServicePollerClient;
 
 /**
  * This health check verifies that:
@@ -57,11 +60,13 @@ public class MyHealthCheck implements HealthCheck {
     private final SampleAlarmManager alarmManager;
     private final EventForwarder eventForwarder;
     private final DetectorClient detectorClient;
+    private final ServicePollerClient pollerClient;
 
-    public MyHealthCheck(SampleAlarmManager alarmManager, EventForwarder eventForwarder, DetectorClient detectorClient) {
+    public MyHealthCheck(SampleAlarmManager alarmManager, EventForwarder eventForwarder, DetectorClient detectorClient, ServicePollerClient pollerClient) {
         this.alarmManager = Objects.requireNonNull(alarmManager);
         this.eventForwarder = Objects.requireNonNull(eventForwarder);
         this.detectorClient = Objects.requireNonNull(detectorClient);
+        this.pollerClient = Objects.requireNonNull(pollerClient);
     }
 
     @Override
@@ -96,12 +101,25 @@ public class MyHealthCheck implements HealthCheck {
             CompletableFuture<Boolean> future = detectorClient.detect(SampleDetector.SERVICE_NAME, SampleDetector.DEFAULT_HOST_NAME, attributes);
             try {
                 if (!future.get()) {
-                    return new ResponseBean(Status.Failure);
+                    return new ResponseBean(Status.Failure, "Sample Detector detection failed");
                 }
             } catch (Exception e) {
                 return new ResponseBean(e);
             }
-            return new ResponseBean(Status.Success);
+            try {
+                CompletableFuture<PollerResult> pollerStatus = pollerClient.poll()
+                        .withAddress(InetAddress.getLocalHost())
+                        .withPollerClassName(SamplePoller.class.getCanonicalName())
+                        .withServiceName("Sample")
+                        .execute();
+                if (pollerStatus.get().getStatus().equals(org.opennms.integration.api.v1.pollers.Status.Up)) {
+                    return new ResponseBean(Status.Success);
+                } else {
+                    return new ResponseBean(Status.Failure, pollerStatus.get().getReason());
+                }
+            } catch (Exception e) {
+                return new ResponseBean(e);
+            }
         }
     }
 }
