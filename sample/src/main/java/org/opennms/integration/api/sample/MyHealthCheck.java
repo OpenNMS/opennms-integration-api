@@ -28,8 +28,12 @@
 
 package org.opennms.integration.api.sample;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
+import org.opennms.integration.api.v1.detectors.DetectorClient;
 import org.opennms.integration.api.v1.events.EventForwarder;
 import org.opennms.integration.api.v1.health.Context;
 import org.opennms.integration.api.v1.health.HealthCheck;
@@ -44,6 +48,7 @@ import org.opennms.integration.api.v1.model.beans.InMemoryEventBean;
  *  2) The module can extend the event configuration
  *  3) We can get modify the alarms via the org.opennms.integration.api.v1.alarms.AlarmPersisterExtension interface
  *  4) We get callbacks for the alarms via the org.opennms.integration.api.v1.alarms.AlarmLifecycleListener interface
+ *  5) Checks that Sample detectors are running properly.
  */
 public class MyHealthCheck implements HealthCheck {
 
@@ -51,10 +56,12 @@ public class MyHealthCheck implements HealthCheck {
 
     private final SampleAlarmManager alarmManager;
     private final EventForwarder eventForwarder;
+    private final DetectorClient detectorClient;
 
-    public MyHealthCheck(SampleAlarmManager alarmManager, EventForwarder eventForwarder) {
+    public MyHealthCheck(SampleAlarmManager alarmManager, EventForwarder eventForwarder, DetectorClient detectorClient) {
         this.alarmManager = Objects.requireNonNull(alarmManager);
         this.eventForwarder = Objects.requireNonNull(eventForwarder);
+        this.detectorClient = Objects.requireNonNull(detectorClient);
     }
 
     @Override
@@ -83,6 +90,17 @@ public class MyHealthCheck implements HealthCheck {
 
             // Wait for the trigger
             session.waitForClear();
+            Map<String, String> attributes = new HashMap<>();
+            attributes.put(SampleDetector.DEFAULT_USERNAME_PROPERTY, SampleDetector.DEFAULT_USERNAME_VALUE);
+            attributes.put(SampleDetector.DEFAULT_PASSWORD_PROPERTY, SampleDetector.DEFAULT_PASSWORD_VALUE);
+            CompletableFuture<Boolean> future = detectorClient.detect(SampleDetector.SERVICE_NAME, SampleDetector.DEFAULT_HOST_NAME, attributes);
+            try {
+                if (!future.get()) {
+                    return new ResponseBean(Status.Failure);
+                }
+            } catch (Exception e) {
+                return new ResponseBean(e);
+            }
             return new ResponseBean(Status.Success);
         }
     }
