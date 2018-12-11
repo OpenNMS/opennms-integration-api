@@ -104,6 +104,12 @@ public class UeiMatch implements Serializable {
     private String m_uei;
 
     /**
+     * The Priority of the UeiMatch definition. Higher number has higher priority.
+     */
+    @XmlElement(name = "priority", required = false)
+    private Integer m_priority;
+
+    /**
      * For regex matches, assign the value of a matching group
      *  to a named event parameter
      */
@@ -187,6 +193,14 @@ public class UeiMatch implements Serializable {
 
     public void setUei(final String uei) {
         m_uei = ConfigUtils.assertNotEmpty(uei, "uei");
+    }
+
+    public Integer getPriority() {
+        return m_priority == null ? 0 : m_priority;
+    }
+
+    public void setPriority(Integer priority) {
+        m_priority = priority;
     }
 
     public List<ParameterAssignment> getParameterAssignments() {

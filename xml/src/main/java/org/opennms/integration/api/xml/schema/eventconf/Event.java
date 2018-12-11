@@ -62,6 +62,12 @@ public class Event implements Serializable {
     private String m_uei;
 
     /**
+     * The Priority of the Event definition. Higher number has higher priority.
+     */
+    @XmlElement(name = "priority", required = false)
+    private Integer m_priority;
+
+    /**
      * A human readable name used to identify an event in the web ui
      */
     @XmlElement(name="event-label", required=true)
@@ -184,6 +190,14 @@ public class Event implements Serializable {
 
     public String getUei() {
         return m_uei;
+    }
+
+    public Integer getPriority() {
+        return m_priority == null ? 0 : m_priority;
+    }
+
+    public void setPriority(Integer priority) {
+        m_priority = priority;
     }
 
     public void setUei(final String uei) {

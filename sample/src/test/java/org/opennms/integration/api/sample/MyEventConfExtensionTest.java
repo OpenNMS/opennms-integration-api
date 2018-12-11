@@ -49,10 +49,12 @@ public class MyEventConfExtensionTest {
         assertThat(linkDown.getUei(), equalTo("uei.opennms.org/generic/traps/SNMP_Link_Down"));
         assertThat(linkDown.getAlarmData().getManagedObject().getType(), equalTo("mytype"));
         assertThat(linkDown.getAlarmData().getType(), equalTo(AlarmType.PROBLEM));
+        assertThat(linkDown.getPriority(), equalTo(20));
 
         EventDefinition linkUp = eventDefinitions.get(1);
         assertThat(linkUp.getUei(), equalTo("uei.opennms.org/generic/traps/SNMP_Link_Up"));
         assertThat(linkUp.getAlarmData().getManagedObject().getType(), equalTo("mytype"));
         assertThat(linkUp.getAlarmData().getType(), equalTo(AlarmType.RESOLUTION));
+        assertThat(linkUp.getPriority(), equalTo(10));
     }
 }

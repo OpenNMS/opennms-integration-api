@@ -84,7 +84,7 @@ public class ClasspathEventDefinitionLoader extends ClasspathXmlLoader<Events> {
         final EventDefinition def = new EventDefinition() {
             @Override
             public int getPriority() {
-                return 0;
+                return e.getPriority();
             }
 
             @Override
