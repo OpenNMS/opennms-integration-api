@@ -446,6 +446,7 @@ public class Event implements Serializable {
     public int hashCode() {
         return Objects.hash(m_mask,
                             m_uei,
+                            m_priority,
                             m_eventLabel,
                             m_snmp,
                             m_descr,
@@ -476,6 +477,7 @@ public class Event implements Serializable {
             final Event that = (Event) obj;
             return Objects.equals(this.m_mask, that.m_mask) &&
                     Objects.equals(this.m_uei, that.m_uei) &&
+                    Objects.equals(this.m_priority, that.m_priority) &&
                     Objects.equals(this.m_eventLabel, that.m_eventLabel) &&
                     Objects.equals(this.m_snmp, that.m_snmp) &&
                     Objects.equals(this.m_descr, that.m_descr) &&

@@ -229,7 +229,8 @@ public class UeiMatch implements Serializable {
                             m_hostnameMatch, 
                             m_hostaddrMatch, 
                             m_match, 
-                            m_uei, 
+                            m_uei,
+                            m_priority,
                             m_parameterAssignments);
     }
 
@@ -248,6 +249,7 @@ public class UeiMatch implements Serializable {
                     && Objects.equals(this.m_hostaddrMatch, that.m_hostaddrMatch)
                     && Objects.equals(this.m_match, that.m_match)
                     && Objects.equals(this.m_uei, that.m_uei)
+                    && Objects.equals(this.m_priority, that.m_priority)
                     && Objects.equals(this.m_parameterAssignments, that.m_parameterAssignments);
         }
         return false;
