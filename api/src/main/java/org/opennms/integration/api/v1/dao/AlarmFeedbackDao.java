@@ -46,4 +46,9 @@ public interface AlarmFeedbackDao {
      */
     List<AlarmFeedback> getFeedback();
 
+    /**
+     * @param alarmFeedback the list of feedback to submit
+     */
+    void submitFeedback(List<AlarmFeedback> alarmFeedback);
+
 }
