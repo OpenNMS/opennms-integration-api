@@ -68,7 +68,7 @@ public class Event implements Serializable {
     private Integer m_priority;
 
     /**
-     * A human readable name used to identify an event in the web ui
+     * A human readable name used to identify an event in the web ui.
      */
     @XmlElement(name="event-label", required=true)
     private String m_eventLabel;
