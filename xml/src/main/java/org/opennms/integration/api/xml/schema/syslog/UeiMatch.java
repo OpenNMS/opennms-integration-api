@@ -111,7 +111,7 @@ public class UeiMatch implements Serializable {
 
     /**
      * For regex matches, assign the value of a matching group
-     *  to a named event parameter
+     *  to a named event parameter.
      */
     @XmlElement(name = "parameter-assignment")
     private List<ParameterAssignment> m_parameterAssignments = new ArrayList<>();
