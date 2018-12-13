@@ -45,5 +45,6 @@ public class MySyslogMatchExtensionTest {
         List<SyslogMatch> syslogMatches = mySyslogMatchExtension.getSyslogMatches();
         assertThat(syslogMatches, hasSize(1));
         assertThat(syslogMatches.get(0).getUei(), equalTo("uei.opennms.org/vendor/cisco/syslog/nativeVlanMismatch"));
+        assertThat(syslogMatches.get(0).getPriority(), equalTo(20));
     }
 }

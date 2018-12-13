@@ -76,7 +76,7 @@ public class ClasspathSyslogMatchLoader extends ClasspathXmlLoader<SyslogdConfig
             syslogMatches.add(new SyslogMatch() {
                 @Override
                 public int getPriority() {
-                    return 0;
+                    return ueiMatch.getPriority();
                 }
 
                 @Override

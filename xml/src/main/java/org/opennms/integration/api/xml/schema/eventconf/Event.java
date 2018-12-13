@@ -62,7 +62,13 @@ public class Event implements Serializable {
     private String m_uei;
 
     /**
-     * A human readable name used to identify an event in the web ui
+     * The Priority of the Event definition. Higher number has higher priority.
+     */
+    @XmlElement(name = "priority", required = false)
+    private Integer m_priority;
+
+    /**
+     * A human readable name used to identify an event in the web ui.
      */
     @XmlElement(name="event-label", required=true)
     private String m_eventLabel;
@@ -184,6 +190,14 @@ public class Event implements Serializable {
 
     public String getUei() {
         return m_uei;
+    }
+
+    public Integer getPriority() {
+        return m_priority == null ? 0 : m_priority;
+    }
+
+    public void setPriority(Integer priority) {
+        m_priority = priority;
     }
 
     public void setUei(final String uei) {
@@ -432,6 +446,7 @@ public class Event implements Serializable {
     public int hashCode() {
         return Objects.hash(m_mask,
                             m_uei,
+                            m_priority,
                             m_eventLabel,
                             m_snmp,
                             m_descr,
@@ -462,6 +477,7 @@ public class Event implements Serializable {
             final Event that = (Event) obj;
             return Objects.equals(this.m_mask, that.m_mask) &&
                     Objects.equals(this.m_uei, that.m_uei) &&
+                    Objects.equals(this.m_priority, that.m_priority) &&
                     Objects.equals(this.m_eventLabel, that.m_eventLabel) &&
                     Objects.equals(this.m_snmp, that.m_snmp) &&
                     Objects.equals(this.m_descr, that.m_descr) &&
