@@ -104,8 +104,14 @@ public class UeiMatch implements Serializable {
     private String m_uei;
 
     /**
+     * The Priority of the UeiMatch definition. Higher number has higher priority.
+     */
+    @XmlElement(name = "priority", required = false)
+    private Integer m_priority;
+
+    /**
      * For regex matches, assign the value of a matching group
-     *  to a named event parameter
+     *  to a named event parameter.
      */
     @XmlElement(name = "parameter-assignment")
     private List<ParameterAssignment> m_parameterAssignments = new ArrayList<>();
@@ -189,6 +195,14 @@ public class UeiMatch implements Serializable {
         m_uei = ConfigUtils.assertNotEmpty(uei, "uei");
     }
 
+    public Integer getPriority() {
+        return m_priority == null ? 0 : m_priority;
+    }
+
+    public void setPriority(Integer priority) {
+        m_priority = priority;
+    }
+
     public List<ParameterAssignment> getParameterAssignments() {
         return m_parameterAssignments;
     }
@@ -215,7 +229,8 @@ public class UeiMatch implements Serializable {
                             m_hostnameMatch, 
                             m_hostaddrMatch, 
                             m_match, 
-                            m_uei, 
+                            m_uei,
+                            m_priority,
                             m_parameterAssignments);
     }
 
@@ -234,6 +249,7 @@ public class UeiMatch implements Serializable {
                     && Objects.equals(this.m_hostaddrMatch, that.m_hostaddrMatch)
                     && Objects.equals(this.m_match, that.m_match)
                     && Objects.equals(this.m_uei, that.m_uei)
+                    && Objects.equals(this.m_priority, that.m_priority)
                     && Objects.equals(this.m_parameterAssignments, that.m_parameterAssignments);
         }
         return false;

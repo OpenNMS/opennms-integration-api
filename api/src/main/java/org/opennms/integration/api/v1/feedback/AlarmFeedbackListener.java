@@ -26,25 +26,27 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.sample;
+package org.opennms.integration.api.v1.feedback;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.core.IsEqual.equalTo;
+import org.opennms.integration.api.v1.annotations.Exposable;
+import org.opennms.integration.api.v1.model.AlarmFeedback;
 
-import java.util.List;
+/**
+ * Get callbacks for feedback being created.
+ * <p>
+ * Implementations must be non-blocking - blocking will impact other listeners.
+ *
+ * @author mbrooks
+ * @since 1.0.0
+ */
+@Exposable
+public interface AlarmFeedbackListener {
 
-import org.junit.Test;
-import org.opennms.integration.api.v1.config.syslog.SyslogMatch;
+    /**
+     * A callback to process feedback that has just been received.
+     *
+     * @param alarmFeedback the feedback
+     */
+    void onFeedback(AlarmFeedback alarmFeedback);
 
-public class MySyslogMatchExtensionTest {
-
-    @Test
-    public void canReadSyslogMatchesFromExtension() {
-        MySyslogMatchExtension mySyslogMatchExtension = new MySyslogMatchExtension();
-        List<SyslogMatch> syslogMatches = mySyslogMatchExtension.getSyslogMatches();
-        assertThat(syslogMatches, hasSize(1));
-        assertThat(syslogMatches.get(0).getUei(), equalTo("uei.opennms.org/vendor/cisco/syslog/nativeVlanMismatch"));
-        assertThat(syslogMatches.get(0).getPriority(), equalTo(20));
-    }
 }

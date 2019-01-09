@@ -1,5 +1,6 @@
 <events xmlns="http://xmlns.opennms.org/xsd/eventconf">
     <event>
+        <priority>20</priority>
         <mask>
             <maskelement>
                 <mename>generic</mename>
@@ -22,6 +23,7 @@
         <parameter name="ifIndex" value="%parm[#1]%" expand="true"/>
     </event>
     <event>
+        <priority>10</priority>
         <mask>
             <maskelement>
                 <mename>generic</mename>

@@ -26,25 +26,56 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.sample;
+package org.opennms.integration.api.v1.model;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.core.IsEqual.equalTo;
+/**
+ * The integration API type for alarm feedback.
+ */
+public interface AlarmFeedback {
 
-import java.util.List;
+    /**
+     * @return the reduction key of the situation this feedback applies to
+     */
+    String getSituationKey();
 
-import org.junit.Test;
-import org.opennms.integration.api.v1.config.syslog.SyslogMatch;
+    /**
+     * @return the fingerprint of the situation this feedback applies to
+     */
+    String getSituationFingerprint();
 
-public class MySyslogMatchExtensionTest {
+    /**
+     * @return the reduction key of the alarm this feedback applies to
+     */
+    String getAlarmKey();
 
-    @Test
-    public void canReadSyslogMatchesFromExtension() {
-        MySyslogMatchExtension mySyslogMatchExtension = new MySyslogMatchExtension();
-        List<SyslogMatch> syslogMatches = mySyslogMatchExtension.getSyslogMatches();
-        assertThat(syslogMatches, hasSize(1));
-        assertThat(syslogMatches.get(0).getUei(), equalTo("uei.opennms.org/vendor/cisco/syslog/nativeVlanMismatch"));
-        assertThat(syslogMatches.get(0).getPriority(), equalTo(20));
+    /**
+     * @return the {@link Type} that applies to this feedback
+     */
+    Type getFeedbackType();
+
+    /**
+     * @return a description of why this feedback was given
+     */
+    String getReason();
+
+    /**
+     * @return the user that created this feedback
+     */
+    String getUser();
+
+    /**
+     * @return the timestamp of when this feedback was created
+     */
+    Long getTimestamp();
+
+    /**
+     * The valid types of feedback.
+     */
+    enum Type {
+        FALSE_POSITIVE,
+        FALSE_NEGATIVE,
+        CORRECT,
+        UNKNOWN
     }
+
 }

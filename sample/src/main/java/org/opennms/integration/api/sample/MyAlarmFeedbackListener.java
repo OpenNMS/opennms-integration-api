@@ -28,23 +28,25 @@
 
 package org.opennms.integration.api.sample;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.core.IsEqual.equalTo;
+import java.util.Objects;
 
-import java.util.List;
+import org.opennms.integration.api.v1.feedback.AlarmFeedbackListener;
+import org.opennms.integration.api.v1.model.AlarmFeedback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.junit.Test;
-import org.opennms.integration.api.v1.config.syslog.SyslogMatch;
+public class MyAlarmFeedbackListener implements AlarmFeedbackListener {
+    private static final Logger LOG = LoggerFactory.getLogger(MyAlarmFeedbackListener.class);
 
-public class MySyslogMatchExtensionTest {
+    private final SampleAlarmManager alarmManager;
 
-    @Test
-    public void canReadSyslogMatchesFromExtension() {
-        MySyslogMatchExtension mySyslogMatchExtension = new MySyslogMatchExtension();
-        List<SyslogMatch> syslogMatches = mySyslogMatchExtension.getSyslogMatches();
-        assertThat(syslogMatches, hasSize(1));
-        assertThat(syslogMatches.get(0).getUei(), equalTo("uei.opennms.org/vendor/cisco/syslog/nativeVlanMismatch"));
-        assertThat(syslogMatches.get(0).getPriority(), equalTo(20));
+    public MyAlarmFeedbackListener(SampleAlarmManager alarmManager) {
+        this.alarmManager = Objects.requireNonNull(alarmManager);
+    }
+
+    @Override
+    public void onFeedback(AlarmFeedback alarmFeedback) {
+        LOG.info("onFeedback called with feedback {}.", alarmFeedback);
+        alarmManager.handleFeedback(alarmFeedback);
     }
 }
