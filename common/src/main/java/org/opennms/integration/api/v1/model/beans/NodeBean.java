@@ -32,7 +32,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+import org.opennms.integration.api.v1.model.IpInterface;
 import org.opennms.integration.api.v1.model.Node;
+import org.opennms.integration.api.v1.model.NodeAssetRecord;
 import org.opennms.integration.api.v1.model.SnmpInterface;
 
 public class NodeBean implements Node {
@@ -40,6 +42,9 @@ public class NodeBean implements Node {
     private String foreignSource;
     private String foreignId;
     private String label;
+    private String location;
+    private NodeAssetRecord assetRecord;
+    private List<IpInterface> ipInterfaces = new LinkedList<>();
     private List<SnmpInterface> snmpInterfaces = new LinkedList<>();
 
     @Override
@@ -74,13 +79,44 @@ public class NodeBean implements Node {
         return label;
     }
 
-    @Override
-    public List<SnmpInterface> getSnmpInterfaces() {
-        return null;
-    }
-
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    @Override
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    @Override
+    public NodeAssetRecord getAssetRecord() {
+        return assetRecord;
+    }
+
+    @Override
+    public List<IpInterface> getIpInterfaces() {
+        return ipInterfaces;
+    }
+
+    public void setIpInterfaces(List<IpInterface> ipInterfaces) {
+        this.ipInterfaces = ipInterfaces;
+    }
+
+    public void setAssetRecord(NodeAssetRecord assetRecord) {
+        this.assetRecord = assetRecord;
+    }
+
+    @Override
+    public List<SnmpInterface> getSnmpInterfaces() {
+        return snmpInterfaces;
+    }
+
+    public void setSnmpInterfaces(List<SnmpInterface> snmpInterfaces) {
+        this.snmpInterfaces = snmpInterfaces;
     }
 
     @Override
@@ -92,12 +128,15 @@ public class NodeBean implements Node {
                 Objects.equals(foreignSource, nodeBean.foreignSource) &&
                 Objects.equals(foreignId, nodeBean.foreignId) &&
                 Objects.equals(label, nodeBean.label) &&
+                Objects.equals(location, nodeBean.location) &&
+                Objects.equals(assetRecord, nodeBean.assetRecord) &&
+                Objects.equals(ipInterfaces, nodeBean.ipInterfaces) &&
                 Objects.equals(snmpInterfaces, nodeBean.snmpInterfaces);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, foreignSource, foreignId, label, snmpInterfaces);
+        return Objects.hash(id, foreignSource, foreignId, label, location, assetRecord, ipInterfaces, snmpInterfaces);
     }
 
     @Override
@@ -107,7 +146,10 @@ public class NodeBean implements Node {
                 ", foreignSource='" + foreignSource + '\'' +
                 ", foreignId='" + foreignId + '\'' +
                 ", label='" + label + '\'' +
-                ", snmpInterfaces='" + snmpInterfaces + '\'' +
+                ", location='" + location + '\'' +
+                ", assetRecord=" + assetRecord +
+                ", ipInterfaces=" + ipInterfaces +
+                ", snmpInterfaces=" + snmpInterfaces +
                 '}';
     }
 }

@@ -40,6 +40,7 @@ import org.opennms.integration.api.v1.pollers.ServicePoller;
 import org.opennms.integration.api.v1.pollers.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.opennms.integration.api.v1.pollers.beans.PollerResultBean;
 
 public class SamplePoller implements ServicePoller {
 
@@ -50,46 +51,15 @@ public class SamplePoller implements ServicePoller {
         CompletableFuture<PollerResult> future = new CompletableFuture<>();
         try {
             if (pollerRequest.getAddress().equals(InetAddress.getLocalHost())) {
-                future.complete(new PollerResultImpl(Status.Up));
                 LOG.info("{} service is Up", pollerRequest.getServiceName());
+                future.complete(new PollerResultBean(Status.Up));
                 return future;
             }
         } catch (UnknownHostException e) {
             future.completeExceptionally(e);
             return future;
         }
-        future.complete(new PollerResultImpl(Status.Down, "unknown address, sample works on localhost"));
+        future.complete(new PollerResultBean(Status.Down, "unknown address, sample works on localhost"));
         return future;
-    }
-
-
-    private class PollerResultImpl implements PollerResult {
-
-        private final Status status;
-        private String reason;
-
-        public PollerResultImpl(Status status) {
-            this(status, null);
-        }
-
-        public PollerResultImpl(Status status, String reason) {
-            this.status = status;
-            this.reason = reason;
-        }
-
-        @Override
-        public Status getStatus() {
-            return status;
-        }
-
-        @Override
-        public String getReason() {
-            return reason;
-        }
-
-        @Override
-        public Map<String, Number> getProperties() {
-            return new HashMap<>();
-        }
     }
 }

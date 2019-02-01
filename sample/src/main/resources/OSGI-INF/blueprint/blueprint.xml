@@ -7,11 +7,13 @@
     <reference id="nodeDao" interface="org.opennms.integration.api.v1.dao.NodeDao" />
     <reference id="snmpInterfaceDao" interface="org.opennms.integration.api.v1.dao.SnmpInterfaceDao" />
     <reference id="eventForwarder" interface="org.opennms.integration.api.v1.events.EventForwarder" />
+    <reference id="eventSubscriptionService" interface="org.opennms.integration.api.v1.events.EventSubscriptionService" />
     <reference id="detectorClient" interface="org.opennms.integration.api.v1.detectors.DetectorClient" />
     <reference id="pollerClient" interface="org.opennms.integration.api.v1.pollers.ServicePollerClient" />
     <reference id="collectorClient" interface="org.opennms.integration.api.v1.collectors.ServiceCollectorClient" />
 
-    <bean id="alarmManager" class="org.opennms.integration.api.sample.SampleAlarmManager"/>
+    <bean id="alarmManager" class="org.opennms.integration.api.sample.AlarmTestContextManager"/>
+    <bean id="requisitionManager" class="org.opennms.integration.api.sample.RequisitionTestContextManager"/>
 
     <bean id="myInfoLogger" class="org.opennms.integration.api.sample.MyInfoLogger" >
         <argument ref="runtimeInfo"/>
@@ -20,14 +22,33 @@
         <argument ref="snmpInterfaceDao"/>
     </bean>
 
+    <bean id="alarmLifecyleHealthCheck" class="org.opennms.integration.api.sample.health.AlarmLifecyleHealthCheck">
+        <argument ref="alarmManager"/>
+        <argument ref="eventForwarder"/>
+    </bean>
+    <service interface="org.opennms.integration.api.v1.health.HealthCheck" ref="alarmLifecyleHealthCheck"/>
+
+    <bean id="serviceExtensionHealthCheck" class="org.opennms.integration.api.sample.health.ServiceExtensionHealthCheck">
+        <argument ref="detectorClient"/>
+        <argument ref="pollerClient"/>
+        <argument ref="collectorClient"/>
+        <argument ref="nodeDao"/>
+    </bean>
+    <service interface="org.opennms.integration.api.v1.health.HealthCheck" ref="serviceExtensionHealthCheck"/>
+
+    <bean id="requisitionHealthCheck" class="org.opennms.integration.api.sample.health.RequisitionHealthCheck">
+        <argument ref="nodeDao"/>
+        <argument ref="eventForwarder"/>
+        <argument ref="eventSubscriptionService"/>
+        <argument ref="requisitionManager"/>
+    </bean>
+    <service interface="org.opennms.integration.api.v1.health.HealthCheck" ref="requisitionHealthCheck"/>
+
     <service interface="org.opennms.integration.api.v1.health.HealthCheck">
-        <bean class="org.opennms.integration.api.sample.MyHealthCheck">
-            <argument ref="alarmManager"/>
-            <argument ref="eventForwarder"/>
-            <argument ref="detectorClient"/>
-            <argument ref="pollerClient"/>
-            <argument ref="collectorClient"/>
-            <argument ref="nodeDao"/>
+        <bean class="org.opennms.integration.api.sample.health.MyHealthCheck">
+            <argument ref="alarmLifecyleHealthCheck"/>
+            <argument ref="serviceExtensionHealthCheck"/>
+            <argument ref="requisitionHealthCheck"/>
         </bean>
     </service>
 
@@ -70,6 +91,12 @@
     <service interface="org.opennms.integration.api.v1.feedback.AlarmFeedbackListener">
         <bean class="org.opennms.integration.api.sample.MyAlarmFeedbackListener">
             <argument ref="alarmManager"/>
+        </bean>
+    </service>
+
+    <service interface="org.opennms.integration.api.v1.requisition.RequisitionProvider">
+        <bean class="org.opennms.integration.api.sample.MyRequisitionProvider">
+            <argument ref="requisitionManager"/>
         </bean>
     </service>
 

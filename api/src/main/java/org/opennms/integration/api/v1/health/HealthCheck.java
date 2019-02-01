@@ -58,7 +58,7 @@ public interface HealthCheck {
      * The response indicates if the check was successful, or encountered other problems. If null is returned,
      * the HealthCheckService should consider this as {@link Status#Unknown}.
      *
-     * @param context a @{@link Context} which consists timeout value.
+     * @param context a {@link Context} which consists timeout value.
      *
      * @return The response indicating the Success/Failure/Timeout/etc of the check
      * @throws Exception In case of an error

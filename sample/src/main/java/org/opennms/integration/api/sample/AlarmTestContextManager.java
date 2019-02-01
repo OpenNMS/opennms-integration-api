@@ -46,13 +46,13 @@ import org.opennms.integration.api.v1.model.beans.AlarmBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SampleAlarmManager {
+public class AlarmTestContextManager {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SampleAlarmManager.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AlarmTestContextManager.class);
 
-    protected static final String TRIGGER_UEI = "uei.opennms.org/oia/sample/trigger";
-    protected static final String CLEAR_UEI = "uei.opennms.org/oia/sample/clear";
-    protected static final String SESSION_ID_PARM_NAME = "sessionId";
+    public static final String TRIGGER_UEI = "uei.opennms.org/oia/sample/trigger";
+    public static final String CLEAR_UEI = "uei.opennms.org/oia/sample/clear";
+    public static final String SESSION_ID_PARM_NAME = "sessionId";
 
     private final AtomicLong sessionIdGenerator = new AtomicLong(System.currentTimeMillis());
     private final Random instanceIdGenerator = new Random();

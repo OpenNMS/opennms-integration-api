@@ -54,6 +54,8 @@ public interface EventDefinition {
 
     String getDescription();
 
+    String getOperatorInstructions();
+
     LogMessage getLogMessage();
 
     AlarmData getAlarmData();

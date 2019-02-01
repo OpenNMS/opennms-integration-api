@@ -41,9 +41,9 @@ public class MyAlarmPersisterExtension implements AlarmPersisterExtension {
 
     private static final Logger LOG = LoggerFactory.getLogger(MyAlarmPersisterExtension.class);
 
-    private final SampleAlarmManager alarmManager;
+    private final AlarmTestContextManager alarmManager;
 
-    public MyAlarmPersisterExtension(SampleAlarmManager alarmManager) {
+    public MyAlarmPersisterExtension(AlarmTestContextManager alarmManager) {
         this.alarmManager = Objects.requireNonNull(alarmManager);
     }
 

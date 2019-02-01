@@ -22,6 +22,7 @@ This API is designed to follow [Semantic Versioning](https://semver.org/).
    * Node
    * SNMP Interface
  * Coordination API
+ * Events
 
 ### Expose
 
@@ -29,15 +30,15 @@ This API is designed to follow [Semantic Versioning](https://semver.org/).
    * Provide custom health checks to verify the sanity of your plugin
  * Alarm persister extensions
    * Mangle alarms before they are persisted
+ * Service monitors
+ * Service collectors
+ * Provisiond detectors
+ * Ticketers
 
 ## Bucket List
 
 ### Add support for exposing
 
- * Service Monitor
- * Service Collector
- * Provisiond Detector
  * Topology provider
  * Notification strategy
  * Time Series Persistence strategy
- * Ticketer
