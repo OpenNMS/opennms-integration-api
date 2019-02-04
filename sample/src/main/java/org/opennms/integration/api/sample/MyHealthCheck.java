@@ -30,10 +30,14 @@ package org.opennms.integration.api.sample;
 
 import java.net.InetAddress;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
+import org.opennms.integration.api.v1.collectors.CollectionSet;
+import org.opennms.integration.api.v1.collectors.ServiceCollectorClient;
+import org.opennms.integration.api.v1.dao.NodeDao;
 import org.opennms.integration.api.v1.detectors.DetectorClient;
 import org.opennms.integration.api.v1.events.EventForwarder;
 import org.opennms.integration.api.v1.health.Context;
@@ -61,12 +65,18 @@ public class MyHealthCheck implements HealthCheck {
     private final EventForwarder eventForwarder;
     private final DetectorClient detectorClient;
     private final ServicePollerClient pollerClient;
+    private final ServiceCollectorClient collectorClient;
+    private final NodeDao nodeDao;
 
-    public MyHealthCheck(SampleAlarmManager alarmManager, EventForwarder eventForwarder, DetectorClient detectorClient, ServicePollerClient pollerClient) {
+    public MyHealthCheck(SampleAlarmManager alarmManager, EventForwarder eventForwarder,
+                         DetectorClient detectorClient, ServicePollerClient pollerClient,
+                         ServiceCollectorClient collectorClient, NodeDao nodeDao) {
         this.alarmManager = Objects.requireNonNull(alarmManager);
         this.eventForwarder = Objects.requireNonNull(eventForwarder);
         this.detectorClient = Objects.requireNonNull(detectorClient);
         this.pollerClient = Objects.requireNonNull(pollerClient);
+        this.collectorClient = Objects.requireNonNull(collectorClient);
+        this.nodeDao = Objects.requireNonNull(nodeDao);
     }
 
     @Override
@@ -95,6 +105,8 @@ public class MyHealthCheck implements HealthCheck {
 
             // Wait for the trigger
             session.waitForClear();
+
+            // Sample Detector Health Check
             Map<String, String> attributes = new HashMap<>();
             attributes.put(SampleDetector.DEFAULT_USERNAME_PROPERTY, SampleDetector.DEFAULT_USERNAME_VALUE);
             attributes.put(SampleDetector.DEFAULT_PASSWORD_PROPERTY, SampleDetector.DEFAULT_PASSWORD_VALUE);
@@ -106,20 +118,54 @@ public class MyHealthCheck implements HealthCheck {
             } catch (Exception e) {
                 return new ResponseBean(e);
             }
+            // Sample Poller Health Check
             try {
                 CompletableFuture<PollerResult> pollerStatus = pollerClient.poll()
                         .withAddress(InetAddress.getLocalHost())
                         .withPollerClassName(SamplePoller.class.getCanonicalName())
                         .withServiceName("Sample")
                         .execute();
-                if (pollerStatus.get().getStatus().equals(org.opennms.integration.api.v1.pollers.Status.Up)) {
-                    return new ResponseBean(Status.Success);
-                } else {
+                if (!pollerStatus.get().getStatus().equals(org.opennms.integration.api.v1.pollers.Status.Up)) {
                     return new ResponseBean(Status.Failure, pollerStatus.get().getReason());
                 }
             } catch (Exception e) {
                 return new ResponseBean(e);
             }
+
+            // Sample Collector Health Check
+            int nodeId = getFirstNode();
+            // If there is node, can't verify collector as node resources are dependent on node being present.
+            // return success as all previous checks succeeded.
+            if(nodeId <= 0) {
+                return new ResponseBean(Status.Success);
+            }
+            try {
+                CompletableFuture<CollectionSet> collectionSetFuture = collectorClient.collect()
+                        .withCollectorClassName(SampleCollector.class.getCanonicalName())
+                        .withRequest(new SampleCollector.CollectionRequestImpl(nodeId))
+                        .execute();
+                CollectionSet collectionResult = collectionSetFuture.get();
+                if(collectionResult.getStatus().equals(CollectionSet.Status.SUCCEEDED)) {
+                    if(SampleCollector.validateCollectionSet(collectionResult)) {
+                        return new ResponseBean(Status.Success);
+                    } else {
+                        return new ResponseBean(Status.Failure, "collection set didn't match");
+                    }
+                } else {
+                    return new ResponseBean(Status.Failure, "Sample Collector Collection Failed");
+                }
+            } catch (Exception e) {
+                return new ResponseBean(e);
+            }
         }
+    }
+
+    private int getFirstNode() {
+        int nodeId = 0;
+        List<Integer> nodeIds = nodeDao.getNodeIds();
+        if (!nodeIds.isEmpty()) {
+            nodeId = nodeIds.get(0);
+        }
+        return nodeId;
     }
 }

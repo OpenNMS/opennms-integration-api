@@ -9,6 +9,7 @@
     <reference id="eventForwarder" interface="org.opennms.integration.api.v1.events.EventForwarder" />
     <reference id="detectorClient" interface="org.opennms.integration.api.v1.detectors.DetectorClient" />
     <reference id="pollerClient" interface="org.opennms.integration.api.v1.pollers.ServicePollerClient" />
+    <reference id="collectorClient" interface="org.opennms.integration.api.v1.collectors.ServiceCollectorClient" />
 
     <bean id="alarmManager" class="org.opennms.integration.api.sample.SampleAlarmManager"/>
 
@@ -25,6 +26,8 @@
             <argument ref="eventForwarder"/>
             <argument ref="detectorClient"/>
             <argument ref="pollerClient"/>
+            <argument ref="collectorClient"/>
+            <argument ref="nodeDao"/>
         </bean>
     </service>
 
@@ -54,6 +57,10 @@
 
     <service interface="org.opennms.integration.api.v1.pollers.ServicePollerFactory">
         <bean class="org.opennms.integration.api.sample.SamplePollerFactory"/>
+    </service>
+
+    <service interface="org.opennms.integration.api.v1.collectors.ServiceCollectorFactory">
+        <bean class="org.opennms.integration.api.sample.SampleCollectorFactory"/>
     </service>
 
     <service interface="org.opennms.integration.api.v1.feedback.AlarmFeedbackListener">
