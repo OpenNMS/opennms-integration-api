@@ -56,6 +56,10 @@
         <bean class="org.opennms.integration.api.sample.SamplePollerFactory"/>
     </service>
 
+    <service interface="org.opennms.integration.api.v1.ticketing.TicketingPlugin">
+        <bean class="org.opennms.integration.api.sample.SampleTicketerPlugin"/>
+    </service>
+
     <service interface="org.opennms.integration.api.v1.feedback.AlarmFeedbackListener">
         <bean class="org.opennms.integration.api.sample.MyAlarmFeedbackListener">
             <argument ref="alarmManager"/>
