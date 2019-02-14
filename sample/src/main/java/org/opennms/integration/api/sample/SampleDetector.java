@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SampleDetector implements ServiceDetector {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MyAlarmLifecycleListener.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SampleDetector.class);
 
     public static final String SERVICE_NAME = "Sample";
     public static final String DEFAULT_HOST_NAME = "localhost";
