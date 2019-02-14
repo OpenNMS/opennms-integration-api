@@ -48,6 +48,14 @@
         <bean class="org.opennms.integration.api.sample.MySyslogMatchExtension"/>
     </service>
 
+    <service interface="org.opennms.integration.api.v1.config.datacollection.SnmpDataCollectionExtension">
+        <bean class="org.opennms.integration.api.sample.MySnmpDataCollectionExtension"/>
+    </service>
+
+    <service interface="org.opennms.integration.api.v1.config.datacollection.ResourceTypesExtension">
+        <bean class="org.opennms.integration.api.sample.MyResoureTypesExtension"/>
+    </service>
+
     <service interface="org.opennms.integration.api.v1.detectors.ServiceDetectorFactory">
         <bean class="org.opennms.integration.api.sample.SampleDetectorFactory"/>
     </service>
