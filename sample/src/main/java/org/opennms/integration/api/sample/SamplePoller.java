@@ -38,8 +38,12 @@ import org.opennms.integration.api.v1.pollers.PollerResult;
 import org.opennms.integration.api.v1.pollers.PollerRequest;
 import org.opennms.integration.api.v1.pollers.ServicePoller;
 import org.opennms.integration.api.v1.pollers.Status;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SamplePoller implements ServicePoller {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SamplePoller.class);
 
     @Override
     public CompletableFuture<PollerResult> poll(PollerRequest pollerRequest) {
@@ -47,6 +51,7 @@ public class SamplePoller implements ServicePoller {
         try {
             if (pollerRequest.getAddress().equals(InetAddress.getLocalHost())) {
                 future.complete(new PollerResultImpl(Status.Up));
+                LOG.info("{} service is Up", pollerRequest.getServiceName());
                 return future;
             }
         } catch (UnknownHostException e) {
