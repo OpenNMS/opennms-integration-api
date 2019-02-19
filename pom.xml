@@ -3,7 +3,7 @@
     <groupId>org.opennms.integration.api</groupId>
     <artifactId>api-project</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0-alpha4-SNAPSHOT</version>
+    <version>1.0.0-alpha7-SNAPSHOT</version>
     <name>OpenNMS Integration API</name>
     <url>https://github.com/OpenNMS/opennms-integration-api</url>
     <description>Integration and extension API for OpenNMS</description>
