@@ -62,6 +62,10 @@
     <service interface="org.opennms.integration.api.v1.collectors.ServiceCollectorFactory">
         <bean class="org.opennms.integration.api.sample.SampleCollectorFactory"/>
     </service>
+    
+    <service interface="org.opennms.integration.api.v1.ticketing.TicketingPlugin">
+        <bean class="org.opennms.integration.api.sample.SampleTicketerPlugin"/>
+    </service>
 
     <service interface="org.opennms.integration.api.v1.feedback.AlarmFeedbackListener">
         <bean class="org.opennms.integration.api.sample.MyAlarmFeedbackListener">
