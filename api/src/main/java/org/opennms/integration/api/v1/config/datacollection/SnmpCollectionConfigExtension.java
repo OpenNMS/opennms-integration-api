@@ -30,8 +30,17 @@ package org.opennms.integration.api.v1.config.datacollection;
 
 import java.util.List;
 
-public interface SnmpDataCollectionExtension {
+import org.opennms.integration.api.v1.annotations.Exposable;
+
+@Exposable
+public interface SnmpCollectionConfigExtension {
 
     List<SnmpDataCollection> getSnmpDataCollectionGroups();
+
+    /**
+     * Specify snmp-collection name that data-collection groups belong to.
+     * @return snmp-collection name.
+     */
+    String getSnmpCollectionName();
 
 }

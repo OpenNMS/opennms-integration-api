@@ -30,6 +30,12 @@ package org.opennms.integration.api.v1.config.datacollection;
 
 import java.util.List;
 
+import org.opennms.integration.api.v1.annotations.Exposable;
+
+/**
+ * Expose resource types.
+ */
+@Exposable
 public interface ResourceTypesExtension {
 
     List<ResourceType> getResourceTypes();
