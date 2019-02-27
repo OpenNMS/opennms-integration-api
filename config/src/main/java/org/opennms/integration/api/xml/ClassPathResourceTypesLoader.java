@@ -26,14 +26,13 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.xml.schema;
+package org.opennms.integration.api.xml;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.opennms.integration.api.v1.config.datacollection.ResourceType;
 import org.opennms.integration.api.v1.config.datacollection.StrategyDefinition;
-import org.opennms.integration.api.xml.ClasspathXmlLoader;
 import org.opennms.integration.api.xml.schema.datacollection.ResourceTypes;
 
 public class ClassPathResourceTypesLoader extends ClasspathXmlLoader<ResourceTypes> {

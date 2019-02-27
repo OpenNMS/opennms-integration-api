@@ -30,24 +30,17 @@ package org.opennms.integration.api.sample;
 
 import java.util.List;
 
-import org.opennms.integration.api.v1.config.datacollection.SnmpDataCollection;
-import org.opennms.integration.api.v1.config.datacollection.SnmpCollectionConfigExtension;
-import org.opennms.integration.api.xml.ClasspathSnmpDataCollectionLoader;
+import org.opennms.integration.api.v1.config.datacollection.graphs.GraphPropertiesExtension;
+import org.opennms.integration.api.v1.config.datacollection.graphs.PrefabGraph;
+import org.opennms.integration.api.xml.ClassPathGraphPropertiesLoader;
 
-public class MySnmpCollectionConfigExtension implements SnmpCollectionConfigExtension {
+public class MyGraphPropertiesExtension implements GraphPropertiesExtension {
 
-    private final ClasspathSnmpDataCollectionLoader snmpDataCollectionLoader =
-            new ClasspathSnmpDataCollectionLoader(MySnmpCollectionConfigExtension.class,
-                    "ciscoNexus.xml");
-
+    private ClassPathGraphPropertiesLoader graphPropertiesLoader = new ClassPathGraphPropertiesLoader(MyGraphPropertiesExtension.class,
+            "netsnmp-graph.properties");
 
     @Override
-    public List<SnmpDataCollection> getSnmpDataCollectionGroups() {
-        return snmpDataCollectionLoader.getSnmpDataCollections();
-    }
-
-    @Override
-    public String getSnmpCollectionName() {
-        return "default";
+    public List<PrefabGraph> getPrefabGraphs() {
+        return graphPropertiesLoader.getGraphProperties();
     }
 }

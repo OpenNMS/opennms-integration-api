@@ -26,7 +26,7 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.xml.schema;
+package org.opennms.integration.api.xml;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,7 +40,6 @@ import org.opennms.integration.api.v1.config.datacollection.Parameter;
 import org.opennms.integration.api.v1.config.datacollection.ResourceType;
 import org.opennms.integration.api.v1.config.datacollection.SnmpDataCollection;
 import org.opennms.integration.api.v1.config.datacollection.SystemDef;
-import org.opennms.integration.api.xml.ClasspathXmlLoader;
 import org.opennms.integration.api.xml.schema.datacollection.DatacollectionGroup;
 
 public class ClasspathSnmpDataCollectionLoader extends ClasspathXmlLoader<DatacollectionGroup> {

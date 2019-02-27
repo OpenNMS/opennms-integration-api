@@ -26,28 +26,29 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.sample;
+package org.opennms.integration.api.v1.config.datacollection.graphs;
 
-import java.util.List;
+public interface PrefabGraph {
 
-import org.opennms.integration.api.v1.config.datacollection.SnmpDataCollection;
-import org.opennms.integration.api.v1.config.datacollection.SnmpCollectionConfigExtension;
-import org.opennms.integration.api.xml.ClasspathSnmpDataCollectionLoader;
+    String getName();
 
-public class MySnmpCollectionConfigExtension implements SnmpCollectionConfigExtension {
+    String getTitle();
 
-    private final ClasspathSnmpDataCollectionLoader snmpDataCollectionLoader =
-            new ClasspathSnmpDataCollectionLoader(MySnmpCollectionConfigExtension.class,
-                    "ciscoNexus.xml");
+    String[] getColumns();
 
+    String getCommand();
 
-    @Override
-    public List<SnmpDataCollection> getSnmpDataCollectionGroups() {
-        return snmpDataCollectionLoader.getSnmpDataCollections();
-    }
+    String[] getExternalValues();
 
-    @Override
-    public String getSnmpCollectionName() {
-        return "default";
-    }
+    String[] getPropertiesValues();
+
+    String[] getTypes();
+
+    String getDescription();
+
+    Integer getGraphWidth();
+
+    Integer getGraphHeight();
+
+    String[] getSupress();
 }

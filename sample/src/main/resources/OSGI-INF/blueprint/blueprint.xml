@@ -59,6 +59,10 @@
         <bean class="org.opennms.integration.api.sample.MyResoureTypesExtension"/>
     </service>
 
+    <service interface="org.opennms.integration.api.v1.config.datacollection.graphs.GraphPropertiesExtension">
+        <bean class="org.opennms.integration.api.sample.MyGraphPropertiesExtension"/>
+    </service>
+
     <service interface="org.opennms.integration.api.v1.detectors.ServiceDetectorFactory">
         <bean class="org.opennms.integration.api.sample.SampleDetectorFactory"/>
     </service>
