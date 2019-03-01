@@ -44,13 +44,13 @@ import org.opennms.integration.api.v1.config.datacollection.SnmpDataCollection;
 import org.opennms.integration.api.v1.config.datacollection.StrategyDefinition;
 import org.opennms.integration.api.v1.config.datacollection.SystemDef;
 
-public class MySnmpCollectionConfigExtensionTest {
+public class MySnmpCollectionExtensionTest {
 
     @Test
     public void testSnmpDataCollection() {
-        MySnmpCollectionConfigExtension extension = new MySnmpCollectionConfigExtension();
+        MySnmpCollectionExtension extension = new MySnmpCollectionExtension();
         List<SnmpDataCollection> dataCollectionList = extension.getSnmpDataCollectionGroups();
-        assertThat(dataCollectionList, hasSize(1));
+        assertThat(dataCollectionList, hasSize(2));
         SnmpDataCollection dataCollection = dataCollectionList.get(0);
         assertThat(dataCollection.getGroups(), hasSize(3));
         assertThat(dataCollection.getResourceTypes(), hasSize(2));

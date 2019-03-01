@@ -26,28 +26,21 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.sample;
+package org.opennms.integration.api.v1.config.datacollection;
 
 import java.util.List;
 
-import org.opennms.integration.api.v1.config.datacollection.SnmpDataCollection;
-import org.opennms.integration.api.v1.config.datacollection.SnmpCollectionConfigExtension;
-import org.opennms.integration.api.xml.ClasspathSnmpDataCollectionLoader;
+import org.opennms.integration.api.v1.annotations.Exposable;
 
-public class MySnmpCollectionConfigExtension implements SnmpCollectionConfigExtension {
+@Exposable
+public interface SnmpCollectionExtension {
 
-    private final ClasspathSnmpDataCollectionLoader snmpDataCollectionLoader =
-            new ClasspathSnmpDataCollectionLoader(MySnmpCollectionConfigExtension.class,
-                    "ciscoNexus.xml");
+    List<SnmpDataCollection> getSnmpDataCollectionGroups();
 
+    /**
+     * Specify snmp-collection name that data-collection groups belong to.
+     * @return snmp-collection name.
+     */
+    String getSnmpCollectionName();
 
-    @Override
-    public List<SnmpDataCollection> getSnmpDataCollectionGroups() {
-        return snmpDataCollectionLoader.getSnmpDataCollections();
-    }
-
-    @Override
-    public String getSnmpCollectionName() {
-        return "default";
-    }
 }

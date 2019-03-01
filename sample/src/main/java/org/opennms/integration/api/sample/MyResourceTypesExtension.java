@@ -26,21 +26,22 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.config.datacollection;
+package org.opennms.integration.api.sample;
 
 import java.util.List;
 
-import org.opennms.integration.api.v1.annotations.Exposable;
+import org.opennms.integration.api.v1.config.datacollection.ResourceType;
+import org.opennms.integration.api.v1.config.datacollection.ResourceTypesExtension;
+import org.opennms.integration.api.xml.ClassPathResourceTypesLoader;
 
-@Exposable
-public interface SnmpCollectionConfigExtension {
+public class MyResourceTypesExtension implements ResourceTypesExtension {
 
-    List<SnmpDataCollection> getSnmpDataCollectionGroups();
 
-    /**
-     * Specify snmp-collection name that data-collection groups belong to.
-     * @return snmp-collection name.
-     */
-    String getSnmpCollectionName();
+    private final ClassPathResourceTypesLoader classPathResourceTypesLoader =
+            new ClassPathResourceTypesLoader(MyResourceTypesExtension.class, "jmx-resource.xml", "nxos-cpu-resource.xml");
 
+    @Override
+    public List<ResourceType> getResourceTypes() {
+        return classPathResourceTypesLoader.getResourceTypes();
+    }
 }

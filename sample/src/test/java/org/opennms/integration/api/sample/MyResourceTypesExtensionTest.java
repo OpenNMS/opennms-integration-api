@@ -44,7 +44,7 @@ public class MyResourceTypesExtensionTest {
     @Test
     public void verifyResourceTypesFromXml() {
 
-        MyResoureTypesExtension resourceTypesExtension = new MyResoureTypesExtension();
+        MyResourceTypesExtension resourceTypesExtension = new MyResourceTypesExtension();
         List<ResourceType> resourceTypeList = resourceTypesExtension.getResourceTypes();
         assertThat(resourceTypeList, hasSize(4));
         ResourceType resourceType = resourceTypeList.get(2);

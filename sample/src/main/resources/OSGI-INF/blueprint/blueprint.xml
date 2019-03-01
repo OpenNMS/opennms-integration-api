@@ -51,12 +51,12 @@
         <bean class="org.opennms.integration.api.sample.MySyslogMatchExtension"/>
     </service>
 
-    <service interface="org.opennms.integration.api.v1.config.datacollection.SnmpCollectionConfigExtension">
-        <bean class="org.opennms.integration.api.sample.MySnmpCollectionConfigExtension"/>
+    <service interface="org.opennms.integration.api.v1.config.datacollection.SnmpCollectionExtension">
+        <bean class="org.opennms.integration.api.sample.MySnmpCollectionExtension"/>
     </service>
 
     <service interface="org.opennms.integration.api.v1.config.datacollection.ResourceTypesExtension">
-        <bean class="org.opennms.integration.api.sample.MyResoureTypesExtension"/>
+        <bean class="org.opennms.integration.api.sample.MyResourceTypesExtension"/>
     </service>
 
     <service interface="org.opennms.integration.api.v1.config.datacollection.graphs.GraphPropertiesExtension">

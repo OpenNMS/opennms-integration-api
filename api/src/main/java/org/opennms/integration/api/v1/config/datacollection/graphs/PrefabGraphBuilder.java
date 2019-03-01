@@ -38,11 +38,11 @@ public class PrefabGraphBuilder {
 
     private String command;
 
-    private String[] externalValues;
+    private String[] externalValues = new String[]{};
 
-    private String[] propertiesValues;
+    private String[] propertiesValues = new String[]{};
 
-    private String[] types;
+    private String[] types = new String[]{};
 
     private String description;
 
@@ -50,7 +50,7 @@ public class PrefabGraphBuilder {
 
     private Integer graphHeight;
 
-    private String[] supress;
+    private String[] supress = new String[]{};
 
     public PrefabGraphBuilder withName(String name) {
         this.name = name;

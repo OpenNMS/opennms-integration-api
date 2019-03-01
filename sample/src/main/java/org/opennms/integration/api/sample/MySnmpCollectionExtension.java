@@ -30,18 +30,24 @@ package org.opennms.integration.api.sample;
 
 import java.util.List;
 
-import org.opennms.integration.api.v1.config.datacollection.ResourceType;
-import org.opennms.integration.api.v1.config.datacollection.ResourceTypesExtension;
-import org.opennms.integration.api.xml.ClassPathResourceTypesLoader;
+import org.opennms.integration.api.v1.config.datacollection.SnmpDataCollection;
+import org.opennms.integration.api.v1.config.datacollection.SnmpCollectionExtension;
+import org.opennms.integration.api.xml.ClasspathSnmpDataCollectionLoader;
 
-public class MyResoureTypesExtension implements ResourceTypesExtension {
+public class MySnmpCollectionExtension implements SnmpCollectionExtension {
 
+    private final ClasspathSnmpDataCollectionLoader snmpDataCollectionLoader =
+            new ClasspathSnmpDataCollectionLoader(MySnmpCollectionExtension.class,
+                    "ciscoNexus.xml", "netsnmp.xml");
 
-    private final ClassPathResourceTypesLoader classPathResourceTypesLoader =
-            new ClassPathResourceTypesLoader(MyResoureTypesExtension.class, "jmx-resource.xml", "nxos-cpu-resource.xml");
 
     @Override
-    public List<ResourceType> getResourceTypes() {
-        return classPathResourceTypesLoader.getResourceTypes();
+    public List<SnmpDataCollection> getSnmpDataCollectionGroups() {
+        return snmpDataCollectionLoader.getSnmpDataCollections();
+    }
+
+    @Override
+    public String getSnmpCollectionName() {
+        return "default";
     }
 }
