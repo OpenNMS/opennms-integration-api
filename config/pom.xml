@@ -2,11 +2,11 @@
     <parent>
         <groupId>org.opennms.integration.api</groupId>
         <artifactId>api-project</artifactId>
-        <version>1.0.0-alpha6-SNAPSHOT</version>
+        <version>1.0.0-alpha7-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>xml</artifactId>
-    <name>OpenNMS Integration API :: XML</name>
+    <artifactId>config</artifactId>
+    <name>OpenNMS Integration API :: Config</name>
     <packaging>bundle</packaging>
 
     <dependencies>
