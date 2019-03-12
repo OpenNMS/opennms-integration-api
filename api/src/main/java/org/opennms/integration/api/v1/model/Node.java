@@ -46,6 +46,12 @@ public interface Node {
 
     String getLabel();
 
+    String getLocation();
+
+    NodeAssetRecord getAssetRecord();
+
+    List<IpInterface> getIpInterfaces();
+
     List<SnmpInterface> getSnmpInterfaces();
 
 }

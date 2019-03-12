@@ -38,9 +38,9 @@ import org.slf4j.LoggerFactory;
 public class MyAlarmFeedbackListener implements AlarmFeedbackListener {
     private static final Logger LOG = LoggerFactory.getLogger(MyAlarmFeedbackListener.class);
 
-    private final SampleAlarmManager alarmManager;
+    private final AlarmTestContextManager alarmManager;
 
-    public MyAlarmFeedbackListener(SampleAlarmManager alarmManager) {
+    public MyAlarmFeedbackListener(AlarmTestContextManager alarmManager) {
         this.alarmManager = Objects.requireNonNull(alarmManager);
     }
 

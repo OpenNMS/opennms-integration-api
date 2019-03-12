@@ -39,9 +39,9 @@ import org.slf4j.LoggerFactory;
 public class MyAlarmLifecycleListener implements AlarmLifecycleListener {
     private static final Logger LOG = LoggerFactory.getLogger(MyAlarmLifecycleListener.class);
 
-    private final SampleAlarmManager alarmManager;
+    private final AlarmTestContextManager alarmManager;
 
-    public MyAlarmLifecycleListener(SampleAlarmManager alarmManager) {
+    public MyAlarmLifecycleListener(AlarmTestContextManager alarmManager) {
         this.alarmManager = Objects.requireNonNull(alarmManager);
     }
 

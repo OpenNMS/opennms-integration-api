@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2018 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2018 The OpenNMS Group, Inc.
+ * Copyright (C) 2019 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2019 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -26,39 +26,42 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.dao;
+package org.opennms.integration.api.v1.model.beans;
 
-import java.util.List;
+import java.net.InetAddress;
+import java.util.Objects;
 
-import org.opennms.integration.api.v1.annotations.Consumable;
-import org.opennms.integration.api.v1.model.Node;
+import org.opennms.integration.api.v1.model.IpInterface;
 
-/**
- * Lookup nodes.
- *
- * @since 1.0.0
- */
-@Consumable
-public interface NodeDao {
+public class IpInterfaceBean implements IpInterface {
+    private InetAddress ipAddress;
 
-    String getDefaultLocationName();
+    @Override
+    public InetAddress getIpAddress() {
+        return ipAddress;
+    }
 
-    List<Node> getNodes();
+    public void setIpAddress(InetAddress ipAddress) {
+        this.ipAddress = ipAddress;
+    }
 
-    Long getNodeCount();
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IpInterfaceBean that = (IpInterfaceBean) o;
+        return Objects.equals(ipAddress, that.ipAddress);
+    }
 
-    List<Integer> getNodeIds();
+    @Override
+    public int hashCode() {
+        return Objects.hash(ipAddress);
+    }
 
-    Node getNodeByCriteria(String nodeCriteria);
-
-    Node getNodeById(Integer nodeId);
-
-    Node getNodeByLabel(String nodeLabel);
-
-    Node getNodeByForeignSourceAndForeignId(String foreignSource, String foreignId);
-
-    List<Node> getNodesInLocation(String locationName);
-
-    List<Node> getNodesInForeignSource(String foreignSource);
-
+    @Override
+    public String toString() {
+        return "IpInterfaceBean{" +
+                "ipAddress=" + ipAddress +
+                '}';
+    }
 }

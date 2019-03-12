@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2018 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2018 The OpenNMS Group, Inc.
+ * Copyright (C) 2019 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2019 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -26,39 +26,16 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.dao;
-
-import java.util.List;
-
-import org.opennms.integration.api.v1.annotations.Consumable;
-import org.opennms.integration.api.v1.model.Node;
+package org.opennms.integration.api.sample.health;
 
 /**
- * Lookup nodes.
- *
- * @since 1.0.0
+ * This is used to aggregate the results of several health checks together in order
+ * to make the result easier to validate from an integration test perspective.
  */
-@Consumable
-public interface NodeDao {
+public class MyHealthCheck extends ChainedHealthCheck {
+    private static final String DESCR = "OIA :: Sample Project :: Health Check";
 
-    String getDefaultLocationName();
-
-    List<Node> getNodes();
-
-    Long getNodeCount();
-
-    List<Integer> getNodeIds();
-
-    Node getNodeByCriteria(String nodeCriteria);
-
-    Node getNodeById(Integer nodeId);
-
-    Node getNodeByLabel(String nodeLabel);
-
-    Node getNodeByForeignSourceAndForeignId(String foreignSource, String foreignId);
-
-    List<Node> getNodesInLocation(String locationName);
-
-    List<Node> getNodesInForeignSource(String foreignSource);
-
+    public MyHealthCheck(AlarmLifecyleHealthCheck alHc, ServiceExtensionHealthCheck seHc, RequisitionHealthCheck reHc) {
+        super(DESCR, alHc, seHc, reHc);
+    }
 }

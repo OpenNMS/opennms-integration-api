@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2018 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2018 The OpenNMS Group, Inc.
+ * Copyright (C) 2019 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2019 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -26,39 +26,10 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.dao;
+package org.opennms.integration.api.v1.config.requisition;
 
-import java.util.List;
-
-import org.opennms.integration.api.v1.annotations.Consumable;
-import org.opennms.integration.api.v1.model.Node;
-
-/**
- * Lookup nodes.
- *
- * @since 1.0.0
- */
-@Consumable
-public interface NodeDao {
-
-    String getDefaultLocationName();
-
-    List<Node> getNodes();
-
-    Long getNodeCount();
-
-    List<Integer> getNodeIds();
-
-    Node getNodeByCriteria(String nodeCriteria);
-
-    Node getNodeById(Integer nodeId);
-
-    Node getNodeByLabel(String nodeLabel);
-
-    Node getNodeByForeignSourceAndForeignId(String foreignSource, String foreignId);
-
-    List<Node> getNodesInLocation(String locationName);
-
-    List<Node> getNodesInForeignSource(String foreignSource);
-
+public enum SnmpPrimaryType {
+    NOT_ELIGIBLE,
+    SECONDARY,
+    PRIMARY
 }

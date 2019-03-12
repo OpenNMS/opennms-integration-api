@@ -29,6 +29,7 @@
 package org.opennms.integration.api.v1.model;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * An immutable in-memory event.
@@ -45,6 +46,8 @@ public interface InMemoryEvent {
     Severity getSeverity();
 
     List<EventParameter> getParameters();
+
+    Optional<String> getParameterValue(String name);
 
     List<EventParameter> getParametersByName(String name);
 

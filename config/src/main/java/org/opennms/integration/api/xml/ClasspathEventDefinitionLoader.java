@@ -108,6 +108,11 @@ public class ClasspathEventDefinitionLoader extends ClasspathXmlLoader<Events> {
             }
 
             @Override
+            public String getOperatorInstructions() {
+                return e.getOperinstruct();
+            }
+
+            @Override
             public LogMessage getLogMessage() {
                 return logMessage;
             }

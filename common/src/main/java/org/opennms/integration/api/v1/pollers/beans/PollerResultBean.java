@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2018 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2018 The OpenNMS Group, Inc.
+ * Copyright (C) 2019 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2019 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -26,39 +26,44 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.dao;
+package org.opennms.integration.api.v1.pollers.beans;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.opennms.integration.api.v1.annotations.Consumable;
-import org.opennms.integration.api.v1.model.Node;
+import org.opennms.integration.api.v1.pollers.PollerResult;
+import org.opennms.integration.api.v1.pollers.Status;
 
-/**
- * Lookup nodes.
- *
- * @since 1.0.0
- */
-@Consumable
-public interface NodeDao {
+public class PollerResultBean implements PollerResult {
+    private final Status status;
+    private String reason;
 
-    String getDefaultLocationName();
+    public PollerResultBean(Status status) {
+        this(status, null);
+    }
 
-    List<Node> getNodes();
+    public PollerResultBean(Status status, String reason) {
+        this.status = status;
+        this.reason = reason;
+    }
 
-    Long getNodeCount();
+    public PollerResultBean(Exception ex) {
+        this.status = Status.Down;
+        this.reason = ex.getMessage();
+    }
 
-    List<Integer> getNodeIds();
+    @Override
+    public Status getStatus() {
+        return status;
+    }
 
-    Node getNodeByCriteria(String nodeCriteria);
+    @Override
+    public String getReason() {
+        return reason;
+    }
 
-    Node getNodeById(Integer nodeId);
-
-    Node getNodeByLabel(String nodeLabel);
-
-    Node getNodeByForeignSourceAndForeignId(String foreignSource, String foreignId);
-
-    List<Node> getNodesInLocation(String locationName);
-
-    List<Node> getNodesInForeignSource(String foreignSource);
-
+    @Override
+    public Map<String, Number> getProperties() {
+        return new HashMap<>();
+    }
 }

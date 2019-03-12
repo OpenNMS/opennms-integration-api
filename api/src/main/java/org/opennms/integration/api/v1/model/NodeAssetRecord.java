@@ -26,39 +26,36 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.dao;
-
-import java.util.List;
-
-import org.opennms.integration.api.v1.annotations.Consumable;
-import org.opennms.integration.api.v1.model.Node;
+package org.opennms.integration.api.v1.model;
 
 /**
- * Lookup nodes.
+ * An immutable asset record for a node.
  *
+ * @author jwhite
  * @since 1.0.0
  */
-@Consumable
-public interface NodeDao {
+public interface NodeAssetRecord {
 
-    String getDefaultLocationName();
+    String getVendor();
 
-    List<Node> getNodes();
+    String getModelNumber();
 
-    Long getNodeCount();
+    String getDescription();
 
-    List<Integer> getNodeIds();
+    String getAssetNumber();
 
-    Node getNodeByCriteria(String nodeCriteria);
+    String getOperatingSystem();
 
-    Node getNodeById(Integer nodeId);
+    String getRegion();
 
-    Node getNodeByLabel(String nodeLabel);
+    String getDivision();
 
-    Node getNodeByForeignSourceAndForeignId(String foreignSource, String foreignId);
+    String getDepartment();
 
-    List<Node> getNodesInLocation(String locationName);
+    String getBuilding();
 
-    List<Node> getNodesInForeignSource(String foreignSource);
+    String getFloor();
+
+    Geolocation getGeolocation();
 
 }
