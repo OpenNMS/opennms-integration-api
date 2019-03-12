@@ -5,8 +5,8 @@
         <version>1.0.0-alpha8-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>xml</artifactId>
-    <name>OpenNMS Integration API :: XML</name>
+    <artifactId>config</artifactId>
+    <name>OpenNMS Integration API :: Config</name>
     <packaging>bundle</packaging>
 
     <dependencies>

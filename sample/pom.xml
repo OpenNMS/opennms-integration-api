@@ -21,7 +21,7 @@
         </dependency>
         <dependency>
             <groupId>org.opennms.integration.api</groupId>
-            <artifactId>xml</artifactId>
+            <artifactId>config</artifactId>
         </dependency>
 
         <dependency>

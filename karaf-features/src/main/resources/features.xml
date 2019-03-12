@@ -5,7 +5,7 @@
         <bundle dependency="true">mvn:com.google.guava/guava/${guava.version}</bundle>
         <bundle>mvn:org.opennms.integration.api/api/${project.version}</bundle>
         <bundle>mvn:org.opennms.integration.api/common/${project.version}</bundle>
-        <bundle>mvn:org.opennms.integration.api/xml/${project.version}</bundle>
+        <bundle>mvn:org.opennms.integration.api/config/${project.version}</bundle>
     </feature>
 
     <feature name="opennms-integration-api-sample-project" description="OpenNMS Integration API :: Sample Project" version="${project.version}">
