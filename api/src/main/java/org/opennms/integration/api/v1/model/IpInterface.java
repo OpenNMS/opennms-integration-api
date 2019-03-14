@@ -29,6 +29,7 @@
 package org.opennms.integration.api.v1.model;
 
 import java.net.InetAddress;
+import java.util.List;
 
 /**
  * An immutable IP interface.
@@ -39,5 +40,7 @@ import java.net.InetAddress;
 public interface IpInterface {
 
     InetAddress getIpAddress();
+
+    List<MetaData> getMetaData();
 
 }

@@ -28,24 +28,12 @@
 
 package org.opennms.integration.api.v1.config.requisition;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+public interface RequisitionMetaData {
 
-public interface RequisitionNode {
+    String getContext();
 
-    String getLocation();
+    String getKey();
 
-    List<RequisitionInterface> getInterfaces();
-
-    List<String> getCategories();
-
-    List<RequisitionAsset> getAssets();
-
-    String getForeignId();
-
-    String getNodeLabel();
-
-    List<RequisitionMetaData> getMetaData();
+    String getValue();
 
 }

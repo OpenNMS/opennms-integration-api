@@ -11,6 +11,7 @@
     <reference id="detectorClient" interface="org.opennms.integration.api.v1.detectors.DetectorClient" />
     <reference id="pollerClient" interface="org.opennms.integration.api.v1.pollers.ServicePollerClient" />
     <reference id="collectorClient" interface="org.opennms.integration.api.v1.collectors.ServiceCollectorClient" />
+    <reference id="userDefinedLinkDao" interface="org.opennms.integration.api.v1.topology.UserDefinedLinkDao" />
 
     <bean id="alarmManager" class="org.opennms.integration.api.sample.AlarmTestContextManager"/>
     <bean id="requisitionManager" class="org.opennms.integration.api.sample.RequisitionTestContextManager"/>
@@ -44,11 +45,18 @@
     </bean>
     <service interface="org.opennms.integration.api.v1.health.HealthCheck" ref="requisitionHealthCheck"/>
 
+    <bean id="userDefinedLinkHealthCheck" class="org.opennms.integration.api.sample.health.UserDefinedLinkHealthCheck">
+        <argument ref="userDefinedLinkDao"/>
+        <argument ref="nodeDao"/>
+    </bean>
+    <service interface="org.opennms.integration.api.v1.health.HealthCheck" ref="userDefinedLinkHealthCheck"/>
+
     <service interface="org.opennms.integration.api.v1.health.HealthCheck">
         <bean class="org.opennms.integration.api.sample.health.MyHealthCheck">
             <argument ref="alarmLifecyleHealthCheck"/>
             <argument ref="serviceExtensionHealthCheck"/>
             <argument ref="requisitionHealthCheck"/>
+            <argument ref="userDefinedLinkHealthCheck"/>
         </bean>
     </service>
 

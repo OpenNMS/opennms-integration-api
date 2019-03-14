@@ -33,12 +33,14 @@ import java.util.List;
 
 public interface RequisitionInterface {
 
-    List<String> getMonitoredServices();
+    List<RequisitionMonitoredService> getMonitoredServices();
 
     String getDescription();
 
     InetAddress getIpAddress();
 
     SnmpPrimaryType getSnmpPrimary();
+
+    List<RequisitionMetaData> getMetaData();
 
 }

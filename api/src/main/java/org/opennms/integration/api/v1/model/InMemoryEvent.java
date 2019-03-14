@@ -45,6 +45,8 @@ public interface InMemoryEvent {
 
     Severity getSeverity();
 
+    Integer getNodeId();
+
     List<EventParameter> getParameters();
 
     Optional<String> getParameterValue(String name);

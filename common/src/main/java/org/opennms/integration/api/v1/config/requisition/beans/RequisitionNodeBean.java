@@ -35,6 +35,7 @@ import java.util.Objects;
 
 import org.opennms.integration.api.v1.config.requisition.RequisitionAsset;
 import org.opennms.integration.api.v1.config.requisition.RequisitionInterface;
+import org.opennms.integration.api.v1.config.requisition.RequisitionMetaData;
 import org.opennms.integration.api.v1.config.requisition.RequisitionNode;
 
 public class RequisitionNodeBean implements RequisitionNode {
@@ -44,6 +45,7 @@ public class RequisitionNodeBean implements RequisitionNode {
     private final List<RequisitionInterface> interfaces;
     private final List<String> categories;
     private final List<RequisitionAsset> assets;
+    private final List<RequisitionMetaData> metaData;
 
     private RequisitionNodeBean(Builder builder) {
         this.foreignId = builder.foreignId;
@@ -52,6 +54,7 @@ public class RequisitionNodeBean implements RequisitionNode {
         this.interfaces = Collections.unmodifiableList(builder.interfaces != null ? builder.interfaces : Collections.emptyList());
         this.categories = Collections.unmodifiableList(builder.categories != null ? builder.categories : Collections.emptyList());
         this.assets = Collections.unmodifiableList(builder.assets != null ? builder.assets : Collections.emptyList());
+        this.metaData = Collections.unmodifiableList(builder.metaData != null ? builder.metaData : Collections.emptyList());
     }
 
     public static RequisitionNodeBean.Builder builder() {
@@ -65,6 +68,7 @@ public class RequisitionNodeBean implements RequisitionNode {
         private List<RequisitionInterface> interfaces = new LinkedList<>();
         private List<String> categories = new LinkedList<>();
         private List<RequisitionAsset> assets = new LinkedList<>();
+        private List<RequisitionMetaData> metaData = new LinkedList<>();
 
         public Builder foreignId(String foreignId) {
             this.foreignId = foreignId;
@@ -119,6 +123,20 @@ public class RequisitionNodeBean implements RequisitionNode {
             return this;
         }
 
+        public Builder metaData(List<RequisitionMetaData> metaData) {
+            this.metaData = metaData;
+            return this;
+        }
+
+        public Builder metaData(String context, String key, String value) {
+            this.metaData.add(RequisitionMetaDataBean.builder()
+                    .context(context)
+                    .key(key)
+                    .value(value)
+                    .build());
+            return this;
+        }
+
         public RequisitionNodeBean build() {
             Objects.requireNonNull(foreignId, "foreignId is required");
             return new RequisitionNodeBean( this );
@@ -156,6 +174,11 @@ public class RequisitionNodeBean implements RequisitionNode {
     }
 
     @Override
+    public List<RequisitionMetaData> getMetaData() {
+        return metaData;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -165,12 +188,13 @@ public class RequisitionNodeBean implements RequisitionNode {
                 Objects.equals(location, that.location) &&
                 Objects.equals(interfaces, that.interfaces) &&
                 Objects.equals(categories, that.categories) &&
-                Objects.equals(assets, that.assets);
+                Objects.equals(assets, that.assets) &&
+                Objects.equals(metaData, that.metaData);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(foreignId, nodeLabel, location, interfaces, categories, assets);
+        return Objects.hash(foreignId, nodeLabel, location, interfaces, categories, assets, metaData);
     }
 
     @Override
@@ -182,6 +206,7 @@ public class RequisitionNodeBean implements RequisitionNode {
                 ", interfaces=" + interfaces +
                 ", categories=" + categories +
                 ", assets=" + assets +
+                ", metaData=" + metaData +
                 '}';
     }
 }

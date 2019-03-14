@@ -26,26 +26,24 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.config.requisition;
+package org.opennms.integration.api.v1.topology;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+public interface UserDefinedLink {
 
-public interface RequisitionNode {
+    int getNodeIdA();
 
-    String getLocation();
+    String getComponentLabelA();
 
-    List<RequisitionInterface> getInterfaces();
+    int getNodeIdZ();
 
-    List<String> getCategories();
+    String getComponentLabelZ();
 
-    List<RequisitionAsset> getAssets();
+    String getLinkId();
 
-    String getForeignId();
+    String getLinkLabel();
 
-    String getNodeLabel();
+    String getOwner();
 
-    List<RequisitionMetaData> getMetaData();
+    Integer getDbId();
 
 }

@@ -26,26 +26,20 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.config.requisition;
+package org.opennms.integration.api.v1.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+/**
+ * Immutable meta-data.
+ *
+ * @author jwhite
+ * @since 1.0.0
+ */
+public interface MetaData {
 
-public interface RequisitionNode {
+    String getContext();
 
-    String getLocation();
+    String getKey();
 
-    List<RequisitionInterface> getInterfaces();
-
-    List<String> getCategories();
-
-    List<RequisitionAsset> getAssets();
-
-    String getForeignId();
-
-    String getNodeLabel();
-
-    List<RequisitionMetaData> getMetaData();
+    String getValue();
 
 }

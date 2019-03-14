@@ -26,26 +26,33 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.config.requisition;
+package org.opennms.integration.api.v1.topology;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
-public interface RequisitionNode {
+import org.opennms.integration.api.v1.annotations.Consumable;
 
-    String getLocation();
+/**
+ * Lookup and save {@link UserDefinedLink}s.
+ *
+ * @since 1.0.0
+ */
+@Consumable
+public interface UserDefinedLinkDao {
 
-    List<RequisitionInterface> getInterfaces();
+    List<UserDefinedLink> getLinks();
 
-    List<String> getCategories();
+    List<UserDefinedLink> getOutLinks(int nodeIdA);
 
-    List<RequisitionAsset> getAssets();
+    List<UserDefinedLink> getInLinks(int nodeIdZ);
 
-    String getForeignId();
+    List<UserDefinedLink> getLinksWithLabel(String label);
 
-    String getNodeLabel();
+    UserDefinedLink saveOrUpdate(UserDefinedLink link);
 
-    List<RequisitionMetaData> getMetaData();
+    void delete(UserDefinedLink link);
+
+    void delete(Collection<UserDefinedLink> links);
 
 }

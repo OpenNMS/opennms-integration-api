@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.opennms.integration.api.v1.model.IpInterface;
+import org.opennms.integration.api.v1.model.MetaData;
 import org.opennms.integration.api.v1.model.Node;
 import org.opennms.integration.api.v1.model.NodeAssetRecord;
 import org.opennms.integration.api.v1.model.SnmpInterface;
@@ -46,6 +47,7 @@ public class NodeBean implements Node {
     private NodeAssetRecord assetRecord;
     private List<IpInterface> ipInterfaces = new LinkedList<>();
     private List<SnmpInterface> snmpInterfaces = new LinkedList<>();
+    private List<MetaData> metaData = new LinkedList<>();
 
     @Override
     public Integer getId() {
@@ -120,6 +122,15 @@ public class NodeBean implements Node {
     }
 
     @Override
+    public List<MetaData> getMetaData() {
+        return metaData;
+    }
+
+    public void setMetaData(List<MetaData> metaData) {
+        this.metaData = metaData;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -131,12 +142,13 @@ public class NodeBean implements Node {
                 Objects.equals(location, nodeBean.location) &&
                 Objects.equals(assetRecord, nodeBean.assetRecord) &&
                 Objects.equals(ipInterfaces, nodeBean.ipInterfaces) &&
-                Objects.equals(snmpInterfaces, nodeBean.snmpInterfaces);
+                Objects.equals(snmpInterfaces, nodeBean.snmpInterfaces) &&
+                Objects.equals(metaData, nodeBean.metaData);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, foreignSource, foreignId, label, location, assetRecord, ipInterfaces, snmpInterfaces);
+        return Objects.hash(id, foreignSource, foreignId, label, location, assetRecord, ipInterfaces, snmpInterfaces, metaData);
     }
 
     @Override
@@ -150,6 +162,7 @@ public class NodeBean implements Node {
                 ", assetRecord=" + assetRecord +
                 ", ipInterfaces=" + ipInterfaces +
                 ", snmpInterfaces=" + snmpInterfaces +
+                ", metaData=" + metaData +
                 '}';
     }
 }

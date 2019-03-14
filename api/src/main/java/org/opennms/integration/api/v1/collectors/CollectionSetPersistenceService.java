@@ -26,26 +26,20 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.config.requisition;
+package org.opennms.integration.api.v1.collectors;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.net.InetAddress;
 
-public interface RequisitionNode {
+import org.opennms.integration.api.v1.annotations.Consumable;
 
-    String getLocation();
+/**
+ * Persist a collection set.
+ *
+ * @since 1.0.0
+ */
+@Consumable
+public interface CollectionSetPersistenceService {
 
-    List<RequisitionInterface> getInterfaces();
-
-    List<String> getCategories();
-
-    List<RequisitionAsset> getAssets();
-
-    String getForeignId();
-
-    String getNodeLabel();
-
-    List<RequisitionMetaData> getMetaData();
+    void persist(int nodeId, InetAddress iface, CollectionSet collectionSet);
 
 }
