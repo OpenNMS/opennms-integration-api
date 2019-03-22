@@ -112,4 +112,8 @@
         </bean>
     </service>
 
+    <service interface="org.opennms.integration.api.v1.topology.TopologyEdgeConsumer">
+        <bean class="org.opennms.integration.api.sample.MyTopologyEdgeConsumer"/>
+    </service>
+
 </blueprint>
