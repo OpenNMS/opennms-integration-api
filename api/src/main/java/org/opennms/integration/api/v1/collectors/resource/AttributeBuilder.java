@@ -28,6 +28,8 @@
 
 package org.opennms.integration.api.v1.collectors.resource;
 
+import java.util.Objects;
+
 /**
  * Builds attributes like {@link NumericAttribute} and {@link StringAttribute}
  */
@@ -36,7 +38,7 @@ public class AttributeBuilder {
     private String name;
     private String group;
     private String stringValue;
-    private double numericValue;
+    private Double numericValue;
     private NumericAttribute.Type type;
 
     public AttributeBuilder withName(String name) {
@@ -65,6 +67,10 @@ public class AttributeBuilder {
     }
 
     public NumericAttribute buildNumeric() {
+        Objects.requireNonNull(name, "name is required");
+        Objects.requireNonNull(group, "group is required");
+        Objects.requireNonNull(type, "type is required");
+        Objects.requireNonNull(numericValue, "numericValue is required");
         return new NumericAttribute() {
             @Override
             public String getName() {
@@ -89,6 +95,8 @@ public class AttributeBuilder {
     }
 
     public StringAttribute buildString() {
+        Objects.requireNonNull(name, "name is required");
+        Objects.requireNonNull(stringValue, "stringValue is required");
         return new StringAttribute() {
             @Override
             public String getName() {
