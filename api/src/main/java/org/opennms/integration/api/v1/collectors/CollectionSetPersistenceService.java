@@ -40,6 +40,29 @@ import org.opennms.integration.api.v1.annotations.Consumable;
 @Consumable
 public interface CollectionSetPersistenceService {
 
+    /**
+     * Persist a collection set.
+     *
+     * If the system is using an RRD-based storage backend, then the default RRD
+     * file settings will be used.
+     *
+     * @param nodeId node id of the node for which the collection set is related
+     * @param iface IP address associated with the node for which the collection set is related
+     * @param collectionSet the collection set containing the metrics to persist
+     */
     void persist(int nodeId, InetAddress iface, CollectionSet collectionSet);
+
+    /**
+     * Persist a collection set using the given RRD file settings.
+     *
+     * If the system is not using an RRD-based storage backend i.e. Newts, then the
+     * RRD file settings will be ignored.
+     *
+     * @param nodeId node id of the node for which the collection set is related
+     * @param iface IP address associated with the node for which the collection set is related
+     * @param collectionSet the collection set containing the metrics to persist
+     * @param rrdRepository RRD settings to use when creating RRD files for the metrics in the collection set
+     */
+    void persist(int nodeId, InetAddress iface, CollectionSet collectionSet, RrdRepository rrdRepository);
 
 }
