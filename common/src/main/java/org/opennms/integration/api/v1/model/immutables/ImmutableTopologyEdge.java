@@ -32,10 +32,11 @@ import java.util.Objects;
 
 import org.opennms.integration.api.v1.model.TopologyEdge;
 import org.opennms.integration.api.v1.model.TopologyPort;
+import org.opennms.integration.api.v1.model.TopologyProtocol;
 import org.opennms.integration.api.v1.model.TopologySegment;
 
 public final class ImmutableTopologyEdge implements TopologyEdge {
-    private final String protocol;
+    private final TopologyProtocol protocol;
     private final String id;
     private final String tooltipText;
     private final TopologyPort source;
@@ -56,7 +57,7 @@ public final class ImmutableTopologyEdge implements TopologyEdge {
     }
 
     public static class Builder {
-        private String protocol;
+        private TopologyProtocol protocol;
         private String id;
         private String tooltipText;
         private TopologyPort source;
@@ -66,7 +67,7 @@ public final class ImmutableTopologyEdge implements TopologyEdge {
         private Builder() {
         }
 
-        public Builder setProtocol(String protocol) {
+        public Builder setProtocol(TopologyProtocol protocol) {
             this.protocol = Objects.requireNonNull(protocol);
             return this;
         }
@@ -110,7 +111,7 @@ public final class ImmutableTopologyEdge implements TopologyEdge {
     }
 
     @Override
-    public String getProtocol() {
+    public TopologyProtocol getProtocol() {
         return protocol;
     }
 

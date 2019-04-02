@@ -33,6 +33,7 @@ import java.util.Set;
 
 import org.opennms.integration.api.v1.annotations.Consumable;
 import org.opennms.integration.api.v1.model.TopologyEdge;
+import org.opennms.integration.api.v1.model.TopologyProtocol;
 
 /**
  * Lookup edges.
@@ -50,7 +51,7 @@ public interface EdgeDao {
      * @param protocol the protocol to filter by
      * @return the count of edges corresponding to the given protocol
      */
-    long getEdgeCount(String protocol);
+    long getEdgeCount(TopologyProtocol protocol);
 
     /**
      * @return a collection of all the edges
@@ -61,10 +62,10 @@ public interface EdgeDao {
      * @param protocol the protocol to filter by
      * @return the edges corresponding to the given protocol
      */
-    Collection<TopologyEdge> getEdges(String protocol);
+    Collection<TopologyEdge> getEdges(TopologyProtocol protocol);
 
     /**
      * @return the set of protocols currently known to the dao
      */
-    Set<String> getProtocols();
+    Set<TopologyProtocol> getProtocols();
 }

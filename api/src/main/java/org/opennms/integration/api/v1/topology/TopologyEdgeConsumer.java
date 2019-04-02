@@ -28,8 +28,11 @@
 
 package org.opennms.integration.api.v1.topology;
 
+import java.util.Set;
+
 import org.opennms.integration.api.v1.annotations.Exposable;
 import org.opennms.integration.api.v1.model.TopologyEdge;
+import org.opennms.integration.api.v1.model.TopologyProtocol;
 
 /**
  * Implementations of this interface will receive {@link TopologyEdge edges} from OpenNMS.
@@ -52,8 +55,10 @@ public interface TopologyEdgeConsumer {
     /**
      * Provides the list of protocols that this consumer supports. Only edges corresponding to the given protocols will
      * be sent via {@link #onEdgeAddedOrUpdated(TopologyEdge)} and {@link #onEdgeDeleted(TopologyEdge)}.
+     * <p>
+     * To be sent updates for all protocols include {@link TopologyProtocol#ALL}.
      *
-     * @return the comma separated list of protocols this consumer supports
+     * @return the set of protocols this consumer supports
      */
-    String getProtocols();
+    Set<TopologyProtocol> getProtocols();
 }

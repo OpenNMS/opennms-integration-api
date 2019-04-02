@@ -28,7 +28,11 @@
 
 package org.opennms.integration.api.sample;
 
+import java.util.Collections;
+import java.util.Set;
+
 import org.opennms.integration.api.v1.model.TopologyEdge;
+import org.opennms.integration.api.v1.model.TopologyProtocol;
 import org.opennms.integration.api.v1.topology.TopologyEdgeConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +51,7 @@ public class MyTopologyEdgeConsumer implements TopologyEdgeConsumer {
     }
 
     @Override
-    public String getProtocols() {
-        return "bridge,cdp,isis,lldp,ospf,userdefined";
+    public Set<TopologyProtocol> getProtocols() {
+        return Collections.singleton(TopologyProtocol.ALL);
     }
 }

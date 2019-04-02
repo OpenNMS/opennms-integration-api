@@ -29,14 +29,25 @@
 package org.opennms.integration.api.v1.model;
 
 /**
- * @author mbrooks
- * @since 1.0.0
+ * The set of protocols supported by OpenNMS topology.
  */
-public interface TopologySegment extends TopologyRef {
-    TopologyProtocol getProtocol();
-
+public enum TopologyProtocol {
     /**
-     * @return the segment criteria, a string in the format of "protocol:Id"
+     * A special value representing all protocols.
      */
-    String getSegmentCriteria();
+    ALL,
+
+    BRIDGE,
+
+    CDP,
+
+    ISIS,
+
+    LLDP,
+
+    NODES,
+
+    OSPF,
+
+    USERDEFINED
 }

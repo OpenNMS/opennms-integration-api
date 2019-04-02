@@ -30,11 +30,12 @@ package org.opennms.integration.api.v1.model.immutables;
 
 import java.util.Objects;
 
+import org.opennms.integration.api.v1.model.TopologyProtocol;
 import org.opennms.integration.api.v1.model.TopologySegment;
 
 public final class ImmutableTopologySegment implements TopologySegment {
     private final String id;
-    private final String protocol;
+    private final TopologyProtocol protocol;
     private final String tooltipText;
 
     private ImmutableTopologySegment(Builder builder) {
@@ -50,7 +51,7 @@ public final class ImmutableTopologySegment implements TopologySegment {
     public static class Builder {
         private String id;
         private String tooltipText;
-        private String protocol;
+        private TopologyProtocol protocol;
 
         private Builder() {
         }
@@ -60,7 +61,7 @@ public final class ImmutableTopologySegment implements TopologySegment {
             return this;
         }
 
-        public Builder setProtocol(String protocol) {
+        public Builder setProtocol(TopologyProtocol protocol) {
             this.protocol = Objects.requireNonNull(protocol);
             return this;
         }
@@ -88,7 +89,7 @@ public final class ImmutableTopologySegment implements TopologySegment {
     }
 
     @Override
-    public String getProtocol() {
+    public TopologyProtocol getProtocol() {
         return protocol;
     }
 

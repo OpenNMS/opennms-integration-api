@@ -33,7 +33,7 @@ package org.opennms.integration.api.v1.model;
  * @since 1.0.0
  */
 public interface TopologyEdge extends TopologyRef {
-    String getProtocol();
+    TopologyProtocol getProtocol();
 
     TopologyPort getSource();
 
