@@ -35,7 +35,8 @@ package org.opennms.integration.api.sample.health;
 public class MyHealthCheck extends ChainedHealthCheck {
     private static final String DESCR = "OIA :: Sample Project :: Health Check";
 
-    public MyHealthCheck(AlarmLifecyleHealthCheck alHc, ServiceExtensionHealthCheck seHc, RequisitionHealthCheck reHc) {
-        super(DESCR, alHc, seHc, reHc);
+    public MyHealthCheck(AlarmLifecyleHealthCheck alHc, ServiceExtensionHealthCheck seHc,
+                         RequisitionHealthCheck reHc, UserDefinedLinkHealthCheck udlHc) {
+        super(DESCR, alHc, seHc, reHc, udlHc);
     }
 }

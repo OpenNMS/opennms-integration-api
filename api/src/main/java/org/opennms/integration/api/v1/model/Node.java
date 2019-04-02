@@ -54,4 +54,6 @@ public interface Node {
 
     List<SnmpInterface> getSnmpInterfaces();
 
+    List<MetaData> getMetaData();
+
 }

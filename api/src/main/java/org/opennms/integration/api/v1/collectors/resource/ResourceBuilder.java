@@ -28,6 +28,8 @@
 
 package org.opennms.integration.api.v1.collectors.resource;
 
+import java.util.Objects;
+
 /**
  * Builds Resources like {@link NodeResource} and {@link IpInterfaceResource}
  */
@@ -77,6 +79,7 @@ public class ResourceBuilder {
     }
 
     public NodeResource buildNodeResource() {
+        Objects.requireNonNull(nodeId, "nodeId is required");
         return new NodeResource() {
             @Override
             public Integer getNodeId() {
@@ -110,6 +113,8 @@ public class ResourceBuilder {
     }
 
     public IpInterfaceResource buildIpInterfaceResource(NodeResource nodeResource) {
+        Objects.requireNonNull(nodeResource, "nodeResource is required");
+        Objects.requireNonNull(instance, "instance is required");
         return new IpInterfaceResource() {
             @Override
             public NodeResource getNodeResource() {
@@ -128,6 +133,9 @@ public class ResourceBuilder {
     }
 
     public GenericTypeResource buildGenericTypeResource(NodeResource nodeResource) {
+        Objects.requireNonNull(nodeResource, "nodeResource is required");
+        Objects.requireNonNull(type, "type is required");
+        Objects.requireNonNull(instance, "instance is required");
         return new GenericTypeResource() {
             @Override
             public NodeResource getNodeResource() {

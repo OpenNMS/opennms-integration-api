@@ -35,19 +35,23 @@ import java.util.List;
 import java.util.Objects;
 
 import org.opennms.integration.api.v1.config.requisition.RequisitionInterface;
+import org.opennms.integration.api.v1.config.requisition.RequisitionMetaData;
+import org.opennms.integration.api.v1.config.requisition.RequisitionMonitoredService;
 import org.opennms.integration.api.v1.config.requisition.SnmpPrimaryType;
 
 public class RequisitionInterfaceBean implements RequisitionInterface {
     private final InetAddress ipAddress;
     private final SnmpPrimaryType snmpPrimary;
     private final String description;
-    private final List<String> monitoredServices;
+    private final List<RequisitionMonitoredService> monitoredServices;
+    private final List<RequisitionMetaData> metaData;
 
     private RequisitionInterfaceBean(Builder builder) {
         this.ipAddress = builder.ipAddress;
         this.snmpPrimary = builder.snmpPrimary;
         this.description = builder.description;
         this.monitoredServices = Collections.unmodifiableList(builder.monitoredServices != null ? builder.monitoredServices : Collections.emptyList());
+        this.metaData = Collections.unmodifiableList(builder.metaData != null ? builder.metaData : Collections.emptyList());
     }
 
     public static RequisitionInterfaceBean.Builder builder() {
@@ -58,7 +62,8 @@ public class RequisitionInterfaceBean implements RequisitionInterface {
         private InetAddress ipAddress;
         private SnmpPrimaryType snmpPrimary;
         private String description;
-        private List<String> monitoredServices = new LinkedList<>();
+        private List<RequisitionMonitoredService> monitoredServices = new LinkedList<>();
+        private List<RequisitionMetaData> metaData = new LinkedList<>();
 
         public Builder ipAddress(InetAddress ipAddress) {
             this.ipAddress = ipAddress;
@@ -75,14 +80,34 @@ public class RequisitionInterfaceBean implements RequisitionInterface {
             return this;
         }
 
-        public Builder monitoredServices(List<String> monitoredServices) {
+        public Builder monitoredServices(List<RequisitionMonitoredService> monitoredServices) {
             this.monitoredServices = monitoredServices;
             return this;
         }
 
-
-        public Builder monitoredService(String monitoredService) {
+        public Builder monitoredService(RequisitionMonitoredService monitoredService) {
             this.monitoredServices.add(monitoredService);
+            return this;
+        }
+
+        public Builder monitoredService(String name) {
+            this.monitoredServices.add(RequisitionMonitoredServiceBean.builder()
+                    .name(name)
+                    .build());
+            return this;
+        }
+
+        public Builder metaData(List<RequisitionMetaData> metaData) {
+            this.metaData = metaData;
+            return this;
+        }
+
+        public Builder metaData(String context, String key, String value) {
+            this.metaData.add(RequisitionMetaDataBean.builder()
+                    .context(context)
+                    .key(key)
+                    .value(value)
+                    .build());
             return this;
         }
 
@@ -93,7 +118,7 @@ public class RequisitionInterfaceBean implements RequisitionInterface {
     }
 
     @Override
-    public List<String> getMonitoredServices() {
+    public List<RequisitionMonitoredService> getMonitoredServices() {
         return monitoredServices;
     }
 
@@ -113,6 +138,11 @@ public class RequisitionInterfaceBean implements RequisitionInterface {
     }
 
     @Override
+    public List<RequisitionMetaData> getMetaData() {
+        return metaData;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -120,12 +150,13 @@ public class RequisitionInterfaceBean implements RequisitionInterface {
         return Objects.equals(ipAddress, that.ipAddress) &&
                 snmpPrimary == that.snmpPrimary &&
                 Objects.equals(description, that.description) &&
-                Objects.equals(monitoredServices, that.monitoredServices);
+                Objects.equals(monitoredServices, that.monitoredServices) &&
+                Objects.equals(metaData, that.metaData);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ipAddress, snmpPrimary, description, monitoredServices);
+        return Objects.hash(ipAddress, snmpPrimary, description, monitoredServices, metaData);
     }
 
     @Override
@@ -135,6 +166,7 @@ public class RequisitionInterfaceBean implements RequisitionInterface {
                 ", snmpPrimary=" + snmpPrimary +
                 ", description='" + description + '\'' +
                 ", monitoredServices=" + monitoredServices +
+                ", metaData=" + metaData +
                 '}';
     }
 }

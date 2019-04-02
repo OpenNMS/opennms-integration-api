@@ -30,6 +30,7 @@ package org.opennms.integration.api.v1.collectors.resource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class CollectionSetResourceBuilder<T extends Resource> {
 
@@ -52,8 +53,8 @@ public class CollectionSetResourceBuilder<T extends Resource> {
         return this;
     }
 
-
     public CollectionSetResource<T> build() {
+        Objects.requireNonNull(resource, "resource is required");
         return new CollectionSetResource<T>() {
             @Override
             public T getResource() {

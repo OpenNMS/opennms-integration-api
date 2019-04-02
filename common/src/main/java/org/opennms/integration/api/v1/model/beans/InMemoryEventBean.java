@@ -43,7 +43,8 @@ public class InMemoryEventBean implements InMemoryEvent {
     private final String uei;
     private final String source;
     private Severity severity;
-    private List<EventParameter> parameters;
+    private Integer nodeId;
+    private List<EventParameter> parameters = new LinkedList<>();
 
     public InMemoryEventBean(String uei, String source) {
         this.uei = Objects.requireNonNull(uei);
@@ -70,6 +71,15 @@ public class InMemoryEventBean implements InMemoryEvent {
     }
 
     @Override
+    public Integer getNodeId() {
+        return nodeId;
+    }
+
+    public void setNodeId(Integer nodeId) {
+        this.nodeId = nodeId;
+    }
+
+    @Override
     public List<EventParameter> getParameters() {
         return parameters;
     }
@@ -83,21 +93,15 @@ public class InMemoryEventBean implements InMemoryEvent {
     }
 
     public void setParameters(List<EventParameter> parameters) {
-        this.parameters = parameters;
+        this.parameters = Objects.requireNonNull(parameters);
     }
 
     public void addParameter(String name, String value) {
-        if (parameters == null) {
-            parameters = new LinkedList<>();
-        }
         parameters.add(new EventParameterBean(name, value));
     }
 
     @Override
     public List<EventParameter> getParametersByName(String name) {
-        if (parameters == null) {
-            return Collections.emptyList();
-        }
         return parameters.stream()
                 .filter(p -> Objects.equals(name, p.getName()))
                 .collect(Collectors.toList());
@@ -111,12 +115,13 @@ public class InMemoryEventBean implements InMemoryEvent {
         return Objects.equals(uei, that.uei) &&
                 Objects.equals(source, that.source) &&
                 Objects.equals(severity, that.severity) &&
+                Objects.equals(nodeId, that.nodeId) &&
                 Objects.equals(parameters, that.parameters);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uei, source, severity, parameters);
+        return Objects.hash(uei, source, severity, nodeId, parameters);
     }
 
     @Override
@@ -125,6 +130,7 @@ public class InMemoryEventBean implements InMemoryEvent {
                 "uei='" + uei + '\'' +
                 ", source='" + source + '\'' +
                 ", severity='" + severity + '\'' +
+                ", nodeId='" + nodeId + '\'' +
                 ", parameters=" + parameters +
                 '}';
     }

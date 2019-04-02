@@ -29,12 +29,16 @@
 package org.opennms.integration.api.v1.model.beans;
 
 import java.net.InetAddress;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 import org.opennms.integration.api.v1.model.IpInterface;
+import org.opennms.integration.api.v1.model.MetaData;
 
 public class IpInterfaceBean implements IpInterface {
     private InetAddress ipAddress;
+    private List<MetaData> metaData = new LinkedList<>();
 
     @Override
     public InetAddress getIpAddress() {
@@ -46,22 +50,33 @@ public class IpInterfaceBean implements IpInterface {
     }
 
     @Override
+    public List<MetaData> getMetaData() {
+        return metaData;
+    }
+
+    public void setMetaData(List<MetaData> metaData) {
+        this.metaData = metaData;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         IpInterfaceBean that = (IpInterfaceBean) o;
-        return Objects.equals(ipAddress, that.ipAddress);
+        return Objects.equals(ipAddress, that.ipAddress) &&
+                Objects.equals(metaData, that.metaData);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ipAddress);
+        return Objects.hash(ipAddress, metaData);
     }
 
     @Override
     public String toString() {
         return "IpInterfaceBean{" +
                 "ipAddress=" + ipAddress +
+                ", metaData=" + metaData +
                 '}';
     }
 }

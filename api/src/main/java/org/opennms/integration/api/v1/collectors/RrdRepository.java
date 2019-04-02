@@ -26,26 +26,37 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.config.requisition;
+package org.opennms.integration.api.v1.collectors;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-public interface RequisitionNode {
+/**
+ * RRD settings used when persisting using an RRD-based backend.
+ */
+public interface RrdRepository {
 
-    String getLocation();
+    /**
+     * Specifies the base interval in seconds with which data will be fed into the RRD.
+     *
+     * @return step
+     */
+    int getStep();
 
-    List<RequisitionInterface> getInterfaces();
+    /**
+     * Defines the maximum number of seconds that may pass between two updates of this data source
+     * before the value of the data source is assumed to be *UNKNOWN*.
+     *
+     * @return heartbeat
+     */
+    int getHeartbeat();
 
-    List<String> getCategories();
-
-    List<RequisitionAsset> getAssets();
-
-    String getForeignId();
-
-    String getNodeLabel();
-
-    List<RequisitionMetaData> getMetaData();
+    /**
+     * List of RRAs to store in the RRD.
+     *
+     * See https://oss.oetiker.ch/rrdtool/doc/rrdcreate.en.html for details.
+     *
+     * @return list of RRAs
+     */
+    List<String> getRRAs();
 
 }

@@ -70,9 +70,11 @@ public class MyRequisitionProvider implements RequisitionProvider {
                         .foreignId("n1")
                         .nodeLabel("n1")
                         .asset("serialnumber", "42")
+                        .metaData("oai", "sn", "42")
                         .iface(RequisitionInterfaceBean.builder()
                                     .ipAddress(loopback)
                                     .snmpPrimary(SnmpPrimaryType.NOT_ELIGIBLE)
+                                    .metaData("oai", "mac", "00aabbccddee")
                                     .build())
                         .build())
                 .build();
