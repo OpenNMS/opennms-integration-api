@@ -76,7 +76,7 @@ public final class ImmutableTopologyPort implements TopologyPort {
         }
 
         public Builder setIfIndex(Integer ifIndex) {
-            this.ifIndex = Objects.requireNonNull(ifIndex);
+            this.ifIndex = ifIndex;
             return this;
         }
 
@@ -136,7 +136,7 @@ public final class ImmutableTopologyPort implements TopologyPort {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ImmutableTopologyPort that = (ImmutableTopologyPort) o;
-        return ifIndex == that.ifIndex &&
+        return Objects.equals(ifIndex, that.ifIndex) &&
                 Objects.equals(id, that.id) &&
                 Objects.equals(tooltipText, that.tooltipText) &&
                 Objects.equals(ifName, that.ifName) &&
