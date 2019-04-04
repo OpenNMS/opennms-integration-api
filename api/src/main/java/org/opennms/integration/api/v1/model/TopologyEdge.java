@@ -35,27 +35,44 @@ package org.opennms.integration.api.v1.model;
 public interface TopologyEdge extends TopologyRef {
     TopologyProtocol getProtocol();
 
-    TopologyPort getSource();
-
     /**
-     * Visit the target that this edge is connected to. The {@link TopologyEdgeTargetVisitor visitor} will be called
-     * with {@link TopologyEdgeTargetVisitor#visitTargetPort(TopologyPort)} or
-     * {@link TopologyEdgeTargetVisitor#visitTargetSegement(TopologySegment)} depending on what type of target this edge
-     * is connected to.
+     * Visit the endpoints that this edge is connected to.
      *
      * @param v the visitor
      */
-    void visitTarget(TopologyEdgeTargetVisitor v);
+    void visitEndpoints(EndpointVisitor v);
 
     /**
-     * A visitor for accessing the target this edge is connected to which can be typed to either a
-     * {@link TopologyPort port} or a {@link TopologySegment segment}.
+     * A visitor for accessing the endpoints this edge is connected to. A visitor will be called with one of the
+     * visitSource implementations and one of the visitTarget implementations depending on which type of endpoints this
+     * edge is connected to.
      */
-    interface TopologyEdgeTargetVisitor {
-        default void visitTargetPort(TopologyPort port) {
+    interface EndpointVisitor {
+        default void visitSource(Node node) {
         }
 
-        default void visitTargetSegement(TopologySegment segment) {
+        default void visitSource(TopologyPort port) {
         }
+
+        default void visitSource(TopologySegment segment) {
+        }
+
+        default void visitTarget(Node node) {
+        }
+
+        default void visitTarget(TopologyPort port) {
+        }
+
+        default void visitTarget(TopologySegment segment) {
+        }
+    }
+
+    /**
+     * The set of valid endpoint types that edges support.
+     */
+    enum EndpointType {
+        NODE,
+        PORT,
+        SEGMENT
     }
 }
