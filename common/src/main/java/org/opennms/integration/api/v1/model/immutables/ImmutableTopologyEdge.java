@@ -192,13 +192,13 @@ public final class ImmutableTopologyEdge implements TopologyEdge {
         }
         switch (targetType) {
             case NODE:
-                v.visitTarget((Node) source);
+                v.visitTarget((Node) target);
                 break;
             case PORT:
-                v.visitTarget((TopologyPort) source);
+                v.visitTarget((TopologyPort) target);
                 break;
             case SEGMENT:
-                v.visitTarget((TopologySegment) source);
+                v.visitTarget((TopologySegment) target);
                 break;
             default:
                 throw new IllegalStateException(String.format("Target type '%s' is unsupported", sourceType));
