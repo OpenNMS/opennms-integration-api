@@ -123,7 +123,7 @@ public final class ImmutableTopologyEdge implements TopologyEdge {
             if (target != null && !(target instanceof ImmutableNode)) {
                 this.target = ImmutableNode.newBuilderFrom(target).build();
             } else {
-                this.target = source;
+                this.target = target;
             }
             this.targetType = EndpointType.NODE;
             return this;
