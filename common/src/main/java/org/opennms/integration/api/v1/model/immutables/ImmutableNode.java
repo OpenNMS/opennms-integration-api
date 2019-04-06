@@ -61,9 +61,12 @@ public final class ImmutableNode implements Node {
         this.label = builder.label;
         this.location = builder.location;
         this.assetRecord = builder.assetRecord;
-        this.ipInterfaces = builder.ipInterfaces == null ? null : copyIpInterfaces(builder.ipInterfaces);
-        this.snmpInterfaces = builder.snmpInterfaces == null ? null : copySnmpInterfaces(builder.snmpInterfaces);
-        this.metaData = builder.metaData == null ? null : copyMetaData(builder.metaData);
+        this.ipInterfaces = builder.ipInterfaces == null ? Collections.emptyList() :
+                Collections.unmodifiableList(copyIpInterfaces(builder.ipInterfaces));
+        this.snmpInterfaces = builder.snmpInterfaces == null ? Collections.emptyList() :
+                Collections.unmodifiableList(copySnmpInterfaces(builder.snmpInterfaces));
+        this.metaData = builder.metaData == null ? Collections.emptyList() :
+                Collections.unmodifiableList(copyMetaData(builder.metaData));
     }
 
     public static Builder newBuilder() {
@@ -247,17 +250,17 @@ public final class ImmutableNode implements Node {
 
     @Override
     public List<IpInterface> getIpInterfaces() {
-        return ipInterfaces == null ? Collections.emptyList() : Collections.unmodifiableList(ipInterfaces);
+        return ipInterfaces;
     }
 
     @Override
     public List<SnmpInterface> getSnmpInterfaces() {
-        return snmpInterfaces == null ? Collections.emptyList() : Collections.unmodifiableList(snmpInterfaces);
+        return snmpInterfaces;
     }
 
     @Override
     public List<MetaData> getMetaData() {
-        return metaData == null ? Collections.emptyList() : Collections.unmodifiableList(metaData);
+        return metaData;
     }
 
     @Override

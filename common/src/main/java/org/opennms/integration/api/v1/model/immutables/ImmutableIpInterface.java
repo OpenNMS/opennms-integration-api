@@ -46,7 +46,8 @@ public final class ImmutableIpInterface implements IpInterface {
 
     private ImmutableIpInterface(Builder builder) {
         this.ipAddress = builder.ipAddress;
-        this.metaData = builder.metaData == null ? null : copyMetaData(builder.metaData);
+        this.metaData = builder.metaData == null ? Collections.emptyList() :
+                Collections.unmodifiableList(copyMetaData(builder.metaData));
     }
 
     public static Builder newBuilder() {
@@ -103,7 +104,7 @@ public final class ImmutableIpInterface implements IpInterface {
 
     @Override
     public List<MetaData> getMetaData() {
-        return metaData == null ? Collections.emptyList() : Collections.unmodifiableList(metaData);
+        return metaData;
     }
 
     @Override
