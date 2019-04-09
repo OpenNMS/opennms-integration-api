@@ -33,6 +33,9 @@ import java.util.Objects;
 import org.opennms.integration.api.v1.model.TopologyProtocol;
 import org.opennms.integration.api.v1.model.TopologySegment;
 
+/**
+ * An immutable implementation of {@link TopologySegment} that enforces deep immutability.
+ */
 public final class ImmutableTopologySegment implements TopologySegment {
     private final String id;
     private final TopologyProtocol protocol;
@@ -48,12 +51,22 @@ public final class ImmutableTopologySegment implements TopologySegment {
         return new Builder();
     }
 
-    public static class Builder {
+    public static Builder newBuilderFrom(TopologySegment fromSegment) {
+        return new Builder(fromSegment);
+    }
+
+    public static final class Builder {
         private String id;
         private String tooltipText;
         private TopologyProtocol protocol;
 
         private Builder() {
+        }
+
+        private Builder(TopologySegment segment) {
+            this.id = segment.getId();
+            this.tooltipText = segment.getTooltipText();
+            this.protocol = segment.getProtocol();
         }
 
         public Builder setId(String id) {

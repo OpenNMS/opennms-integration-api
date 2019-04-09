@@ -33,6 +33,9 @@ import java.util.Objects;
 import org.opennms.integration.api.v1.model.NodeCriteria;
 import org.opennms.integration.api.v1.model.TopologyPort;
 
+/**
+ * An immutable implementation of {@link TopologyPort} that enforces deep immutability.
+ */
 public final class ImmutableTopologyPort implements TopologyPort {
     private final String id;
     private final String tooltipText;
@@ -54,7 +57,11 @@ public final class ImmutableTopologyPort implements TopologyPort {
         return new Builder();
     }
 
-    public static class Builder {
+    public static Builder newBuilderFrom(TopologyPort fromTopologyPort) {
+        return new Builder(fromTopologyPort);
+    }
+
+    public static final class Builder {
         private String id;
         private String tooltipText;
         private Integer ifIndex;
@@ -63,6 +70,15 @@ public final class ImmutableTopologyPort implements TopologyPort {
         private NodeCriteria nodeCriteria;
 
         private Builder() {
+        }
+
+        private Builder(TopologyPort topologyPort) {
+            this.id = topologyPort.getId();
+            this.tooltipText = topologyPort.getTooltipText();
+            this.ifIndex = topologyPort.getIfIndex();
+            this.ifName = topologyPort.getIfName();
+            this.ifAddress = topologyPort.getIfAddress();
+            this.nodeCriteria = topologyPort.getNodeCriteria();
         }
 
         public Builder setId(String id) {
@@ -91,7 +107,11 @@ public final class ImmutableTopologyPort implements TopologyPort {
         }
 
         public Builder setNodeCriteria(NodeCriteria nodeCriteria) {
-            this.nodeCriteria = nodeCriteria;
+            if (nodeCriteria != null && !(nodeCriteria instanceof ImmutableNodeCriteria)) {
+                this.nodeCriteria = ImmutableNodeCriteria.newBuilderFrom(nodeCriteria).build();
+            } else {
+                this.nodeCriteria = nodeCriteria;
+            }
             return this;
         }
 

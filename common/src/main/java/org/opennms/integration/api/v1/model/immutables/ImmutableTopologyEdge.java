@@ -30,39 +30,46 @@ package org.opennms.integration.api.v1.model.immutables;
 
 import java.util.Objects;
 
+import org.opennms.integration.api.v1.model.Node;
 import org.opennms.integration.api.v1.model.TopologyEdge;
 import org.opennms.integration.api.v1.model.TopologyPort;
 import org.opennms.integration.api.v1.model.TopologyProtocol;
 import org.opennms.integration.api.v1.model.TopologySegment;
 
+/**
+ * An immutable implementation of {@link TopologyEdge} that enforces deep immutability.
+ */
 public final class ImmutableTopologyEdge implements TopologyEdge {
     private final TopologyProtocol protocol;
     private final String id;
     private final String tooltipText;
-    private final TopologyPort source;
-    private final TopologyPort targetPort;
-    private final TopologySegment targetSegment;
+    private final Object source;
+    private final Object target;
+    private final EndpointType sourceType;
+    private final EndpointType targetType;
 
     private ImmutableTopologyEdge(Builder builder) {
         this.protocol = builder.protocol;
         this.id = builder.id;
         this.tooltipText = builder.tooltipText;
         this.source = builder.source;
-        this.targetPort = builder.targetPort;
-        this.targetSegment = builder.targetSegment;
+        this.sourceType = builder.sourceType;
+        this.target = builder.target;
+        this.targetType = builder.targetType;
     }
 
     public static Builder newBuilder() {
         return new Builder();
     }
 
-    public static class Builder {
+    public static final class Builder {
         private TopologyProtocol protocol;
         private String id;
         private String tooltipText;
-        private TopologyPort source;
-        private TopologyPort targetPort;
-        private TopologySegment targetSegment;
+        private Object source;
+        private Object target;
+        private EndpointType sourceType;
+        private EndpointType targetType;
 
         private Builder() {
         }
@@ -82,30 +89,73 @@ public final class ImmutableTopologyEdge implements TopologyEdge {
             return this;
         }
 
+        public Builder setSource(Node source) {
+            if (source != null && !(source instanceof ImmutableNode)) {
+                this.source = ImmutableNode.newBuilderFrom(source).build();
+            } else {
+                this.source = source;
+            }
+            this.sourceType = EndpointType.NODE;
+            return this;
+        }
+
         public Builder setSource(TopologyPort source) {
-            this.source = Objects.requireNonNull(source);
+            if (source != null && !(source instanceof ImmutableTopologyPort)) {
+                this.source = ImmutableTopologyPort.newBuilderFrom(source).build();
+            } else {
+                this.source = source;
+            }
+            this.sourceType = EndpointType.PORT;
             return this;
         }
 
-        public Builder setTargetPort(TopologyPort targetPort) {
-            this.targetPort = targetPort;
+        public Builder setSource(TopologySegment source) {
+            if (source != null && !(source instanceof ImmutableTopologySegment)) {
+                this.source = ImmutableTopologySegment.newBuilderFrom(source).build();
+            } else {
+                this.source = source;
+            }
+            this.sourceType = EndpointType.SEGMENT;
             return this;
         }
 
-        public Builder setTargetSegment(TopologySegment targetSegment) {
-            this.targetSegment = targetSegment;
+        public Builder setTarget(Node target) {
+            if (target != null && !(target instanceof ImmutableNode)) {
+                this.target = ImmutableNode.newBuilderFrom(target).build();
+            } else {
+                this.target = target;
+            }
+            this.targetType = EndpointType.NODE;
+            return this;
+        }
+
+        public Builder setTarget(TopologyPort target) {
+            if (target != null && !(target instanceof ImmutableTopologyPort)) {
+                this.target = ImmutableTopologyPort.newBuilderFrom(target).build();
+            } else {
+                this.target = target;
+            }
+            this.targetType = EndpointType.PORT;
+            return this;
+        }
+
+        public Builder setTarget(TopologySegment target) {
+            if (target != null && !(target instanceof ImmutableTopologySegment)) {
+                this.target = ImmutableTopologySegment.newBuilderFrom(target).build();
+            } else {
+                this.target = target;
+            }
+            this.targetType = EndpointType.SEGMENT;
             return this;
         }
 
         public ImmutableTopologyEdge build() {
             Objects.requireNonNull(id);
             Objects.requireNonNull(protocol);
-            if (targetPort == null && targetSegment == null) {
-                throw new NullPointerException("Edge must have a target");
-            }
-            if (targetPort != null && targetSegment != null) {
-                throw new IllegalStateException("Edge cannot have both a target port and a target segment");
-            }
+            Objects.requireNonNull(source);
+            Objects.requireNonNull(target);
+            Objects.requireNonNull(sourceType);
+            Objects.requireNonNull(targetType);
             return new ImmutableTopologyEdge(this);
         }
     }
@@ -126,16 +176,32 @@ public final class ImmutableTopologyEdge implements TopologyEdge {
     }
 
     @Override
-    public TopologyPort getSource() {
-        return source;
-    }
-
-    @Override
-    public void visitTarget(TopologyEdgeTargetVisitor v) {
-        if (targetPort != null) {
-            v.visitTargetPort(targetPort);
-        } else {
-            v.visitTargetSegement(targetSegment);
+    public void visitEndpoints(EndpointVisitor v) {
+        switch (sourceType) {
+            case NODE:
+                v.visitSource((Node) source);
+                break;
+            case PORT:
+                v.visitSource((TopologyPort) source);
+                break;
+            case SEGMENT:
+                v.visitSource((TopologySegment) source);
+                break;
+            default:
+                throw new IllegalStateException(String.format("Source type '%s' is unsupported", sourceType));
+        }
+        switch (targetType) {
+            case NODE:
+                v.visitTarget((Node) target);
+                break;
+            case PORT:
+                v.visitTarget((TopologyPort) target);
+                break;
+            case SEGMENT:
+                v.visitTarget((TopologySegment) target);
+                break;
+            default:
+                throw new IllegalStateException(String.format("Target type '%s' is unsupported", sourceType));
         }
     }
 
@@ -144,28 +210,30 @@ public final class ImmutableTopologyEdge implements TopologyEdge {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ImmutableTopologyEdge that = (ImmutableTopologyEdge) o;
-        return Objects.equals(protocol, that.protocol) &&
+        return protocol == that.protocol &&
                 Objects.equals(id, that.id) &&
                 Objects.equals(tooltipText, that.tooltipText) &&
                 Objects.equals(source, that.source) &&
-                Objects.equals(targetPort, that.targetPort) &&
-                Objects.equals(targetSegment, that.targetSegment);
+                Objects.equals(target, that.target) &&
+                sourceType == that.sourceType &&
+                targetType == that.targetType;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(protocol, id, tooltipText, source, targetPort, targetSegment);
+        return Objects.hash(protocol, id, tooltipText, source, target, sourceType, targetType);
     }
 
     @Override
     public String toString() {
         return "ImmutableTopologyEdge{" +
-                "protocol='" + protocol + '\'' +
+                "protocol=" + protocol +
                 ", id='" + id + '\'' +
                 ", tooltipText='" + tooltipText + '\'' +
                 ", source=" + source +
-                ", targetPort=" + targetPort +
-                ", targetSegment=" + targetSegment +
+                ", target=" + target +
+                ", sourceType=" + sourceType +
+                ", targetType=" + targetType +
                 '}';
     }
 }

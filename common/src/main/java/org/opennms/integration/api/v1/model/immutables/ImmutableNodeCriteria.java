@@ -30,8 +30,12 @@ package org.opennms.integration.api.v1.model.immutables;
 
 import java.util.Objects;
 
+import org.opennms.integration.api.v1.model.Node;
 import org.opennms.integration.api.v1.model.NodeCriteria;
 
+/**
+ * An immutable implementation of {@link NodeCriteria} that enforces deep immutability.
+ */
 public final class ImmutableNodeCriteria implements NodeCriteria {
     private final Integer id;
     private final String foreignSource;
@@ -46,13 +50,23 @@ public final class ImmutableNodeCriteria implements NodeCriteria {
     public static Builder newBuilder() {
         return new Builder();
     }
+    
+    public static Builder newBuilderFrom(NodeCriteria fromNodeCriteria) {
+        return new Builder(fromNodeCriteria);
+    }
 
-    public static class Builder {
+    public static final class Builder {
         private Integer id;
         private String foreignSource;
         private String foreignId;
 
         private Builder() {
+        }
+        
+        private Builder(NodeCriteria nodeCriteria) {
+            this.id = nodeCriteria.getId();
+            this.foreignSource = nodeCriteria.getForeignSource();
+            this.foreignId = nodeCriteria.getForeignId();
         }
 
         public Builder setId(Integer id) {

@@ -28,7 +28,6 @@
 
 package org.opennms.integration.api.v1.dao;
 
-import java.util.Collection;
 import java.util.Set;
 
 import org.opennms.integration.api.v1.annotations.Consumable;
@@ -54,15 +53,15 @@ public interface EdgeDao {
     long getEdgeCount(TopologyProtocol protocol);
 
     /**
-     * @return a collection of all the edges
+     * @return a set of all the edges
      */
-    Collection<TopologyEdge> getEdges();
+    Set<TopologyEdge> getEdges();
 
     /**
      * @param protocol the protocol to filter by
      * @return the edges corresponding to the given protocol
      */
-    Collection<TopologyEdge> getEdges(TopologyProtocol protocol);
+    Set<TopologyEdge> getEdges(TopologyProtocol protocol);
 
     /**
      * @return the set of protocols currently known to the dao
