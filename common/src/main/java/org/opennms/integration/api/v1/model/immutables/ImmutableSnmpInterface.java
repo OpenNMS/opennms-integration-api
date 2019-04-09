@@ -35,7 +35,7 @@ import org.opennms.integration.api.v1.model.SnmpInterface;
 /**
  * An immutable implementation of {@link SnmpInterface} that enforces deep immutability.
  */
-public class ImmutableSnmpInterface implements SnmpInterface {
+public final class ImmutableSnmpInterface implements SnmpInterface {
     private final String ifDescr;
     private final String ifName;
     private final Integer ifIndex;

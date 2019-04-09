@@ -55,7 +55,7 @@ public final class ImmutableNodeCriteria implements NodeCriteria {
         return new Builder(fromNodeCriteria);
     }
 
-    public static class Builder {
+    public static final class Builder {
         private Integer id;
         private String foreignSource;
         private String foreignId;

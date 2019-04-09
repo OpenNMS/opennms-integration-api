@@ -62,7 +62,7 @@ public final class ImmutableTopologyEdge implements TopologyEdge {
         return new Builder();
     }
 
-    public static class Builder {
+    public static final class Builder {
         private TopologyProtocol protocol;
         private String id;
         private String tooltipText;
@@ -101,7 +101,7 @@ public final class ImmutableTopologyEdge implements TopologyEdge {
 
         public Builder setSource(TopologyPort source) {
             if (source != null && !(source instanceof ImmutableTopologyPort)) {
-                this.source = ImmutableTopologyPort.newBuilderFrom(Objects.requireNonNull(source)).build();
+                this.source = ImmutableTopologyPort.newBuilderFrom(source).build();
             } else {
                 this.source = source;
             }
@@ -111,7 +111,7 @@ public final class ImmutableTopologyEdge implements TopologyEdge {
 
         public Builder setSource(TopologySegment source) {
             if (source != null && !(source instanceof ImmutableTopologySegment)) {
-                this.source = ImmutableTopologySegment.newBuilderFrom(Objects.requireNonNull(source)).build();
+                this.source = ImmutableTopologySegment.newBuilderFrom(source).build();
             } else {
                 this.source = source;
             }
@@ -131,7 +131,7 @@ public final class ImmutableTopologyEdge implements TopologyEdge {
 
         public Builder setTarget(TopologyPort target) {
             if (target != null && !(target instanceof ImmutableTopologyPort)) {
-                this.target = ImmutableTopologyPort.newBuilderFrom(Objects.requireNonNull(target)).build();
+                this.target = ImmutableTopologyPort.newBuilderFrom(target).build();
             } else {
                 this.target = target;
             }
@@ -141,7 +141,7 @@ public final class ImmutableTopologyEdge implements TopologyEdge {
 
         public Builder setTarget(TopologySegment target) {
             if (target != null && !(target instanceof ImmutableTopologySegment)) {
-                this.target = ImmutableTopologySegment.newBuilderFrom(Objects.requireNonNull(target)).build();
+                this.target = ImmutableTopologySegment.newBuilderFrom(target).build();
             } else {
                 this.target = target;
             }

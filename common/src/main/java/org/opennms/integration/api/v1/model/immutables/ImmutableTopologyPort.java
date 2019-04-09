@@ -61,7 +61,7 @@ public final class ImmutableTopologyPort implements TopologyPort {
         return new Builder(fromTopologyPort);
     }
 
-    public static class Builder {
+    public static final class Builder {
         private String id;
         private String tooltipText;
         private Integer ifIndex;

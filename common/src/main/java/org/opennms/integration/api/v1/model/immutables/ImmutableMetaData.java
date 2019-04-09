@@ -35,7 +35,7 @@ import org.opennms.integration.api.v1.model.MetaData;
 /**
  * An immutable implementation of {@link MetaData} that enforces deep immutability.
  */
-public class ImmutableMetaData implements MetaData {
+public final class ImmutableMetaData implements MetaData {
     private final String context;
     private final String key;
     private final String value;

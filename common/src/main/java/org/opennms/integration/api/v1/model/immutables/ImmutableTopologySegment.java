@@ -55,7 +55,7 @@ public final class ImmutableTopologySegment implements TopologySegment {
         return new Builder(fromSegment);
     }
 
-    public static class Builder {
+    public static final class Builder {
         private String id;
         private String tooltipText;
         private TopologyProtocol protocol;
