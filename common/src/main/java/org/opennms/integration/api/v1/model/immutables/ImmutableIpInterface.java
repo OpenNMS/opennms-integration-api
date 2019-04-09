@@ -29,6 +29,7 @@
 package org.opennms.integration.api.v1.model.immutables;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -67,7 +68,7 @@ public final class ImmutableIpInterface implements IpInterface {
 
         private Builder(IpInterface ipInterface) {
             this.ipAddress = ipInterface.getIpAddress();
-            this.metaData = ipInterface.getMetaData();
+            this.metaData = new ArrayList<>(ipInterface.getMetaData());
         }
 
         public Builder setIpAddress(InetAddress ipAddress) {

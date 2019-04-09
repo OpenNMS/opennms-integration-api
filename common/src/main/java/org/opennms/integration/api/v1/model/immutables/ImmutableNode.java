@@ -98,9 +98,9 @@ public final class ImmutableNode implements Node {
             this.label = node.getLabel();
             this.location = node.getLocation();
             this.assetRecord = node.getAssetRecord();
-            this.ipInterfaces = node.getIpInterfaces();
-            this.snmpInterfaces = node.getSnmpInterfaces();
-            this.metaData = node.getMetaData();
+            this.ipInterfaces = new ArrayList<>(node.getIpInterfaces());
+            this.snmpInterfaces = new ArrayList<>(node.getSnmpInterfaces());
+            this.metaData = new ArrayList<>(node.getMetaData());
         }
 
         public Builder setId(int id) {
