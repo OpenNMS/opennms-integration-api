@@ -28,6 +28,13 @@
 
 package org.opennms.integration.api.v1.config.datacollection.graphs;
 
+import org.opennms.integration.api.v1.annotations.Model;
+
+/**
+ * @see "The provided model implementation can be found in the class ImmutablePrefabGraph"
+ * @since 1.0.0
+ */
+@Model
 public interface PrefabGraph {
 
     String getName();

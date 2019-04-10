@@ -36,15 +36,16 @@ import java.util.concurrent.CompletableFuture;
 import org.opennms.integration.api.v1.collectors.CollectionRequest;
 import org.opennms.integration.api.v1.collectors.CollectionSet;
 import org.opennms.integration.api.v1.collectors.ServiceCollector;
-import org.opennms.integration.api.v1.collectors.resource.AttributeBuilder;
-import org.opennms.integration.api.v1.collectors.resource.CollectionSetBuilder;
+import org.opennms.integration.api.v1.collectors.immutables.ImmutableNumericAttribute;
 import org.opennms.integration.api.v1.collectors.resource.CollectionSetResource;
-import org.opennms.integration.api.v1.collectors.resource.CollectionSetResourceBuilder;
 import org.opennms.integration.api.v1.collectors.resource.IpInterfaceResource;
 import org.opennms.integration.api.v1.collectors.resource.NodeResource;
 import org.opennms.integration.api.v1.collectors.resource.NumericAttribute;
 import org.opennms.integration.api.v1.collectors.resource.Resource;
-import org.opennms.integration.api.v1.collectors.resource.ResourceBuilder;
+import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableCollectionSet;
+import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableCollectionSetResource;
+import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableIpInterfaceResource;
+import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableNodeResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -121,27 +122,26 @@ public class SampleCollector implements ServiceCollector {
 
     public static CollectionSet buildCollectionSet() {
         // Build collection set with a IpInterface resource.
-        NodeResource nodeResource = new ResourceBuilder()
-                .withNodeId(nodeId)
-                .buildNodeResource();
-        IpInterfaceResource ipInterfaceResource = new ResourceBuilder()
-                .withInstance(INSTANCE_NAME)
-                .buildIpInterfaceResource(nodeResource);
-        // Add attribute.
-        NumericAttribute attribute = new AttributeBuilder()
-                .withGroup("group")
-                .withName("snmp")
-                .withNumericValue(3.54)
-                .withType(NumericAttribute.Type.GAUGE)
-                .buildNumeric();
-        //build collection set.
-        CollectionSetResource collectionSetResource = new CollectionSetResourceBuilder<IpInterfaceResource>()
-                .withResource(ipInterfaceResource)
-                .withNumericAttribute(attribute)
+        NodeResource nodeResource = ImmutableNodeResource.newBuilder()
+                .setNodeId(nodeId)
                 .build();
-        CollectionSet collectionSet = new CollectionSetBuilder()
-                .withCollectionSetResource(collectionSetResource)
-                .withTimeStamp(System.currentTimeMillis())
+        IpInterfaceResource ipInterfaceResource = ImmutableIpInterfaceResource.newInstance(nodeResource, INSTANCE_NAME);
+        // Add attribute.
+        NumericAttribute attribute = ImmutableNumericAttribute.newBuilder()
+                .setGroup("group")
+                .setName("snmp")
+                .setValue(3.54)
+                .setType(NumericAttribute.Type.GAUGE)
+                .build();
+        //build collection set.
+        CollectionSetResource<IpInterfaceResource> collectionSetResource =
+                ImmutableCollectionSetResource.newBuilder(IpInterfaceResource.class)
+                .setResource(ipInterfaceResource)
+                .addNumericAttribute(attribute)
+                .build();
+        CollectionSet collectionSet = ImmutableCollectionSet.newBuilder()
+                .addCollectionSetResource(collectionSetResource)
+                .setTimestamp(System.currentTimeMillis())
                 .build();
         return collectionSet;
     }

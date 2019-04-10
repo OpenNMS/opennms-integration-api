@@ -31,9 +31,15 @@ package org.opennms.integration.api.v1.ticketing;
 import java.net.InetAddress;
 import java.util.Map;
 
+import org.opennms.integration.api.v1.annotations.Model;
+
 /**
  * Encapsulates Ticket fields that may be set by OpenNMS or the registered @{@link TicketingPlugin} implementation.
+ * 
+ * @see "The provided model implementation can be found in the class ImmutableTicket"
+ * @since 1.0.0
  */
+@Model
 public interface Ticket {
 
     enum State {

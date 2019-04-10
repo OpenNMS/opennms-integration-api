@@ -30,17 +30,15 @@ package org.opennms.integration.api.sample;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import org.opennms.integration.api.v1.pollers.PollerResult;
 import org.opennms.integration.api.v1.pollers.PollerRequest;
+import org.opennms.integration.api.v1.pollers.PollerResult;
 import org.opennms.integration.api.v1.pollers.ServicePoller;
 import org.opennms.integration.api.v1.pollers.Status;
+import org.opennms.integration.api.v1.pollers.immutables.ImmutablePollerResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.opennms.integration.api.v1.pollers.beans.PollerResultBean;
 
 public class SamplePoller implements ServicePoller {
 
@@ -52,14 +50,19 @@ public class SamplePoller implements ServicePoller {
         try {
             if (pollerRequest.getAddress().equals(InetAddress.getLocalHost())) {
                 LOG.info("{} service is Up", pollerRequest.getServiceName());
-                future.complete(new PollerResultBean(Status.Up));
+                future.complete(ImmutablePollerResult.newBuilder()
+                        .setStatus(Status.Up)
+                        .build());
                 return future;
             }
         } catch (UnknownHostException e) {
             future.completeExceptionally(e);
             return future;
         }
-        future.complete(new PollerResultBean(Status.Down, "unknown address, sample works on localhost"));
+        future.complete(ImmutablePollerResult.newBuilder()
+                .setStatus(Status.Down)
+                .setReason("unknown address, sample works on localhost")
+                .build());
         return future;
     }
 }

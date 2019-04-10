@@ -31,12 +31,16 @@ package org.opennms.integration.api.v1.model;
 import java.util.List;
 import java.util.Optional;
 
+import org.opennms.integration.api.v1.annotations.Model;
+
 /**
- * An immutable in-memory event.
+ * An in-memory event.
  *
+ * @see "The provided model implementation can be found in the class ImmutableInMemoryEvent"
  * @author jwhite
  * @since 1.0.0
  */
+@Model
 public interface InMemoryEvent {
 
     String getUei();

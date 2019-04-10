@@ -28,12 +28,16 @@
 
 package org.opennms.integration.api.v1.model;
 
+import org.opennms.integration.api.v1.annotations.Model;
+
 /**
- * Immutable meta-data.
+ * Meta-data.
  *
+ * @see "The provided model implementation can be found in the class ImmutableMetaData"
  * @author jwhite
  * @since 1.0.0
  */
+@Model
 public interface MetaData {
 
     String getContext();

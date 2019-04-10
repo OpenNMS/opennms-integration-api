@@ -28,12 +28,16 @@
 
 package org.opennms.integration.api.v1.model;
 
+import org.opennms.integration.api.v1.annotations.Model;
+
 /**
- * An immutable SNMP interface.
+ * An SNMP interface.
  *
+ * @see "The provided model implementation can be found in the class ImmutableSnmpInterface"
  * @author jwhite
  * @since 1.0.0
  */
+@Model
 public interface SnmpInterface {
 
     String getIfDescr();

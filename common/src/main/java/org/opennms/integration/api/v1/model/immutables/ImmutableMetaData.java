@@ -41,17 +41,24 @@ public final class ImmutableMetaData implements MetaData {
     private final String value;
 
     private ImmutableMetaData(Builder builder) {
-        this.context = builder.context;
-        this.key = builder.key;
-        this.value = builder.value;
+        context = builder.context;
+        key = builder.key;
+        value = builder.value;
     }
 
     public static Builder newBuilder() {
         return new Builder();
     }
 
-    public static Builder newBuilderFrom(MetaData fromMetaData) {
-        return new Builder(fromMetaData);
+    public static Builder newBuilderFrom(MetaData metaData) {
+        return new Builder(metaData);
+    }
+
+    public static MetaData immutableCopy(MetaData metaData) {
+        if (metaData == null || metaData instanceof ImmutableMetaData) {
+            return metaData;
+        }
+        return newBuilderFrom(metaData).build();
     }
 
     public static final class Builder {
@@ -61,11 +68,11 @@ public final class ImmutableMetaData implements MetaData {
 
         private Builder() {
         }
-        
+
         private Builder(MetaData metaData) {
-            this.context = metaData.getContext();
-            this.key = metaData.getKey();
-            this.value = metaData.getValue();
+            context = metaData.getContext();
+            key = metaData.getKey();
+            value = metaData.getValue();
         }
 
         public Builder setContext(String context) {

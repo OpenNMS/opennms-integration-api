@@ -34,9 +34,10 @@ import java.util.Objects;
 
 import org.opennms.integration.api.v1.config.requisition.Requisition;
 import org.opennms.integration.api.v1.config.requisition.SnmpPrimaryType;
-import org.opennms.integration.api.v1.config.requisition.beans.RequisitionBean;
-import org.opennms.integration.api.v1.config.requisition.beans.RequisitionInterfaceBean;
-import org.opennms.integration.api.v1.config.requisition.beans.RequisitionNodeBean;
+import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionInterface;
+import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisition;
+import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionMetaData;
+import org.opennms.integration.api.v1.config.requisition.immutables.ImmutableRequisitionNode;
 import org.opennms.integration.api.v1.requisition.RequisitionProvider;
 import org.opennms.integration.api.v1.requisition.RequisitionRequest;
 
@@ -64,17 +65,25 @@ public class MyRequisitionProvider implements RequisitionProvider {
         final MyRequisitonRequest request = (MyRequisitonRequest)genericRequest;
         requisitionManager.trackGetRequisitionForSession(request.getSessionId());
         final InetAddress loopback = InetAddress.getLoopbackAddress();
-        return RequisitionBean.builder()
-                .foreignSource(request.getForeignSource())
-                .node(RequisitionNodeBean.builder()
-                        .foreignId("n1")
-                        .nodeLabel("n1")
-                        .asset("serialnumber", "42")
-                        .metaData("oai", "sn", "42")
-                        .iface(RequisitionInterfaceBean.builder()
-                                    .ipAddress(loopback)
-                                    .snmpPrimary(SnmpPrimaryType.NOT_ELIGIBLE)
-                                    .metaData("oai", "mac", "00aabbccddee")
+        return ImmutableRequisition.newBuilder()
+                .setForeignSource(request.getForeignSource())
+                .addNode(ImmutableRequisitionNode.newBuilder()
+                        .setForeignId("n1")
+                        .setNodeLabel("n1")
+                        .addAsset("serialnumber", "42")
+                        .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                .setContext("oai")
+                                .setKey("sn")
+                                .setValue("42")
+                                .build())
+                        .addInterface(ImmutableRequisitionInterface.newBuilder()
+                                    .setIpAddress(loopback)
+                                    .setSnmpPrimary(SnmpPrimaryType.NOT_ELIGIBLE)
+                                    .addMetaData(ImmutableRequisitionMetaData.newBuilder()
+                                            .setContext("oai")
+                                            .setKey("mac")
+                                            .setValue("00aabbccddee")
+                                            .build())
                                     .build())
                         .build())
                 .build();

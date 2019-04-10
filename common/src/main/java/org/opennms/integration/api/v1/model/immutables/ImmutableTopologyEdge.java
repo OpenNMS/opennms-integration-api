@@ -49,17 +49,52 @@ public final class ImmutableTopologyEdge implements TopologyEdge {
     private final EndpointType targetType;
 
     private ImmutableTopologyEdge(Builder builder) {
-        this.protocol = builder.protocol;
-        this.id = builder.id;
-        this.tooltipText = builder.tooltipText;
-        this.source = builder.source;
-        this.sourceType = builder.sourceType;
-        this.target = builder.target;
-        this.targetType = builder.targetType;
+        protocol = builder.protocol;
+        id = builder.id;
+        tooltipText = builder.tooltipText;
+        sourceType = builder.sourceType;
+        targetType = builder.targetType;
+        switch (sourceType) {
+            case NODE:
+                source = ImmutableNode.immutableCopy((Node) builder.source);
+                break;
+            case PORT:
+                source = ImmutableTopologyPort.immutableCopy((TopologyPort) builder.source);
+                break;
+            case SEGMENT:
+                source = ImmutableTopologySegment.immutableCopy((TopologySegment) builder.source);
+                break;
+            default:
+                throw new RuntimeException("Unsupported source type " + sourceType);
+        }
+        switch (targetType) {
+            case NODE:
+                target = ImmutableNode.immutableCopy((Node) builder.target);
+                break;
+            case PORT:
+                target = ImmutableTopologyPort.immutableCopy((TopologyPort) builder.target);
+                break;
+            case SEGMENT:
+                target = ImmutableTopologySegment.immutableCopy((TopologySegment) builder.target);
+                break;
+            default:
+                throw new RuntimeException("Unsupported target type " + targetType);
+        }
     }
 
     public static Builder newBuilder() {
         return new Builder();
+    }
+
+    public static Builder newBuilderFrom(TopologyEdge topologyEdge) {
+        return new Builder(topologyEdge);
+    }
+
+    public static TopologyEdge immutableCopy(TopologyEdge topologyEdge) {
+        if (topologyEdge == null || topologyEdge instanceof ImmutableTopologyEdge) {
+            return topologyEdge;
+        }
+        return newBuilderFrom(topologyEdge).build();
     }
 
     public static final class Builder {
@@ -72,6 +107,49 @@ public final class ImmutableTopologyEdge implements TopologyEdge {
         private EndpointType targetType;
 
         private Builder() {
+        }
+
+        private Builder(TopologyEdge topologyEdge) {
+            protocol = topologyEdge.getProtocol();
+            id = topologyEdge.getId();
+            tooltipText = topologyEdge.getTooltipText();
+            topologyEdge.visitEndpoints(new EndpointVisitor() {
+                @Override
+                public void visitSource(Node node) {
+                    source = node;
+                    sourceType = EndpointType.NODE;
+                }
+
+                @Override
+                public void visitSource(TopologyPort port) {
+                    source = port;
+                    sourceType = EndpointType.PORT;
+                }
+
+                @Override
+                public void visitSource(TopologySegment segment) {
+                    source = segment;
+                    sourceType = EndpointType.SEGMENT;
+                }
+
+                @Override
+                public void visitTarget(Node node) {
+                    target = node;
+                    targetType = EndpointType.NODE;
+                }
+
+                @Override
+                public void visitTarget(TopologyPort port) {
+                    target = port;
+                    targetType = EndpointType.PORT;
+                }
+
+                @Override
+                public void visitTarget(TopologySegment segment) {
+                    target = segment;
+                    targetType = EndpointType.SEGMENT;
+                }
+            });
         }
 
         public Builder setProtocol(TopologyProtocol protocol) {
@@ -90,61 +168,37 @@ public final class ImmutableTopologyEdge implements TopologyEdge {
         }
 
         public Builder setSource(Node source) {
-            if (source != null && !(source instanceof ImmutableNode)) {
-                this.source = ImmutableNode.newBuilderFrom(source).build();
-            } else {
-                this.source = source;
-            }
+            this.source = source;
             this.sourceType = EndpointType.NODE;
             return this;
         }
 
         public Builder setSource(TopologyPort source) {
-            if (source != null && !(source instanceof ImmutableTopologyPort)) {
-                this.source = ImmutableTopologyPort.newBuilderFrom(source).build();
-            } else {
-                this.source = source;
-            }
+            this.source = source;
             this.sourceType = EndpointType.PORT;
             return this;
         }
 
         public Builder setSource(TopologySegment source) {
-            if (source != null && !(source instanceof ImmutableTopologySegment)) {
-                this.source = ImmutableTopologySegment.newBuilderFrom(source).build();
-            } else {
-                this.source = source;
-            }
+            this.source = source;
             this.sourceType = EndpointType.SEGMENT;
             return this;
         }
 
         public Builder setTarget(Node target) {
-            if (target != null && !(target instanceof ImmutableNode)) {
-                this.target = ImmutableNode.newBuilderFrom(target).build();
-            } else {
-                this.target = target;
-            }
+            this.target = target;
             this.targetType = EndpointType.NODE;
             return this;
         }
 
         public Builder setTarget(TopologyPort target) {
-            if (target != null && !(target instanceof ImmutableTopologyPort)) {
-                this.target = ImmutableTopologyPort.newBuilderFrom(target).build();
-            } else {
-                this.target = target;
-            }
+            this.target = target;
             this.targetType = EndpointType.PORT;
             return this;
         }
 
         public Builder setTarget(TopologySegment target) {
-            if (target != null && !(target instanceof ImmutableTopologySegment)) {
-                this.target = ImmutableTopologySegment.newBuilderFrom(target).build();
-            } else {
-                this.target = target;
-            }
+            this.target = target;
             this.targetType = EndpointType.SEGMENT;
             return this;
         }

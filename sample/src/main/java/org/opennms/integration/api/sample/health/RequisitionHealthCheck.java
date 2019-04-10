@@ -41,11 +41,12 @@ import org.opennms.integration.api.v1.events.EventSubscriptionService;
 import org.opennms.integration.api.v1.health.Context;
 import org.opennms.integration.api.v1.health.HealthCheck;
 import org.opennms.integration.api.v1.health.Response;
-import org.opennms.integration.api.v1.health.ResponseBean;
+import org.opennms.integration.api.v1.health.ImmutableResponse;
 import org.opennms.integration.api.v1.health.Status;
 import org.opennms.integration.api.v1.model.InMemoryEvent;
 import org.opennms.integration.api.v1.model.Node;
-import org.opennms.integration.api.v1.model.beans.InMemoryEventBean;
+import org.opennms.integration.api.v1.model.immutables.ImmutableEventParameter;
+import org.opennms.integration.api.v1.model.immutables.ImmutableInMemoryEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,15 +92,18 @@ public class RequisitionHealthCheck implements HealthCheck {
             // Verify that no nodes are currently present for the foreign source
             List<Node> nodes = nodeDao.getNodesInForeignSource(foreignSource);
             if (!nodes.isEmpty()) {
-                return new ResponseBean(Status.Failure, String.format("Expected to find 0 nodes in foreign-source %s, but found %d.",
+                return ImmutableResponse.newInstance(Status.Failure, String.format("Expected to find 0 nodes in foreign-source %s, but found %d.",
                         foreignSource, nodes.size()));
             }
 
             final String url = String.format("requisition://%s?foreignSource=%s&sessionId=%s", MyRequisitionProvider.TYPE, foreignSource, testSession.getSessionId());
             try (EventHandler eventHandler = new EventHandler(eventSubscriptionService, testSession.getSessionId())) {
                 // Import the requisition
-                final InMemoryEventBean reloadImport = new InMemoryEventBean("uei.opennms.org/internal/importer/reloadImport", RequisitionHealthCheck.class.getCanonicalName());
-                reloadImport.addParameter("url", url);
+                final InMemoryEvent reloadImport = ImmutableInMemoryEvent.newBuilder()
+                        .setUei("uei.opennms.org/internal/importer/reloadImport")
+                        .setSource(RequisitionHealthCheck.class.getCanonicalName())
+                        .addParameter(ImmutableEventParameter.newInstance("url", url))
+                        .build();
                 eventForwarder.sendSync(reloadImport);
                 // Wait until we get a import start event
                 eventHandler.waitForImportStarted();
@@ -113,7 +117,7 @@ public class RequisitionHealthCheck implements HealthCheck {
         // This may actually take a while but we want the health check to complete quickly so deem this sufficient
 
         // All clear
-        return new ResponseBean(Status.Success);
+        return ImmutableResponse.newInstance(Status.Success);
     }
 
     private static class EventHandler implements EventListener, AutoCloseable {

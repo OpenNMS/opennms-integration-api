@@ -28,10 +28,14 @@
 
 package org.opennms.integration.api.v1.model;
 
+import org.opennms.integration.api.v1.annotations.Model;
+
 /**
+ * @see "The provided model implementation can be found in the class ImmutableTopologyEdge"
  * @author mbrooks
  * @since 1.0.0
  */
+@Model
 public interface TopologyEdge extends TopologyRef {
     TopologyProtocol getProtocol();
 

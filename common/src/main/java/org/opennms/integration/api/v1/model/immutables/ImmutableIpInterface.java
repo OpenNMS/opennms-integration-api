@@ -29,14 +29,14 @@
 package org.opennms.integration.api.v1.model.immutables;
 
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.opennms.integration.api.v1.model.IpInterface;
 import org.opennms.integration.api.v1.model.MetaData;
+import org.opennms.integration.api.v1.util.ImmutableCollections;
+import org.opennms.integration.api.v1.util.MutableCollections;
 
 /**
  * An immutable implementation of {@link IpInterface} that enforces deep immutability.
@@ -45,18 +45,29 @@ public final class ImmutableIpInterface implements IpInterface {
     private final InetAddress ipAddress;
     private final List<MetaData> metaData;
 
-    private ImmutableIpInterface(Builder builder) {
-        this.ipAddress = builder.ipAddress;
-        this.metaData = builder.metaData == null ? Collections.emptyList() :
-                Collections.unmodifiableList(copyMetaData(builder.metaData));
+    private ImmutableIpInterface(InetAddress ipAddress, List<MetaData> metaData) {
+        this.ipAddress = ipAddress;
+        this.metaData = ImmutableCollections.with(ImmutableMetaData::immutableCopy)
+                .newList(metaData);
+    }
+
+    public static ImmutableIpInterface newInstance(InetAddress ipAddress, List<MetaData> metaData) {
+        return new ImmutableIpInterface(Objects.requireNonNull(ipAddress), metaData);
+    }
+
+    public static IpInterface immutableCopy(IpInterface ipInterface) {
+        if (ipInterface == null || ipInterface instanceof ImmutableIpInterface) {
+            return ipInterface;
+        }
+        return newInstance(ipInterface.getIpAddress(), ipInterface.getMetaData());
     }
 
     public static Builder newBuilder() {
         return new Builder();
     }
 
-    public static Builder newBuilderFrom(IpInterface fromIpInterface) {
-        return new Builder(fromIpInterface);
+    public static Builder newBuilderFrom(IpInterface ipInterface) {
+        return new Builder(ipInterface);
     }
 
     public static final class Builder {
@@ -67,12 +78,12 @@ public final class ImmutableIpInterface implements IpInterface {
         }
 
         private Builder(IpInterface ipInterface) {
-            this.ipAddress = ipInterface.getIpAddress();
-            this.metaData = new ArrayList<>(ipInterface.getMetaData());
+            ipAddress = ipInterface.getIpAddress();
+            metaData = MutableCollections.copyListFromNullable(ipInterface.getMetaData(), LinkedList::new);
         }
 
         public Builder setIpAddress(InetAddress ipAddress) {
-            this.ipAddress = ipAddress;
+            this.ipAddress = Objects.requireNonNull(ipAddress);
             return this;
         }
 
@@ -81,21 +92,17 @@ public final class ImmutableIpInterface implements IpInterface {
             return this;
         }
 
-        public ImmutableIpInterface build() {
-            return new ImmutableIpInterface(this);
+        public Builder addMetaData(MetaData metaData) {
+            if (this.metaData == null) {
+                this.metaData = new LinkedList<>();
+            }
+            this.metaData.add(metaData);
+            return this;
         }
-    }
 
-    private List<MetaData> copyMetaData(List<MetaData> metaData) {
-        return metaData.stream()
-                .map(md -> {
-                    if (!(md instanceof ImmutableMetaData)) {
-                        return ImmutableMetaData.newBuilderFrom(md).build();
-                    }
-
-                    return md;
-                })
-                .collect(Collectors.toList());
+        public ImmutableIpInterface build() {
+            return ImmutableIpInterface.newInstance(ipAddress, metaData);
+        }
     }
 
     @Override

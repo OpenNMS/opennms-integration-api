@@ -32,7 +32,7 @@ package org.opennms.integration.api.v1.model;
  * @author mbrooks
  * @since 1.0.0
  */
-public interface TopologyRef {
+interface TopologyRef {
     String getId();
 
     String getTooltipText();

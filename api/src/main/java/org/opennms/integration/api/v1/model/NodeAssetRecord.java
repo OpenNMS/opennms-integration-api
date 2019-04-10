@@ -28,12 +28,16 @@
 
 package org.opennms.integration.api.v1.model;
 
+import org.opennms.integration.api.v1.annotations.Model;
+
 /**
- * An immutable asset record for a node.
+ * An asset record for a node.
  *
+ * @see "The provided model implementation can be found in the class ImmutableNodeAssetRecord"
  * @author jwhite
  * @since 1.0.0
  */
+@Model
 public interface NodeAssetRecord {
 
     String getVendor();

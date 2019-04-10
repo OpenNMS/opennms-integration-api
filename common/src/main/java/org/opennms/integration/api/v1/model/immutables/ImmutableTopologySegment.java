@@ -42,17 +42,24 @@ public final class ImmutableTopologySegment implements TopologySegment {
     private final String tooltipText;
 
     private ImmutableTopologySegment(Builder builder) {
-        this.id = builder.id;
-        this.tooltipText = builder.tooltipText;
-        this.protocol = builder.protocol;
+        id = builder.id;
+        tooltipText = builder.tooltipText;
+        protocol = builder.protocol;
     }
 
     public static Builder newBuilder() {
         return new Builder();
     }
 
-    public static Builder newBuilderFrom(TopologySegment fromSegment) {
-        return new Builder(fromSegment);
+    public static Builder newBuilderFrom(TopologySegment topologySegment) {
+        return new Builder(topologySegment);
+    }
+
+    public static TopologySegment immutableCopy(TopologySegment topologySegment) {
+        if (topologySegment == null || topologySegment instanceof ImmutableTopologySegment) {
+            return topologySegment;
+        }
+        return newBuilderFrom(topologySegment).build();
     }
 
     public static final class Builder {
@@ -64,9 +71,9 @@ public final class ImmutableTopologySegment implements TopologySegment {
         }
 
         private Builder(TopologySegment segment) {
-            this.id = segment.getId();
-            this.tooltipText = segment.getTooltipText();
-            this.protocol = segment.getProtocol();
+            id = segment.getId();
+            tooltipText = segment.getTooltipText();
+            protocol = segment.getProtocol();
         }
 
         public Builder setId(String id) {

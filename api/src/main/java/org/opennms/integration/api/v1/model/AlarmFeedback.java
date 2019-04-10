@@ -28,9 +28,14 @@
 
 package org.opennms.integration.api.v1.model;
 
+import org.opennms.integration.api.v1.annotations.Model;
+
 /**
  * The integration API type for alarm feedback.
+ *
+ * @since 1.0.0
  */
+@Model
 public interface AlarmFeedback {
 
     /**

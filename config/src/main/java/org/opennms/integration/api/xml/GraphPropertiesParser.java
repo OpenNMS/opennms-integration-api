@@ -36,7 +36,7 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 
 import org.opennms.integration.api.v1.config.datacollection.graphs.PrefabGraph;
-import org.opennms.integration.api.v1.config.datacollection.graphs.PrefabGraphBuilder;
+import org.opennms.integration.api.v1.config.datacollection.graphs.immutables.ImmutablePrefabGraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,41 +77,41 @@ public class GraphPropertiesParser {
 
     public static PrefabGraph makePrefabGraph(String name, Properties props) {
 
-        PrefabGraphBuilder builder = new PrefabGraphBuilder();
+        ImmutablePrefabGraph.Builder builder = ImmutablePrefabGraph.newBuilder();
 
         String key = name; // Default to the name, for
-        builder.withName(name);
+        builder.setName(name);
         if (props.getProperty("report.id") != null) {
             key = null; // A report-per-file properties file
         }
 
-        builder.withTitle(getReportProperty(props, key, "name", true));
+        builder.setTitle(getReportProperty(props, key, "name", true));
 
-        builder.withCommand(getReportProperty(props, key, "command", true));
+        builder.setCommand(getReportProperty(props, key, "command", true));
 
         String columnString = getReportProperty(props, key, "columns", true);
-        builder.withColumns(parseBundleList(columnString));
+        builder.setColumns(parseBundleList(columnString));
 
         String externalValuesString = getReportProperty(props, key,
                 "externalValues",
                 false);
         if (externalValuesString != null) {
-           builder.withExternalValues(parseBundleList(externalValuesString));
+           builder.setExternalValues(parseBundleList(externalValuesString));
         }
 
         String propertiesValuesString = getReportProperty(props, key,
                 "propertiesValues",
                 false);
         if (propertiesValuesString != null) {
-            builder.withPropertiesValues(parseBundleList(propertiesValuesString));
+            builder.setPropertiesValues(parseBundleList(propertiesValuesString));
         }
 
         String typesString = getReportProperty(props, key, "type", false);
         if (typesString != null) {
-            builder.withTypes(parseBundleList(typesString));
+            builder.setTypes(parseBundleList(typesString));
         }
 
-        builder.withDescription(getReportProperty(props, key, "description",
+        builder.setDescription(getReportProperty(props, key, "description",
                 false));
 
         /*
@@ -121,14 +121,14 @@ public class GraphPropertiesParser {
          * for --width and --height and set the following two variables
          * automagically, without having to rely on a configuration file.
          */
-        builder.withGraphWidth(getIntegerReportProperty(props, key, "width",
+        builder.setGraphWidth(getIntegerReportProperty(props, key, "width",
                 false));
-        builder.withGraphHeight(getIntegerReportProperty(props, key, "height",
+        builder.setGraphHeight(getIntegerReportProperty(props, key, "height",
                 false));
         String suppressString = getReportProperty(props, key, "suppress",
                 false);
         if (suppressString != null) {
-            builder.withSupress(parseBundleList(suppressString));
+            builder.setSupress(parseBundleList(suppressString));
         }
 
         return builder.build();

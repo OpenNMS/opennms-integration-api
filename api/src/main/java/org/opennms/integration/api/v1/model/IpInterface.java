@@ -31,12 +31,16 @@ package org.opennms.integration.api.v1.model;
 import java.net.InetAddress;
 import java.util.List;
 
+import org.opennms.integration.api.v1.annotations.Model;
+
 /**
- * An immutable IP interface.
+ * An IP interface.
  *
+ * @see "The provided model implementation can be found in the class ImmutableIpInterface"
  * @author jwhite
  * @since 1.0.0
  */
+@Model
 public interface IpInterface {
 
     InetAddress getIpAddress();

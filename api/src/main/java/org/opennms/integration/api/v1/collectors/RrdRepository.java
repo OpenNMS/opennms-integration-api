@@ -30,9 +30,15 @@ package org.opennms.integration.api.v1.collectors;
 
 import java.util.List;
 
+import org.opennms.integration.api.v1.annotations.Model;
+
 /**
  * RRD settings used when persisting using an RRD-based backend.
+ * 
+ * @see "The provided model implementation can be found in the class ImmutableRrdRepository"
+ * @since 1.0.0
  */
+@Model
 public interface RrdRepository {
 
     /**
