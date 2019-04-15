@@ -35,6 +35,7 @@ import org.opennms.integration.api.v1.annotations.Model;
 /**
  * An database event.
  *
+ * @see "The provided model implementation can be found in the class ImmutableDatabaseEvent"
  * @author jwhite
  * @since 1.0.0
  */

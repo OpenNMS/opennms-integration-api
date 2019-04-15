@@ -33,6 +33,7 @@ import org.opennms.integration.api.v1.annotations.Model;
 /**
  * The integration API type for alarm feedback.
  *
+ * @see "The provided model implementation can be found in the class ImmutableAlarmFeedback"
  * @since 1.0.0
  */
 @Model
