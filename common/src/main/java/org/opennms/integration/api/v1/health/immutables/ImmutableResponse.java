@@ -26,9 +26,12 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.health;
+package org.opennms.integration.api.v1.health.immutables;
 
 import java.util.Objects;
+
+import org.opennms.integration.api.v1.health.Response;
+import org.opennms.integration.api.v1.health.Status;
 
 /**
  * An immutable implementation of {@link Response} that enforces deep immutability.

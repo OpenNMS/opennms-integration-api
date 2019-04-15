@@ -26,13 +26,14 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.ticketing;
+package org.opennms.integration.api.v1.ticketing.immutables;
 
 import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.opennms.integration.api.v1.ticketing.Ticket;
 import org.opennms.integration.api.v1.util.MutableCollections;
 import org.opennms.integration.api.v1.util.ImmutableCollections;
 
