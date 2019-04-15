@@ -42,7 +42,7 @@ import org.opennms.integration.api.v1.model.DatabaseEvent;
 import org.opennms.integration.api.v1.model.EventParameter;
 import org.opennms.integration.api.v1.model.InMemoryEvent;
 import org.opennms.integration.api.v1.model.Severity;
-import org.opennms.integration.api.v1.model.beans.AlarmBean;
+import org.opennms.integration.api.v1.model.immutables.ImmutableAlarm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,8 +80,9 @@ public class AlarmTestContextManager {
 
         // Set the MO instance on the alarm to some non-deterministic value
         // that is tied to the given session.
-        final AlarmBean updatedAlarm = new AlarmBean(alarm);
-        updatedAlarm.setManagedObjectInstance(session.getInstanceId());
+        final Alarm updatedAlarm = ImmutableAlarm.newBuilder()
+                .setManagedObjectInstance(session.getInstanceId())
+                .build();
         return updatedAlarm;
     }
 

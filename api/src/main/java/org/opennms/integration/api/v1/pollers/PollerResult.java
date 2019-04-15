@@ -30,9 +30,15 @@ package org.opennms.integration.api.v1.pollers;
 
 import java.util.Map;
 
+import org.opennms.integration.api.v1.annotations.Model;
+
 /**
  * PollerResult encapsulates the results from {@link ServicePoller#poll(PollerRequest)}.
+ * 
+ * @see "The provided model implementation can be found in the class ImmutablePollerResult"
+ * @since 1.0.0
  */
+@Model
 public interface PollerResult {
 
     String PROPERTY_RESPONSE_TIME = "response-time";

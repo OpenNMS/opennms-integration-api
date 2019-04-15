@@ -35,9 +35,11 @@ import org.opennms.integration.api.v1.events.EventForwarder;
 import org.opennms.integration.api.v1.health.Context;
 import org.opennms.integration.api.v1.health.HealthCheck;
 import org.opennms.integration.api.v1.health.Response;
-import org.opennms.integration.api.v1.health.ResponseBean;
+import org.opennms.integration.api.v1.health.immutables.ImmutableResponse;
 import org.opennms.integration.api.v1.health.Status;
-import org.opennms.integration.api.v1.model.beans.InMemoryEventBean;
+import org.opennms.integration.api.v1.model.InMemoryEvent;
+import org.opennms.integration.api.v1.model.immutables.ImmutableEventParameter;
+import org.opennms.integration.api.v1.model.immutables.ImmutableInMemoryEvent;
 
 /**
  * This health check verifies that:
@@ -65,9 +67,13 @@ public class AlarmLifecyleHealthCheck implements HealthCheck {
     @Override
     public Response perform(Context context) throws Exception {
         try (AlarmTestContextManager.AlarmTestSession session = alarmManager.newSession()) {
-            InMemoryEventBean trigger = new InMemoryEventBean(AlarmTestContextManager.TRIGGER_UEI, EVENT_SOURCE);
-            // Add a parameter to make the alarm unique to this session
-            trigger.addParameter(AlarmTestContextManager.SESSION_ID_PARM_NAME, session.getSessionId());
+            InMemoryEvent trigger = ImmutableInMemoryEvent.newBuilder()
+                    .setUei(AlarmTestContextManager.TRIGGER_UEI)
+                    .setSource(EVENT_SOURCE)
+                    // Add a parameter to make the alarm unique to this session
+                    .addParameter(ImmutableEventParameter.newInstance(AlarmTestContextManager.SESSION_ID_PARM_NAME,
+                            session.getSessionId()))
+                    .build();
             // Forward the event synchronously
             eventForwarder.sendSync(trigger);
 
@@ -75,9 +81,13 @@ public class AlarmLifecyleHealthCheck implements HealthCheck {
             session.waitForTrigger();
 
             // Now send the corresponding clear
-            InMemoryEventBean clear = new InMemoryEventBean(AlarmTestContextManager.CLEAR_UEI, EVENT_SOURCE);
-            // Add a parameter to make the alarm unique to this session
-            clear.addParameter(AlarmTestContextManager.SESSION_ID_PARM_NAME, session.getSessionId());
+            InMemoryEvent clear = ImmutableInMemoryEvent.newBuilder()
+                    .setUei(AlarmTestContextManager.CLEAR_UEI)
+                    .setSource(EVENT_SOURCE)
+                    // Add a parameter to make the alarm unique to this session
+                    .addParameter(ImmutableEventParameter.newInstance(AlarmTestContextManager.SESSION_ID_PARM_NAME,
+                            session.getSessionId()))
+                    .build();
             // Forward the event synchronously
             eventForwarder.sendSync(clear);
 
@@ -85,7 +95,7 @@ public class AlarmLifecyleHealthCheck implements HealthCheck {
             session.waitForClear();
 
             // All clear
-            return new ResponseBean(Status.Success);
+            return ImmutableResponse.newInstance(Status.Success);
         }
     }
 }

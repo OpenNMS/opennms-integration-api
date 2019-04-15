@@ -41,17 +41,24 @@ public final class ImmutableSnmpInterface implements SnmpInterface {
     private final Integer ifIndex;
 
     private ImmutableSnmpInterface(Builder builder) {
-        this.ifDescr = builder.ifDescr;
-        this.ifName = builder.ifName;
-        this.ifIndex = builder.ifIndex;
+        ifDescr = builder.ifDescr;
+        ifName = builder.ifName;
+        ifIndex = builder.ifIndex;
     }
 
     public static Builder newBuilder() {
         return new Builder();
     }
 
-    public static Builder newBuilderFrom(SnmpInterface fromSnmpInterface) {
-        return new Builder(fromSnmpInterface);
+    public static Builder newBuilderFrom(SnmpInterface snmpInterface) {
+        return new Builder(snmpInterface);
+    }
+
+    public static SnmpInterface immutableCopy(SnmpInterface snmpInterface) {
+        if (snmpInterface == null || snmpInterface instanceof ImmutableSnmpInterface) {
+            return snmpInterface;
+        }
+        return newBuilderFrom(snmpInterface).build();
     }
 
     public static final class Builder {
@@ -63,9 +70,9 @@ public final class ImmutableSnmpInterface implements SnmpInterface {
         }
 
         private Builder(SnmpInterface snmpInterface) {
-            this.ifDescr = snmpInterface.getIfDescr();
-            this.ifName = snmpInterface.getIfName();
-            this.ifIndex = snmpInterface.getIfIndex();
+            ifDescr = snmpInterface.getIfDescr();
+            ifName = snmpInterface.getIfName();
+            ifIndex = snmpInterface.getIfIndex();
         }
 
         public Builder setIfDescr(String ifDescr) {

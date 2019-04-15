@@ -28,12 +28,16 @@
 
 package org.opennms.integration.api.v1.model;
 
+import org.opennms.integration.api.v1.annotations.Model;
+
 /**
- * An immutable event parameter.
+ * An event parameter.
  *
+ * @see "The provided model implementation can be found in the class ImmutableEventParameter"
  * @author jwhite
  * @since 1.0.0
  */
+@Model
 public interface EventParameter {
 
     String getName();

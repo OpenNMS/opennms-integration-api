@@ -30,19 +30,18 @@ package org.opennms.integration.api.sample.health;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Random;
 
 import org.opennms.integration.api.v1.dao.NodeDao;
 import org.opennms.integration.api.v1.health.Context;
 import org.opennms.integration.api.v1.health.HealthCheck;
 import org.opennms.integration.api.v1.health.Response;
-import org.opennms.integration.api.v1.health.ResponseBean;
+import org.opennms.integration.api.v1.health.immutables.ImmutableResponse;
 import org.opennms.integration.api.v1.health.Status;
 import org.opennms.integration.api.v1.model.Node;
 import org.opennms.integration.api.v1.topology.UserDefinedLink;
 import org.opennms.integration.api.v1.topology.UserDefinedLinkDao;
-import org.opennms.integration.api.v1.topology.beans.UserDefinedLinkBean;
+import org.opennms.integration.api.v1.topology.immutables.ImmutableUserDefinedLink;
 
 public class UserDefinedLinkHealthCheck implements HealthCheck {
     private final UserDefinedLinkDao userDefinedLinkDao;
@@ -64,25 +63,25 @@ public class UserDefinedLinkHealthCheck implements HealthCheck {
         final List<Node> nodes = nodeDao.getNodes();
         // We need at least two nodes to run the check
         if (nodes.size() < 2) {
-            return new ResponseBean(Status.Success);
+            return ImmutableResponse.newInstance(Status.Success);
         }
 
         // Create a new link with some unique label
         String uniqueLabel = String.format("%d-%d", System.currentTimeMillis(), random.nextLong());
         Node nodeA = nodes.get(0);
         Node nodeZ = nodes.get(1);
-        UserDefinedLink link = UserDefinedLinkBean.builder()
-                .nodeIdA(nodeA.getId())
-                .nodeIdZ(nodeZ.getId())
-                .linkLabel(uniqueLabel)
-                .linkId(uniqueLabel)
-                .owner("test")
+        UserDefinedLink link = ImmutableUserDefinedLink.newBuilder()
+                .setNodeIdA(nodeA.getId())
+                .setNodeIdZ(nodeZ.getId())
+                .setLinkLabel(uniqueLabel)
+                .setLinkId(uniqueLabel)
+                .setOwner("test")
                 .build();
 
         // Verify that our link doesn't already exist
         List<UserDefinedLink> links = userDefinedLinkDao.getLinksWithLabel(uniqueLabel);
         if (!links.isEmpty()) {
-            return new ResponseBean(Status.Failure, String.format("A link with label %s already exists!", uniqueLabel));
+            return ImmutableResponse.newInstance(Status.Failure, String.format("A link with label %s already exists!", uniqueLabel));
         }
 
         // Save
@@ -91,14 +90,14 @@ public class UserDefinedLinkHealthCheck implements HealthCheck {
         // Verify
         links = userDefinedLinkDao.getLinksWithLabel(uniqueLabel);
         if (links.size() != 1) {
-            return new ResponseBean(Status.Failure, String.format("Expected 1 link, but found: %d", links.size()));
+            return ImmutableResponse.newInstance(Status.Failure, String.format("Expected 1 link, but found: %d", links.size()));
         }
 
         // Delete
         userDefinedLinkDao.delete(link);
 
         // Done!
-        return new ResponseBean(Status.Success);
+        return ImmutableResponse.newInstance(Status.Success);
     }
 
 }

@@ -30,12 +30,15 @@ package org.opennms.integration.api.v1.model;
 
 import java.util.List;
 
+import org.opennms.integration.api.v1.annotations.Model;
+
 /**
- * An immutable database event.
+ * An database event.
  *
  * @author jwhite
  * @since 1.0.0
  */
+@Model
 public interface DatabaseEvent {
 
     String getUei();

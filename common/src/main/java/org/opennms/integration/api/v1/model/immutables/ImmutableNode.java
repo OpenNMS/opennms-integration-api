@@ -29,16 +29,17 @@
 package org.opennms.integration.api.v1.model.immutables;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.opennms.integration.api.v1.model.IpInterface;
 import org.opennms.integration.api.v1.model.MetaData;
 import org.opennms.integration.api.v1.model.Node;
 import org.opennms.integration.api.v1.model.NodeAssetRecord;
 import org.opennms.integration.api.v1.model.SnmpInterface;
+import org.opennms.integration.api.v1.util.ImmutableCollections;
+import org.opennms.integration.api.v1.util.MutableCollections;
 
 /**
  * An immutable implementation of {@link Node} that enforces deep immutability.
@@ -55,26 +56,33 @@ public final class ImmutableNode implements Node {
     private final List<MetaData> metaData;
 
     private ImmutableNode(Builder builder) {
-        this.id = builder.id;
-        this.foreignSource = builder.foreignSource;
-        this.foreignId = builder.foreignId;
-        this.label = builder.label;
-        this.location = builder.location;
-        this.assetRecord = builder.assetRecord;
-        this.ipInterfaces = builder.ipInterfaces == null ? Collections.emptyList() :
-                Collections.unmodifiableList(copyIpInterfaces(builder.ipInterfaces));
-        this.snmpInterfaces = builder.snmpInterfaces == null ? Collections.emptyList() :
-                Collections.unmodifiableList(copySnmpInterfaces(builder.snmpInterfaces));
-        this.metaData = builder.metaData == null ? Collections.emptyList() :
-                Collections.unmodifiableList(copyMetaData(builder.metaData));
+        id = builder.id;
+        foreignSource = builder.foreignSource;
+        foreignId = builder.foreignId;
+        label = builder.label;
+        location = builder.location;
+        assetRecord = ImmutableNodeAssetRecord.immutableCopy(builder.assetRecord);
+        ipInterfaces = ImmutableCollections.with(ImmutableIpInterface::immutableCopy)
+                .newList(builder.ipInterfaces);
+        snmpInterfaces = ImmutableCollections.with(ImmutableSnmpInterface::immutableCopy)
+                .newList(builder.snmpInterfaces);
+        metaData = ImmutableCollections.with(ImmutableMetaData::immutableCopy)
+                .newList(builder.metaData);
     }
 
     public static Builder newBuilder() {
         return new Builder();
     }
 
-    public static Builder newBuilderFrom(Node fromNode) {
-        return new Builder(fromNode);
+    public static Builder newBuilderFrom(Node node) {
+        return new Builder(node);
+    }
+
+    public static Node immutableCopy(Node node) {
+        if (node == null || node instanceof ImmutableNode) {
+            return node;
+        }
+        return newBuilderFrom(node).build();
     }
 
     public static final class Builder {
@@ -92,15 +100,15 @@ public final class ImmutableNode implements Node {
         }
 
         private Builder(Node node) {
-            this.id = node.getId();
-            this.foreignSource = node.getForeignSource();
-            this.foreignId = node.getForeignId();
-            this.label = node.getLabel();
-            this.location = node.getLocation();
-            this.assetRecord = node.getAssetRecord();
-            this.ipInterfaces = new ArrayList<>(node.getIpInterfaces());
-            this.snmpInterfaces = new ArrayList<>(node.getSnmpInterfaces());
-            this.metaData = new ArrayList<>(node.getMetaData());
+            id = node.getId();
+            foreignSource = node.getForeignSource();
+            foreignId = node.getForeignId();
+            label = node.getLabel();
+            location = node.getLocation();
+            assetRecord = node.getAssetRecord();
+            ipInterfaces = MutableCollections.copyListFromNullable(node.getIpInterfaces(), LinkedList::new);
+            snmpInterfaces = MutableCollections.copyListFromNullable(node.getSnmpInterfaces(), LinkedList::new);
+            metaData = MutableCollections.copyListFromNullable(node.getMetaData(), LinkedList::new);
         }
 
         public Builder setId(int id) {
@@ -129,11 +137,7 @@ public final class ImmutableNode implements Node {
         }
 
         public Builder setAssetRecord(NodeAssetRecord assetRecord) {
-            if (assetRecord != null && !(assetRecord instanceof ImmutableNodeAssetRecord)) {
-                this.assetRecord = ImmutableNodeAssetRecord.newBuilderFrom(assetRecord).build();
-            } else {
-                this.assetRecord = assetRecord;
-            }
+            this.assetRecord = assetRecord;
             return this;
         }
 
@@ -144,7 +148,7 @@ public final class ImmutableNode implements Node {
 
         public Builder addIpInterface(IpInterface ipInterface) {
             if (ipInterfaces == null) {
-                ipInterfaces = new ArrayList<>();
+                ipInterfaces = new LinkedList<>();
             }
             ipInterfaces.add(ipInterface);
             return this;
@@ -157,7 +161,7 @@ public final class ImmutableNode implements Node {
 
         public Builder addSnmpInterface(SnmpInterface snmpInterface) {
             if (snmpInterfaces == null) {
-                snmpInterfaces = new ArrayList<>();
+                snmpInterfaces = new LinkedList<>();
             }
             snmpInterfaces.add(snmpInterface);
             return this;
@@ -170,7 +174,7 @@ public final class ImmutableNode implements Node {
 
         public Builder addMetaData(MetaData metaData) {
             if (this.metaData == null) {
-                this.metaData = new ArrayList<>();
+                this.metaData = new LinkedList<>();
             }
             this.metaData.add(metaData);
             return this;
@@ -180,42 +184,6 @@ public final class ImmutableNode implements Node {
             Objects.requireNonNull(id);
             return new ImmutableNode(this);
         }
-    }
-
-    private List<IpInterface> copyIpInterfaces(List<IpInterface> ipInterfaces) {
-        return ipInterfaces.stream()
-                .map(ipInterface -> {
-                    if (!(ipInterface instanceof ImmutableIpInterface)) {
-                        return ImmutableIpInterface.newBuilderFrom(ipInterface).build();
-                    }
-
-                    return ipInterface;
-                })
-                .collect(Collectors.toList());
-    }
-
-    private List<SnmpInterface> copySnmpInterfaces(List<SnmpInterface> snmpInterfaces) {
-        return snmpInterfaces.stream()
-                .map(snmpInterface -> {
-                    if (!(snmpInterface instanceof ImmutableSnmpInterface)) {
-                        return ImmutableSnmpInterface.newBuilderFrom(snmpInterface).build();
-                    }
-
-                    return snmpInterface;
-                })
-                .collect(Collectors.toList());
-    }
-
-    private List<MetaData> copyMetaData(List<MetaData> metaData) {
-        return metaData.stream()
-                .map(md -> {
-                    if (!(md instanceof ImmutableMetaData)) {
-                        return ImmutableMetaData.newBuilderFrom(md).build();
-                    }
-
-                    return md;
-                })
-                .collect(Collectors.toList());
     }
 
     @Override

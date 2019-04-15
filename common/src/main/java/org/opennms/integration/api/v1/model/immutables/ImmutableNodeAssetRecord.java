@@ -50,17 +50,17 @@ public final class ImmutableNodeAssetRecord implements NodeAssetRecord {
     private final Geolocation geolocation;
 
     private ImmutableNodeAssetRecord(Builder builder) {
-        this.vendor = builder.vendor;
-        this.modelNumber = builder.modelNumber;
-        this.description = builder.description;
-        this.assetNumber = builder.assetNumber;
-        this.operatingSystem = builder.operatingSystem;
-        this.region = builder.region;
-        this.division = builder.division;
-        this.department = builder.department;
-        this.building = builder.building;
-        this.floor = builder.floor;
-        this.geolocation = builder.geolocation;
+        vendor = builder.vendor;
+        modelNumber = builder.modelNumber;
+        description = builder.description;
+        assetNumber = builder.assetNumber;
+        operatingSystem = builder.operatingSystem;
+        region = builder.region;
+        division = builder.division;
+        department = builder.department;
+        building = builder.building;
+        floor = builder.floor;
+        geolocation = ImmutableGeolocation.immutableCopy(builder.geolocation);
     }
 
     public static Builder newBuilder() {
@@ -69,6 +69,13 @@ public final class ImmutableNodeAssetRecord implements NodeAssetRecord {
 
     public static Builder newBuilderFrom(NodeAssetRecord fromNodeAssetRecord) {
         return new Builder(fromNodeAssetRecord);
+    }
+
+    public static NodeAssetRecord immutableCopy(NodeAssetRecord nodeAssetRecord) {
+        if (nodeAssetRecord == null || nodeAssetRecord instanceof ImmutableNodeAssetRecord) {
+            return nodeAssetRecord;
+        }
+        return newBuilderFrom(nodeAssetRecord).build();
     }
 
     public static final class Builder {
@@ -88,17 +95,17 @@ public final class ImmutableNodeAssetRecord implements NodeAssetRecord {
         }
 
         private Builder(NodeAssetRecord nodeAssetRecord) {
-            this.vendor = nodeAssetRecord.getVendor();
-            this.modelNumber = nodeAssetRecord.getModelNumber();
-            this.description = nodeAssetRecord.getDescription();
-            this.assetNumber = nodeAssetRecord.getAssetNumber();
-            this.operatingSystem = nodeAssetRecord.getOperatingSystem();
-            this.region = nodeAssetRecord.getRegion();
-            this.division = nodeAssetRecord.getDivision();
-            this.department = nodeAssetRecord.getDepartment();
-            this.building = nodeAssetRecord.getBuilding();
-            this.floor = nodeAssetRecord.getFloor();
-            this.geolocation = nodeAssetRecord.getGeolocation();
+            vendor = nodeAssetRecord.getVendor();
+            modelNumber = nodeAssetRecord.getModelNumber();
+            description = nodeAssetRecord.getDescription();
+            assetNumber = nodeAssetRecord.getAssetNumber();
+            operatingSystem = nodeAssetRecord.getOperatingSystem();
+            region = nodeAssetRecord.getRegion();
+            division = nodeAssetRecord.getDivision();
+            department = nodeAssetRecord.getDepartment();
+            building = nodeAssetRecord.getBuilding();
+            floor = nodeAssetRecord.getFloor();
+            geolocation = nodeAssetRecord.getGeolocation();
         }
 
         public Builder setVendor(String vendor) {
@@ -152,11 +159,7 @@ public final class ImmutableNodeAssetRecord implements NodeAssetRecord {
         }
 
         public Builder setGeolocation(Geolocation geolocation) {
-            if (geolocation != null && !(geolocation instanceof ImmutableGeoLocation)) {
-                this.geolocation = ImmutableGeoLocation.newBuilderFrom(geolocation).build();
-            } else {
-                this.geolocation = geolocation;
-            }
+            this.geolocation = geolocation;
             return this;
         }
 

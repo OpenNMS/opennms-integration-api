@@ -30,7 +30,6 @@ package org.opennms.integration.api.v1.model.immutables;
 
 import java.util.Objects;
 
-import org.opennms.integration.api.v1.model.Node;
 import org.opennms.integration.api.v1.model.NodeCriteria;
 
 /**
@@ -42,17 +41,24 @@ public final class ImmutableNodeCriteria implements NodeCriteria {
     private final String foreignId;
 
     private ImmutableNodeCriteria(Builder builder) {
-        this.id = builder.id;
-        this.foreignSource = builder.foreignSource;
-        this.foreignId = builder.foreignId;
+        id = builder.id;
+        foreignSource = builder.foreignSource;
+        foreignId = builder.foreignId;
     }
 
     public static Builder newBuilder() {
         return new Builder();
     }
-    
-    public static Builder newBuilderFrom(NodeCriteria fromNodeCriteria) {
-        return new Builder(fromNodeCriteria);
+
+    public static Builder newBuilderFrom(NodeCriteria nodeCriteria) {
+        return new Builder(nodeCriteria);
+    }
+
+    public static NodeCriteria immutableCopy(NodeCriteria nodeCriteria) {
+        if (nodeCriteria == null || nodeCriteria instanceof ImmutableNodeCriteria) {
+            return nodeCriteria;
+        }
+        return newBuilderFrom(nodeCriteria).build();
     }
 
     public static final class Builder {
@@ -62,7 +68,7 @@ public final class ImmutableNodeCriteria implements NodeCriteria {
 
         private Builder() {
         }
-        
+
         private Builder(NodeCriteria nodeCriteria) {
             this.id = nodeCriteria.getId();
             this.foreignSource = nodeCriteria.getForeignSource();

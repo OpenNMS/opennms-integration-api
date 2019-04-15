@@ -30,6 +30,13 @@ package org.opennms.integration.api.v1.config.requisition;
 
 import java.util.List;
 
+import org.opennms.integration.api.v1.annotations.Model;
+
+/**
+ * @see "The provided model implementation can be found in the class ImmutableRequisitionMonitoredService"
+ * @since 1.0.0
+ */
+@Model
 public interface RequisitionMonitoredService {
 
     String getName();

@@ -45,20 +45,27 @@ public final class ImmutableTopologyPort implements TopologyPort {
     private final NodeCriteria nodeCriteria;
 
     private ImmutableTopologyPort(Builder builder) {
-        this.id = builder.id;
-        this.tooltipText = builder.tooltipText;
-        this.ifIndex = builder.ifIndex;
-        this.ifName = builder.ifName;
-        this.ifAddress = builder.ifAddress;
-        this.nodeCriteria = builder.nodeCriteria;
+        id = builder.id;
+        tooltipText = builder.tooltipText;
+        ifIndex = builder.ifIndex;
+        ifName = builder.ifName;
+        ifAddress = builder.ifAddress;
+        nodeCriteria = ImmutableNodeCriteria.immutableCopy(builder.nodeCriteria);
     }
 
     public static Builder newBuilder() {
         return new Builder();
     }
 
-    public static Builder newBuilderFrom(TopologyPort fromTopologyPort) {
-        return new Builder(fromTopologyPort);
+    public static Builder newBuilderFrom(TopologyPort topologyPort) {
+        return new Builder(topologyPort);
+    }
+
+    public static TopologyPort immutableCopy(TopologyPort topologyPort) {
+        if (topologyPort == null || topologyPort instanceof ImmutableTopologyPort) {
+            return topologyPort;
+        }
+        return newBuilderFrom(topologyPort).build();
     }
 
     public static final class Builder {
@@ -73,12 +80,12 @@ public final class ImmutableTopologyPort implements TopologyPort {
         }
 
         private Builder(TopologyPort topologyPort) {
-            this.id = topologyPort.getId();
-            this.tooltipText = topologyPort.getTooltipText();
-            this.ifIndex = topologyPort.getIfIndex();
-            this.ifName = topologyPort.getIfName();
-            this.ifAddress = topologyPort.getIfAddress();
-            this.nodeCriteria = topologyPort.getNodeCriteria();
+            id = topologyPort.getId();
+            tooltipText = topologyPort.getTooltipText();
+            ifIndex = topologyPort.getIfIndex();
+            ifName = topologyPort.getIfName();
+            ifAddress = topologyPort.getIfAddress();
+            nodeCriteria = topologyPort.getNodeCriteria();
         }
 
         public Builder setId(String id) {
@@ -107,11 +114,7 @@ public final class ImmutableTopologyPort implements TopologyPort {
         }
 
         public Builder setNodeCriteria(NodeCriteria nodeCriteria) {
-            if (nodeCriteria != null && !(nodeCriteria instanceof ImmutableNodeCriteria)) {
-                this.nodeCriteria = ImmutableNodeCriteria.newBuilderFrom(nodeCriteria).build();
-            } else {
-                this.nodeCriteria = nodeCriteria;
-            }
+            this.nodeCriteria = nodeCriteria;
             return this;
         }
 

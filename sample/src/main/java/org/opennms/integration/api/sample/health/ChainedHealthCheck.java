@@ -33,7 +33,7 @@ import java.util.Objects;
 import org.opennms.integration.api.v1.health.Context;
 import org.opennms.integration.api.v1.health.HealthCheck;
 import org.opennms.integration.api.v1.health.Response;
-import org.opennms.integration.api.v1.health.ResponseBean;
+import org.opennms.integration.api.v1.health.immutables.ImmutableResponse;
 import org.opennms.integration.api.v1.health.Status;
 
 /**
@@ -63,6 +63,6 @@ public class ChainedHealthCheck implements HealthCheck {
                 return response;
             }
         }
-        return new ResponseBean(Status.Success);
+        return ImmutableResponse.newInstance(Status.Success);
     }
 }

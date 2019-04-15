@@ -31,6 +31,13 @@ package org.opennms.integration.api.v1.config.requisition;
 import java.util.Date;
 import java.util.List;
 
+import org.opennms.integration.api.v1.annotations.Model;
+
+/**
+ * @see "The provided model implementation can be found in the class ImmutableRequisition"
+ * @since 1.0.0
+ */
+@Model
 public interface Requisition {
 
     Date getGeneratedAt();

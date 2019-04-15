@@ -2,7 +2,7 @@
     <parent>
         <groupId>org.opennms.integration.api</groupId>
         <artifactId>api-project</artifactId>
-        <version>1.0.0-alpha9-SNAPSHOT</version>
+        <version>1.0.0-alpha10-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
@@ -13,6 +13,11 @@
         <dependency>
             <groupId>org.opennms.integration.api</groupId>
             <artifactId>api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

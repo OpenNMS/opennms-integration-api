@@ -28,12 +28,16 @@
 
 package org.opennms.integration.api.v1.health;
 
+import org.opennms.integration.api.v1.annotations.Model;
+
 /**
  * The response of a health check.
  *
+ * @see "The provided model implementation can be found in the class ImmutableResponse"
  * @author mvrueden
  * @since 1.0.0
  */
+@Model
 public interface Response {
 
     Status getStatus();

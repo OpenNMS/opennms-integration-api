@@ -28,10 +28,15 @@
 
 package org.opennms.integration.api.v1.config.requisition;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
+import org.opennms.integration.api.v1.annotations.Model;
+
+/**
+ * @see "The provided model implementation can be found in the class ImmutableRequisitionNode"
+ * @since 1.0.0
+ */
+@Model
 public interface RequisitionNode {
 
     String getLocation();

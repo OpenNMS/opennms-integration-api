@@ -31,6 +31,13 @@ package org.opennms.integration.api.v1.config.requisition;
 import java.net.InetAddress;
 import java.util.List;
 
+import org.opennms.integration.api.v1.annotations.Model;
+
+/**
+ * @see "The provided model implementation can be found in the class ImmutableRequisitionInterface"
+ * @since 1.0.0
+ */
+@Model
 public interface RequisitionInterface {
 
     List<RequisitionMonitoredService> getMonitoredServices();

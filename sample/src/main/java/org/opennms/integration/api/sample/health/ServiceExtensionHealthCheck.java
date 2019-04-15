@@ -45,7 +45,7 @@ import org.opennms.integration.api.v1.detectors.DetectorClient;
 import org.opennms.integration.api.v1.health.Context;
 import org.opennms.integration.api.v1.health.HealthCheck;
 import org.opennms.integration.api.v1.health.Response;
-import org.opennms.integration.api.v1.health.ResponseBean;
+import org.opennms.integration.api.v1.health.immutables.ImmutableResponse;
 import org.opennms.integration.api.v1.health.Status;
 import org.opennms.integration.api.v1.model.Node;
 import org.opennms.integration.api.v1.pollers.PollerResult;
@@ -82,10 +82,10 @@ public class ServiceExtensionHealthCheck implements HealthCheck {
         CompletableFuture<Boolean> future = detectorClient.detect(SampleDetector.SERVICE_NAME, SampleDetector.DEFAULT_HOST_NAME, attributes);
         try {
             if (!future.get()) {
-                return new ResponseBean(Status.Failure, "Sample Detector detection failed");
+                return ImmutableResponse.newInstance(Status.Failure, "Sample Detector detection failed");
             }
         } catch (Exception e) {
-            return new ResponseBean(e);
+            return ImmutableResponse.newInstance(e);
         }
         // Sample Poller Health Check
         try {
@@ -95,10 +95,10 @@ public class ServiceExtensionHealthCheck implements HealthCheck {
                     .withServiceName("Sample")
                     .execute();
             if (!pollerStatus.get().getStatus().equals(org.opennms.integration.api.v1.pollers.Status.Up)) {
-                return new ResponseBean(Status.Failure, pollerStatus.get().getReason());
+                return ImmutableResponse.newInstance(Status.Failure, pollerStatus.get().getReason());
             }
         } catch (Exception e) {
-            return new ResponseBean(e);
+            return ImmutableResponse.newInstance(e);
         }
 
         // Sample Collector Health Check
@@ -106,7 +106,7 @@ public class ServiceExtensionHealthCheck implements HealthCheck {
         // If there is node, can't verify collector as node resources are dependent on node being present.
         // return success as all previous checks succeeded.
         if(!node.isPresent()) {
-            return new ResponseBean(Status.Success);
+            return ImmutableResponse.newInstance(Status.Success);
         }
         try {
             CompletableFuture<CollectionSet> collectionSetFuture = collectorClient.collect()
@@ -116,15 +116,15 @@ public class ServiceExtensionHealthCheck implements HealthCheck {
             CollectionSet collectionResult = collectionSetFuture.get();
             if(collectionResult.getStatus().equals(CollectionSet.Status.SUCCEEDED)) {
                 if(SampleCollector.validateCollectionSet(collectionResult)) {
-                    return new ResponseBean(Status.Success);
+                    return ImmutableResponse.newInstance(Status.Success);
                 } else {
-                    return new ResponseBean(Status.Failure, "Collection set didn't match");
+                    return ImmutableResponse.newInstance(Status.Failure, "Collection set didn't match");
                 }
             } else {
-                return new ResponseBean(Status.Failure, "Sample Collector Collection Failed");
+                return ImmutableResponse.newInstance(Status.Failure, "Sample Collector Collection Failed");
             }
         } catch (Exception e) {
-            return new ResponseBean(e);
+            return ImmutableResponse.newInstance(e);
         }
     }
 

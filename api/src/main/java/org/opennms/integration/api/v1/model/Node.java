@@ -30,12 +30,16 @@ package org.opennms.integration.api.v1.model;
 
 import java.util.List;
 
+import org.opennms.integration.api.v1.annotations.Model;
+
 /**
- * An immutable node.
- *
+ * A node.
+ * 
+ * @see "The provided model implementation can be found in the class ImmutableNode"
  * @author jwhite
  * @since 1.0.0
  */
+@Model
 public interface Node {
 
     Integer getId();
