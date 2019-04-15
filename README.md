@@ -3,9 +3,10 @@
 This project aims to make it easier to write plugins and extensions to OpenNMS by introducing a stable interface against which these can be written.
 Versions of OpenNMS and Meridian will then implement at least one major version of the API.
 
-This API is designed to follow [Semantic Versioning](https://semver.org/).
+## Features
 
-## Current Support
+Users for the API can currently take advantage of the following features and interfaces.
+See the interfaces defined in the `api` module for a complete list.
 
 ### Extend
 
@@ -15,7 +16,7 @@ This API is designed to follow [Semantic Versioning](https://semver.org/).
 ### Consume
 
  * Runtime information
-   * Version - major,minor,patch,snapshot?
+   * Version - major,minor,patch,snapshot
    * Container type - OpenNMS vs Minion vs Sentinel
  * Alarm lifecycle callbacks
  * DAOs
@@ -35,10 +36,15 @@ This API is designed to follow [Semantic Versioning](https://semver.org/).
  * Provisiond detectors
  * Ticketers
 
-## Bucket List
 
-### Add support for exposing
+## Versioning
 
- * Topology provider
- * Notification strategy
- * Time Series Persistence strategy
+Given that the API is fairly new, we expect that we will need to make changes and improvements over the next few releases of OpenNMS Horizon.
+In order to make sure that your plugins or extensions do not break within minor and patch releases:
+
+ * Do not implement, or extend interfaces marked with the `@Consumable` annotation as we reserve the right to add new method signatures to these.
+ * Do not implement, or extend interfaces marked with the `@Model` annotation as we reserve the right to add new method signatures to these.
+   * Use the provided builders for these interfaces in the `common` module instead.
+
+Once stabilized, we are aimign to follow [Semantic Versioning](https://semver.org/).
+
