@@ -54,13 +54,13 @@ public final class ImmutablePrefabGraph implements PrefabGraph {
         title = builder.title;
         columns = builder.columns == null ? null : builder.columns.clone();
         command = builder.command;
-        externalValues = builder.externalValues == null ? null : builder.externalValues.clone();
-        propertiesValues = builder.propertiesValues == null ? null : builder.propertiesValues.clone();
-        types = builder.types == null ? null : builder.types.clone();
+        externalValues = builder.externalValues == null ? new String[0] : builder.externalValues.clone();
+        propertiesValues = builder.propertiesValues == null ? new String[0] : builder.propertiesValues.clone();
+        types = builder.types == null ? new String[0] : builder.types.clone();
         description = builder.description;
         graphWidth = builder.graphWidth;
         graphHeight = builder.graphHeight;
-        supress = builder.supress == null ? null : builder.supress.clone();
+        supress = builder.supress == null ? new String[0] : builder.supress.clone();
     }
 
     public static Builder newBuilder() {
@@ -190,17 +190,17 @@ public final class ImmutablePrefabGraph implements PrefabGraph {
 
     @Override
     public String[] getExternalValues() {
-        return externalValues == null ? null : externalValues.clone();
+        return externalValues.length == 0 ? externalValues : externalValues.clone();
     }
 
     @Override
     public String[] getPropertiesValues() {
-        return propertiesValues == null ? null : propertiesValues.clone();
+        return propertiesValues.length == 0 ? propertiesValues : propertiesValues.clone();
     }
 
     @Override
     public String[] getTypes() {
-        return types == null ? null : types.clone();
+        return types.length == 0 ? types : types.clone();
 
     }
 
@@ -221,7 +221,7 @@ public final class ImmutablePrefabGraph implements PrefabGraph {
 
     @Override
     public String[] getSupress() {
-        return supress == null ? null : supress.clone();
+        return supress.length == 0 ? supress : supress.clone();
 
     }
 
