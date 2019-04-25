@@ -46,5 +46,5 @@ In order to make sure that your plugins or extensions do not break within minor 
  * Do not implement, or extend interfaces marked with the `@Model` annotation as we reserve the right to add new method signatures to these.
    * Use the provided builders for these interfaces in the `common` module instead.
 
-Once stabilized, we are aimign to follow [Semantic Versioning](https://semver.org/).
+Once stabilized, we are aiming to follow [Semantic Versioning](https://semver.org/).
 
