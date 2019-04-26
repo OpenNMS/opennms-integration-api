@@ -81,7 +81,7 @@ jobs:
       - run:
           name: Deploy the artifacts
           command: |
-            mvn -s .circleci.settings.xml -DskipTests -DuniqueVersion=false deploy
+            mvn -s .circleci.settings.xml -DskipTests deploy
 
 workflows:
   version: 2
