@@ -226,7 +226,6 @@
         <snapshotRepository>
             <id>opennms-ossrh</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
         <repository>
             <id>opennms-ossrh</id>
