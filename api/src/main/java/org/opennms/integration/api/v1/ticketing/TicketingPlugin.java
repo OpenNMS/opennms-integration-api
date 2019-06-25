@@ -48,6 +48,7 @@ public interface TicketingPlugin {
      * DAO like saveOrUpdate method to create/update ticket.
      *
      * @param ticket Ticket that need to created/updated.
+     * @return ticketId that was created or updated.
      */
-    public void saveOrUpdate(Ticket ticket);
+    public String saveOrUpdate(Ticket ticket);
 }
