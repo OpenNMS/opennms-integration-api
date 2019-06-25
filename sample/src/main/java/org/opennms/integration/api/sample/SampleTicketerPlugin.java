@@ -28,89 +28,29 @@
 
 package org.opennms.integration.api.sample;
 
-import java.net.InetAddress;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.opennms.integration.api.v1.ticketing.Ticket;
 import org.opennms.integration.api.v1.ticketing.TicketingPlugin;
+import org.opennms.integration.api.v1.ticketing.immutables.ImmutableTicket;
 
 public class SampleTicketerPlugin implements TicketingPlugin {
 
+    private static final String TICKET_ID = "OpenNMS-Ticket1";
+
     @Override
     public Ticket get(String ticketId) {
-        if (Integer.parseInt(ticketId) < 100) {
-            return new TicketImpl(ticketId, "Ticket Details", "Ticket Summary");
+        if (ticketId.equals(TICKET_ID)) {
+            return ImmutableTicket.newBuilder().setId(ticketId)
+                    .setSummary("Ticket Summary")
+                    .setDetails("Ticket Details")
+                    .build();
         } else {
             throw new IllegalArgumentException(ticketId);
         }
     }
 
     @Override
-    public void saveOrUpdate(Ticket ticket) {
-          //pass
-    }
-
-    private class TicketImpl implements Ticket {
-
-        private String ticketId;
-
-        private String details;
-
-        private String summary;
-
-        private Map<String, String> attributes = new HashMap<>();
-
-        public TicketImpl(String ticketId, String details, String summary) {
-            this.ticketId = ticketId;
-            this.details = details;
-            this.summary = summary;
-        }
-
-        @Override
-        public Integer getAlarmId() {
-            return null;
-        }
-
-        @Override
-        public Map<String, String> getAttributes() {
-            return attributes;
-        }
-
-        @Override
-        public String getDetails() {
-            return details;
-        }
-
-        @Override
-        public String getId() {
-            return ticketId;
-        }
-
-        @Override
-        public InetAddress getIpAddress() {
-            return null;
-        }
-
-        @Override
-        public Integer getNodeId() {
-            return null;
-        }
-
-        @Override
-        public State getState() {
-            return null;
-        }
-
-        @Override
-        public String getSummary() {
-            return summary;
-        }
-
-        @Override
-        public String getUser() {
-            return null;
-        }
+    public String saveOrUpdate(Ticket ticket) {
+          return TICKET_ID;
     }
 
 }

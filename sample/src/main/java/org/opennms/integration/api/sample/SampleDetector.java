@@ -28,8 +28,6 @@
 
 package org.opennms.integration.api.sample;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.concurrent.CompletableFuture;
 
 import org.opennms.integration.api.v1.detectors.DetectRequest;
@@ -75,23 +73,21 @@ public class SampleDetector implements ServiceDetector {
 
     @Override
     public CompletableFuture<DetectResults> detect(DetectRequest request) {
-        try {
-            if (request.getAddress().equals(InetAddress.getLocalHost())) {
-                return CompletableFuture.completedFuture(new DetectResults() {
-                    @Override
-                    public boolean isServiceDetected() {
-                        LOG.info(" {} service detected on {} ", getServiceName(), request.getAddress());
-                        if (getUsername().equals(DEFAULT_USERNAME_VALUE) && getPassword().equals(DEFAULT_PASSWORD_VALUE) &&
-                                request.getRuntimeAttributes().get(SampleDetectorFactory.PROTOCOL_ATTRIBUTE).equals(SampleDetectorFactory.PROTOCOL_VALUE)) {
-                            return true;
-                        }
-                        return false;
+
+        if (request.getAddress().getHostName().equals(DEFAULT_HOST_NAME)) {
+            return CompletableFuture.completedFuture(new DetectResults() {
+                @Override
+                public boolean isServiceDetected() {
+                    LOG.info(" {} service detected on {} ", getServiceName(), request.getAddress());
+                    if (getUsername().equals(DEFAULT_USERNAME_VALUE) && getPassword().equals(DEFAULT_PASSWORD_VALUE) &&
+                            request.getRuntimeAttributes().get(SampleDetectorFactory.PROTOCOL_ATTRIBUTE).equals(SampleDetectorFactory.PROTOCOL_VALUE)) {
+                        return true;
                     }
-                });
-            }
-        } catch (UnknownHostException e) {
-            throw new IllegalArgumentException(request.getAddress().getHostName());
+                    return false;
+                }
+            });
         }
+
         return CompletableFuture.completedFuture(new DetectResults() {
             @Override
             public boolean isServiceDetected() {
