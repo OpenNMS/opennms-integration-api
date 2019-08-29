@@ -193,6 +193,8 @@
                         </goals>
                         <configuration>
                             <additionalparam>${javadoc.opts}</additionalparam>
+                            <!-- Some of the JAX-B objects have javadoc that can't be parsed so we exclude them here -->
+                            <excludePackageNames>org.opennms.integration.api.xml.schema.*</excludePackageNames>
                         </configuration>
                     </execution>
                 </executions>
