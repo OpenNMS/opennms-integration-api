@@ -29,9 +29,7 @@
 package org.opennms.integration.api.xml;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -42,10 +40,8 @@ import org.opennms.integration.api.v1.config.thresholding.PackageDefinition;
 import org.opennms.integration.api.v1.config.thresholding.Parameter;
 import org.opennms.integration.api.v1.config.thresholding.Service;
 import org.opennms.integration.api.v1.config.thresholding.ServiceStatus;
-import org.opennms.integration.api.v1.config.thresholding.ThresholderDefinition;
 import org.opennms.integration.api.xml.schema.thresholding.Package;
 import org.opennms.integration.api.xml.schema.thresholding.ThreshdConfiguration;
-import org.opennms.integration.api.xml.schema.thresholding.Thresholder;
 
 /**
  * Used to load XML threshd configuration from the class-path.
@@ -58,27 +54,10 @@ public class ClasspathThreshdConfigurationLoader extends ClasspathXmlLoader<Thre
         super(clazz, ThreshdConfiguration.class, "thresholding", fileNames);
     }
 
-    public Integer getThreads() {
-        // Return only the largest of the threads elements
-        return getObjects()
-                .stream()
-                .map(ThreshdConfiguration::getThreads)
-                .filter(Objects::nonNull)
-                .max(Integer::compareTo)
-                .orElse(null);
-    }
-
     public List<PackageDefinition> getPackages() {
         return getObjects().stream()
                 .flatMap(tc -> tc.getPackages().stream())
                 .map(ClasspathThreshdConfigurationLoader::toPackageDefinition)
-                .collect(Collectors.toList());
-    }
-
-    public List<ThresholderDefinition> getThresholders() {
-        return getObjects().stream()
-                .flatMap(tc -> tc.getThresholders().stream())
-                .map(ClasspathThreshdConfigurationLoader::toThresholderDefinition)
                 .collect(Collectors.toList());
     }
 
@@ -142,30 +121,6 @@ public class ClasspathThreshdConfigurationLoader extends ClasspathXmlLoader<Thre
             @Override
             public List<String> getOutageCalendars() {
                 return outageCalendars;
-            }
-        };
-    }
-
-    private static ThresholderDefinition toThresholderDefinition(Thresholder thresholder) {
-        return new ThresholderDefinition() {
-            private final List<Parameter> parameters = Collections.unmodifiableList(thresholder.getParameters()
-                    .stream()
-                    .map(ClasspathThreshdConfigurationLoader::toParameter)
-                    .collect(Collectors.toList()));
-
-            @Override
-            public String getService() {
-                return thresholder.getService();
-            }
-
-            @Override
-            public String getClassName() {
-                return thresholder.getClassName();
-            }
-
-            @Override
-            public List<Parameter> getParameters() {
-                return parameters;
             }
         };
     }

@@ -32,7 +32,6 @@ import java.util.List;
 
 import org.opennms.integration.api.v1.config.thresholding.PackageDefinition;
 import org.opennms.integration.api.v1.config.thresholding.ThreshdConfigurationExtension;
-import org.opennms.integration.api.v1.config.thresholding.ThresholderDefinition;
 import org.opennms.integration.api.xml.ClasspathThreshdConfigurationLoader;
 
 public class MyThreshdConfigurationExtension implements ThreshdConfigurationExtension {
@@ -40,19 +39,8 @@ public class MyThreshdConfigurationExtension implements ThreshdConfigurationExte
             new ClasspathThreshdConfigurationLoader(MyThresholdingConfigExtension.class, "threshd-configuration.1" +
                     ".xml", "threshd-configuration.2.xml");
 
-
-    @Override
-    public Integer getThreads() {
-        return classpathThreshdConfigurationLoader.getThreads();
-    }
-
     @Override
     public List<PackageDefinition> getPackages() {
         return classpathThreshdConfigurationLoader.getPackages();
-    }
-
-    @Override
-    public List<ThresholderDefinition> getThresholders() {
-        return classpathThreshdConfigurationLoader.getThresholders();
     }
 }

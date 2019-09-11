@@ -40,10 +40,6 @@ import org.opennms.integration.api.v1.annotations.Exposable;
 @Exposable
 public interface ThreshdConfigurationExtension {
 
-    Integer getThreads();
-
     List<PackageDefinition> getPackages();
-
-    List<ThresholderDefinition> getThresholders();
 
 }

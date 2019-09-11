@@ -44,8 +44,6 @@ public class MyThreshdConfigurationExtensionTest {
     @Test
     public void canReadPackageDefinitionsFromExtension() {
         MyThreshdConfigurationExtension myThreshdConfigurationExtension = new MyThreshdConfigurationExtension();
-        assertThat(myThreshdConfigurationExtension.getThreads(), equalTo(10));
-        assertThat(myThreshdConfigurationExtension.getThresholders(), hasSize(0));
         List<PackageDefinition> packages = myThreshdConfigurationExtension.getPackages();
         assertThat(packages, hasSize(2));
 
