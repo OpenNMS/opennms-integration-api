@@ -92,6 +92,14 @@
         <bean class="org.opennms.integration.api.sample.MyGraphPropertiesExtension"/>
     </service>
 
+    <service interface="org.opennms.integration.api.v1.config.thresholding.ThresholdingConfigExtension">
+        <bean class="org.opennms.integration.api.sample.MyThresholdingConfigExtension"/>
+    </service>
+
+    <service interface="org.opennms.integration.api.v1.config.thresholding.ThreshdConfigurationExtension">
+        <bean class="org.opennms.integration.api.sample.MyThreshdConfigurationExtension"/>
+    </service>
+
     <service interface="org.opennms.integration.api.v1.detectors.ServiceDetectorFactory">
         <bean class="org.opennms.integration.api.sample.SampleDetectorFactory"/>
     </service>
