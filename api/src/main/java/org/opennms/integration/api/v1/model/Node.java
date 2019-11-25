@@ -28,7 +28,9 @@
 
 package org.opennms.integration.api.v1.model;
 
+import java.net.InetAddress;
 import java.util.List;
+import java.util.Optional;
 
 import org.opennms.integration.api.v1.annotations.Model;
 
@@ -55,6 +57,8 @@ public interface Node {
     NodeAssetRecord getAssetRecord();
 
     List<IpInterface> getIpInterfaces();
+
+    Optional<IpInterface> getInterfaceByIp(InetAddress ipAddr);
 
     List<SnmpInterface> getSnmpInterfaces();
 

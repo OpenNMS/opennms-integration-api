@@ -32,9 +32,11 @@ import java.net.InetAddress;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.opennms.integration.api.v1.model.IpInterface;
 import org.opennms.integration.api.v1.model.MetaData;
+import org.opennms.integration.api.v1.model.SnmpInterface;
 import org.opennms.integration.api.v1.util.ImmutableCollections;
 import org.opennms.integration.api.v1.util.MutableCollections;
 
@@ -43,23 +45,27 @@ import org.opennms.integration.api.v1.util.MutableCollections;
  */
 public final class ImmutableIpInterface implements IpInterface {
     private final InetAddress ipAddress;
+    private final Optional<SnmpInterface> snmpInterface;
     private final List<MetaData> metaData;
 
-    private ImmutableIpInterface(InetAddress ipAddress, List<MetaData> metaData) {
+    private ImmutableIpInterface(InetAddress ipAddress, SnmpInterface snmpInterface, List<MetaData> metaData) {
         this.ipAddress = ipAddress;
+        this.snmpInterface = Optional.ofNullable(snmpInterface);
         this.metaData = ImmutableCollections.with(ImmutableMetaData::immutableCopy)
                 .newList(metaData);
     }
 
-    public static ImmutableIpInterface newInstance(InetAddress ipAddress, List<MetaData> metaData) {
-        return new ImmutableIpInterface(Objects.requireNonNull(ipAddress), metaData);
+    public static ImmutableIpInterface newInstance(InetAddress ipAddress, SnmpInterface snmpInterface, List<MetaData> metaData) {
+        return new ImmutableIpInterface(Objects.requireNonNull(ipAddress),
+                snmpInterface,
+                metaData);
     }
 
     public static IpInterface immutableCopy(IpInterface ipInterface) {
         if (ipInterface == null || ipInterface instanceof ImmutableIpInterface) {
             return ipInterface;
         }
-        return newInstance(ipInterface.getIpAddress(), ipInterface.getMetaData());
+        return newInstance(ipInterface.getIpAddress(), ipInterface.getSnmpInterface().orElse(null), ipInterface.getMetaData());
     }
 
     public static Builder newBuilder() {
@@ -72,6 +78,7 @@ public final class ImmutableIpInterface implements IpInterface {
 
     public static final class Builder {
         private InetAddress ipAddress;
+        private SnmpInterface snmpInterface;
         private List<MetaData> metaData;
 
         private Builder() {
@@ -84,6 +91,11 @@ public final class ImmutableIpInterface implements IpInterface {
 
         public Builder setIpAddress(InetAddress ipAddress) {
             this.ipAddress = Objects.requireNonNull(ipAddress);
+            return this;
+        }
+
+        public Builder setSnmpInterface(SnmpInterface snmpInterface) {
+            this.snmpInterface = snmpInterface;
             return this;
         }
 
@@ -101,13 +113,18 @@ public final class ImmutableIpInterface implements IpInterface {
         }
 
         public ImmutableIpInterface build() {
-            return ImmutableIpInterface.newInstance(ipAddress, metaData);
+            return ImmutableIpInterface.newInstance(ipAddress, snmpInterface, metaData);
         }
     }
 
     @Override
     public InetAddress getIpAddress() {
         return ipAddress;
+    }
+
+    @Override
+    public Optional<SnmpInterface> getSnmpInterface() {
+        return snmpInterface;
     }
 
     @Override
@@ -121,18 +138,20 @@ public final class ImmutableIpInterface implements IpInterface {
         if (o == null || getClass() != o.getClass()) return false;
         ImmutableIpInterface that = (ImmutableIpInterface) o;
         return Objects.equals(ipAddress, that.ipAddress) &&
+                Objects.equals(snmpInterface, that.snmpInterface) &&
                 Objects.equals(metaData, that.metaData);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ipAddress, metaData);
+        return Objects.hash(ipAddress, snmpInterface, metaData);
     }
 
     @Override
     public String toString() {
         return "ImmutableIpInterface{" +
                 "ipAddress=" + ipAddress +
+                ", snmpInterface=" + snmpInterface +
                 ", metaData=" + metaData +
                 '}';
     }

@@ -28,10 +28,12 @@
 
 package org.opennms.integration.api.v1.model.immutables;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.opennms.integration.api.v1.model.IpInterface;
 import org.opennms.integration.api.v1.model.MetaData;
@@ -219,6 +221,13 @@ public final class ImmutableNode implements Node {
     @Override
     public List<IpInterface> getIpInterfaces() {
         return ipInterfaces;
+    }
+
+    @Override
+    public Optional<IpInterface> getInterfaceByIp(InetAddress ipAddr) {
+        return ipInterfaces.stream()
+                .filter(intf -> Objects.equals(intf.getIpAddress(), ipAddr))
+                .findFirst();
     }
 
     @Override

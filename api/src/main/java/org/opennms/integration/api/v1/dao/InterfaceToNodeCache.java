@@ -26,28 +26,39 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.model;
+package org.opennms.integration.api.v1.dao;
 
 import java.net.InetAddress;
-import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
-import org.opennms.integration.api.v1.annotations.Model;
+import org.opennms.integration.api.v1.annotations.Consumable;
 
 /**
- * An IP interface.
+ * Lookup node ids by location and IP address.
  *
- * @see "The provided model implementation can be found in the class ImmutableIpInterface"
- * @author jwhite
  * @since 1.0.0
  */
-@Model
-public interface IpInterface {
+@Consumable
+public interface InterfaceToNodeCache {
 
-    InetAddress getIpAddress();
+    /**
+     * @param location location or null if Default
+     * @param ipAddr IP address to match
+     * @return node ids, primary interfaces will be first
+     */
+    Stream<Integer> getNodeIds(String location, InetAddress ipAddr);
 
-    Optional<SnmpInterface> getSnmpInterface();
+    /**
+     * @param location location or null if Default
+     * @param ipAddr IP address to match
+     * @return first node id
+     */
+    Optional<Integer> getFirstNodeId(String location, InetAddress ipAddr);
 
-    List<MetaData> getMetaData();
+    /**
+     * request the cache to reload from the underlying data source
+     */
+    void refresh();
 
 }
