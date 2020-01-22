@@ -181,24 +181,24 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                        <configuration>
-                            <additionalparam>${javadoc.opts}</additionalparam>
-                            <!-- Some of the JAX-B objects have javadoc that can't be parsed so we exclude them here -->
-                            <excludePackageNames>org.opennms.integration.api.xml.schema.*</excludePackageNames>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-javadoc-plugin</artifactId>-->
+<!--                <version>3.0.1</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>attach-javadocs</id>-->
+<!--                        <goals>-->
+<!--                            <goal>jar</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <additionalparam>${javadoc.opts}</additionalparam>-->
+<!--                            &lt;!&ndash; Some of the JAX-B objects have javadoc that can't be parsed so we exclude them here &ndash;&gt;-->
+<!--                            <excludePackageNames>org.opennms.integration.api.xml.schema.*</excludePackageNames>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
