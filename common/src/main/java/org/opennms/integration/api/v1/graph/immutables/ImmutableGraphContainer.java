@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 
 import org.opennms.integration.api.v1.graph.Graph;
 import org.opennms.integration.api.v1.graph.GraphContainer;
+import org.opennms.integration.api.v1.graph.GraphContainerInfo;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -129,7 +130,15 @@ public class ImmutableGraphContainer implements GraphContainer {
     public static ImmutableGraphContainerBuilder builder() {
         return new ImmutableGraphContainerBuilder();
     }
-    
+
+    public static ImmutableGraphContainerBuilder builder(GraphContainerInfo containerInfo) {
+        Objects.requireNonNull(containerInfo);
+        return new ImmutableGraphContainerBuilder()
+                .id(containerInfo.getContainerId())
+                .label(containerInfo.getLabel())
+                .description(containerInfo.getDescription());
+    }
+
     public static class ImmutableGraphContainerBuilder {
 
 //        private final static Logger LOG = LoggerFactory.getLogger(ImmutableGraphContainerBuilder.class);

@@ -28,14 +28,8 @@
 
 package org.opennms.integration.api.v1.graph;
 
-import org.opennms.integration.api.v1.annotations.Exposable;
-
-@Exposable
-public interface GraphProvider {
-    Graph loadGraph();
-    GraphInfo getGraphInfo();
-
-    default Configuration getConfiguration() {
-        return new Configuration() {};
+public interface Configuration {
+    default boolean isTopology() {
+        return false;
     }
 }

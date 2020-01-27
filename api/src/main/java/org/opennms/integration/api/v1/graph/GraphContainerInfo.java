@@ -28,14 +28,18 @@
 
 package org.opennms.integration.api.v1.graph;
 
-import org.opennms.integration.api.v1.annotations.Exposable;
+import java.util.List;
 
-@Exposable
-public interface GraphProvider {
-    Graph loadGraph();
-    GraphInfo getGraphInfo();
+import org.opennms.integration.api.v1.annotations.Model;
 
-    default Configuration getConfiguration() {
-        return new Configuration() {};
-    }
+@Model
+public interface GraphContainerInfo {
+    String getContainerId();
+    String getLabel();
+    String getDescription();
+    List<GraphInfo> getGraphInfos();
+
+    default GraphInfo getDefaultGraphInfo() {
+        return getGraphInfos().get(0);
+    };
 }

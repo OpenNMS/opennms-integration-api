@@ -44,6 +44,8 @@ import org.opennms.integration.api.v1.graph.Vertex;
 import org.opennms.integration.api.v1.graph.VertexRef;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
 /**
@@ -53,20 +55,14 @@ public final class ImmutableGraph extends ImmutableElement implements Graph {
 
     private final Map<String, Vertex> vertexToIdMap;
     private final Map<String, Edge> edgeToIdMap;
-
-    // A calculation of the focus
-    private final Object defaultFocus = null;
-//    private final GraphInfo graphInfo;
+    private final List<VertexRef> defaultFocus;
 
     private ImmutableGraph(ImmutableGraphBuilder builder) {
         super(builder.properties);
-        this.vertexToIdMap = builder.vertexToIdMap;
-        this.edgeToIdMap = builder.edgeToIdMap;
-//        this.nodeRefToVertexMap = builder.nodeRefToVertexMap;
-//        this.defaultFocus = builder.defaultFocus;
-//        this.graphInfo = new GenericGraphInfo();
+        this.vertexToIdMap = ImmutableMap.copyOf(builder.vertexToIdMap);
+        this.edgeToIdMap = ImmutableMap.copyOf(builder.edgeToIdMap);
+        this.defaultFocus = ImmutableList.copyOf(builder.defaultFocus);
     }
-
 
     @Override
     public List<Vertex> getVertices() {
@@ -94,62 +90,10 @@ public final class ImmutableGraph extends ImmutableElement implements Graph {
         return edgeToIdMap.get(id);
     }
 
-//    @Override
-//    public List<String> getVertexIds() {
-//        return vertexToIdMap.keySet().stream().sorted().collect(Collectors.toList());
-//    }
-//
-//    @Override
-//    public List<String> getEdgeIds() {
-//        return edgeToIdMap.keySet().stream().sorted().collect(Collectors.toList());
-//    }
-//
-//    @Override
-//    public List<GenericVertex> resolveVertices(Collection<String> vertexIds) {
-//        final List<GenericVertex> collect = vertexIds.stream().map(vid -> vertexToIdMap.get(vid)).filter(v -> v != null).collect(Collectors.toList());
-//        return collect;
-//    }
-//
-//    @Override
-//    public GenericVertex resolveVertex(VertexRef vertexRef) {
-//        Objects.requireNonNull(vertexRef);
-//        if (getNamespace().equals(vertexRef.getNamespace())) {
-//            final GenericVertex resolvedVertex = resolveVertices(Lists.newArrayList(vertexRef.getId())).stream().findAny().orElse(null);
-//            return resolvedVertex;
-//        }
-//        return null;
-//    }
-//
-//    public List<GenericVertex> resolveVertexRefs(Collection<VertexRef> vertexRefs) {
-//        // Determine all vertexId for all vertices with the same namespace as the current graph
-//        List<String> vertexIds = vertexRefs.stream()
-//                .filter(ref -> getNamespace().equals(ref.getNamespace()))
-//                .map(ref -> ref.getId())
-//                .collect(Collectors.toList());
-//        return resolveVertices(vertexIds);
-//    }
-//
-//    @Override
-//    public List<GenericEdge> resolveEdges(Collection<String> vertexIds) {
-//        final List<GenericEdge> collect = vertexIds.stream().map(eid -> edgeToIdMap.get(eid)).collect(Collectors.toList());
-//        return collect;
-//    }
-//
-//    @Override
-//    public Collection<GenericVertex> getNeighbors(GenericVertex eachVertex) {
-//        return resolveVertexRefs(jungGraph.getNeighbors(eachVertex.getVertexRef()));
-//    }
-//
-//    @Override
-//    public Collection<GenericEdge> getConnectingEdges(GenericVertex eachVertex) {
-//        final Set<GenericEdge> edges = new HashSet<>();
-//        if (eachVertex != null) {
-//            final VertexRef genericVertexRef = eachVertex.getVertexRef();
-//            edges.addAll(jungGraph.getInEdges(genericVertexRef));
-//            edges.addAll(jungGraph.getOutEdges(genericVertexRef));
-//        }
-//        return edges;
-//    }
+    @Override
+    public List<VertexRef> getDefaultFocus() {
+        return defaultFocus;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -180,6 +124,7 @@ public final class ImmutableGraph extends ImmutableElement implements Graph {
 
         private final Map<String, Vertex> vertexToIdMap = new HashMap<>();
         private final Map<String, Edge> edgeToIdMap = new HashMap<>();
+        private final List<VertexRef> defaultFocus = new ArrayList<>();
 
         private ImmutableGraphBuilder() {}
 
@@ -191,8 +136,7 @@ public final class ImmutableGraph extends ImmutableElement implements Graph {
             this.properties(graph.getProperties());
             this.addVertices(graph.getVertices());
             this.addEdges(graph.getEdges());
-            // TODO MVR \o/
-//            this.defaultFocus = graph.defaultFocus;
+            this.defaultFocus(graph.getDefaultFocus());
             return this;
         }
         
@@ -208,15 +152,31 @@ public final class ImmutableGraph extends ImmutableElement implements Graph {
             return this;
         }
 
-//        public ImmutableGraphBuilder focus(Focus defaultFocus) {
-//            Objects.requireNonNull(defaultFocus);
-//            this.defaultFocus = defaultFocus;
-//            return this;
-//        }
-//
-//        public FocusBuilder focus() {
-//            return new FocusBuilder();
-//        }
+        public ImmutableGraphBuilder defaultFocus(VertexRef... vertexRefs) {
+            if (vertexRefs != null) {
+                for (VertexRef eachVertexRef : vertexRefs) {
+                    defaultFocus(eachVertexRef);
+                }
+            }
+            return this;
+        }
+
+        public ImmutableGraphBuilder defaultFocus(VertexRef vertexRef) {
+            if (vertexRef != null) {
+                if (!this.defaultFocus.contains(vertexRef)) {
+                    this.defaultFocus.add(vertexRef);
+                }
+            }
+            return this;
+        }
+
+        public ImmutableGraphBuilder defaultFocus(List<VertexRef> vertexRefList) {
+            Objects.requireNonNull(vertexRefList);
+            for(VertexRef eachVertexRef : vertexRefList) {
+                defaultFocus(eachVertexRef);
+            }
+            return this;
+        }
 
         public ImmutableGraphBuilder addEdges(Collection<Edge> edges) {
             for (Edge eachEdge : edges) {
@@ -243,11 +203,7 @@ public final class ImmutableGraph extends ImmutableElement implements Graph {
             }
             if (vertexToIdMap.containsKey(vertex.getId())) return this; // already added
             vertexToIdMap.put(vertex.getId(), vertex);
-//            if (vertex.getNodeRef() != null) {
-//                nodeRefToVertexMap.putIfAbsent(vertex.getNodeRef(), new ArrayList<>());
-//                nodeRefToVertexMap.get(vertex.getNodeRef()).add(vertex);
-//            }
-            return this; 
+            return this;
         }
 
         public ImmutableGraphBuilder addEdge(Edge edge) {
@@ -314,17 +270,6 @@ public final class ImmutableGraph extends ImmutableElement implements Graph {
             return vertexToIdMap.get(id);
         }
 
-//        public List<Vertex> resolveVertices(NodeRef nodeRef) {
-//            Objects.requireNonNull(nodeRef);
-//            final List<Vertex> resolvedVertices = Lists.newArrayList();
-//            for (NodeRef eachVariant : nodeRef.getVariants()) {
-//                if (nodeRefToVertexMap.containsKey(eachVariant)) {
-//                    resolvedVertices.addAll(nodeRefToVertexMap.get(eachVariant));
-//                }
-//            }
-//            return resolvedVertices;
-//        }
-
         public ImmutableGraphBuilder namespace(String namespace) {
             checkIfNamespaceChangeIsAllowed(namespace);
             return super.namespace(namespace);
@@ -349,87 +294,14 @@ public final class ImmutableGraph extends ImmutableElement implements Graph {
                 throw new IllegalStateException("Cannot change namespace after adding Elements to Graph.");
             }
         }
+
+        public List<Vertex> getVertices() {
+            return Lists.newArrayList(vertexToIdMap.values());
+        }
         
         public ImmutableGraph build() {
             return new ImmutableGraph(this);
         }
 
-        public List<Vertex> getVertices() {
-            return Lists.newArrayList(vertexToIdMap.values());
-        }
-
-//        /**
-//         * Helper to build a focus based on various strategies we support.
-//         */
-//        public class FocusBuilder {
-//
-//            private String focusStrategy = FocusStrategy.EMPTY;
-//            private List<VertexRef> focusSelection = new ArrayList<>();
-//
-//            public FocusBuilder first() {
-//                focusStrategy = FocusStrategy.FIRST;
-//                return this;
-//            }
-//
-//            public FocusBuilder empty() {
-//                focusStrategy = FocusStrategy.EMPTY;
-//                return this;
-//            }
-//
-//            public FocusBuilder all() {
-//                focusStrategy = FocusStrategy.ALL;
-//                return this;
-//            }
-//
-//            public FocusBuilder selection(String vertexNamespace, List<String> vertexIds) {
-//                Objects.requireNonNull(vertexNamespace);
-//                Objects.requireNonNull(vertexIds);
-//                final List<VertexRef> vertexRefs = vertexIds.stream().map(id -> new VertexRef(vertexNamespace, id)).collect(Collectors.toList());
-//                return selection(vertexRefs);
-//            }
-//
-//            public FocusBuilder selection(List<VertexRef> vertexRefs) {
-//                Objects.requireNonNull(vertexRefs);
-//                focusStrategy = FocusStrategy.SELECTION;
-//                focusSelection = new ArrayList<>(vertexRefs);
-//                return this;
-//            }
-//
-//            public FocusBuilder selection(VertexRef vertexRef) {
-//                Objects.requireNonNull(vertexRef);
-//                return selection(Lists.newArrayList(vertexRef));
-//            }
-//
-//            public Focus build() {
-//                switch(focusStrategy) {
-//                    case FocusStrategy.FIRST:
-//                        final List<VertexRef> list = Lists.newArrayList();
-//                        if (!vertexToIdMap.isEmpty()) {
-//                            list.add(vertexToIdMap.values().iterator().next().getVertexRef());
-//                        }
-//                        return new Focus(FocusStrategy.FIRST, list);
-//                    case FocusStrategy.ALL:
-//                        return new Focus(FocusStrategy.ALL, vertexToIdMap.values().stream().map(GenericVertex::getVertexRef).collect(Collectors.toList()));
-//                    case FocusStrategy.EMPTY:
-//                        return new Focus(FocusStrategy.EMPTY);
-//                    case FocusStrategy.SELECTION:
-//                        // Only use selections, which actually exist in the graph
-//                        final List<VertexRef> existingVertexRefs = focusSelection.stream()
-//                                .filter(v -> v.getNamespace().equals(getNamespace()) && vertexToIdMap.containsKey(v.getId()))
-//                                .collect(Collectors.toList());
-//                        return new Focus(FocusStrategy.SELECTION, existingVertexRefs);
-//                    default:
-//                        final String[] validValues = new String[]{ FocusStrategy.ALL, FocusStrategy.EMPTY, FocusStrategy.FIRST, FocusStrategy.SELECTION };
-//                        throw new IllegalStateException("Focus Strategy '" + focusStrategy + "' not supported. Supported values are: " + Arrays.toString(validValues));
-//                }
-//            }
-//
-//            // Convenient method to build the focus and apply
-//            // it to the ImmutableGraphBuilder afterwards
-//            public ImmutableGraphBuilder apply() {
-//                final Focus focus = build();
-//                return focus(focus);
-//            }
-//        }
     }
 }

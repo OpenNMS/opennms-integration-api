@@ -28,45 +28,49 @@
 
 package org.opennms.integration.api.v1.graph.immutables;
 
+import java.util.List;
 import java.util.Objects;
 
-import org.opennms.integration.api.v1.graph.Vertex;
-import org.opennms.integration.api.v1.graph.VertexRef;
+import org.opennms.integration.api.v1.graph.GraphContainerInfo;
+import org.opennms.integration.api.v1.graph.GraphInfo;
 
-public class ImmutableVertexRef implements VertexRef {
-    private final String namespace;
-    private final String id;
+import com.google.common.collect.ImmutableList;
 
-    public ImmutableVertexRef(Vertex vertex) {
-        this(Objects.requireNonNull(vertex).getNamespace(), vertex.getId());
-    }
+public class ImmutableGraphContainerInfo implements GraphContainerInfo {
 
-    public ImmutableVertexRef(String namespace, String id) {
-        this.namespace = Objects.requireNonNull(namespace);
-        this.id = Objects.requireNonNull(id);
-    }
+    private final String containerId;
+    private final String description;
+    private final String label;
+    private final List<GraphInfo> graphInfos;
 
-    @Override
-    public String getNamespace() {
-        return namespace;
-    }
-
-    @Override
-    public String getId() {
-        return id;
+    public ImmutableGraphContainerInfo(final String containerId, final String label, final String description, GraphInfo... graphInfos) {
+        this.containerId = Objects.requireNonNull(containerId);
+        this.description = Objects.requireNonNull(description);
+        this.label = Objects.requireNonNull(label);
+        Objects.requireNonNull(graphInfos);
+        if (graphInfos.length == 0) {
+            throw new IllegalStateException("Must not be 0"); // TODO MVR
+        }
+        this.graphInfos = ImmutableList.copyOf(graphInfos);
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ImmutableVertexRef that = (ImmutableVertexRef) o;
-        return Objects.equals(namespace, that.namespace)
-                && Objects.equals(id, that.id);
+    public String getContainerId() {
+        return containerId;
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(namespace, id);
+    public String getLabel() {
+        return label;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    @Override
+    public List<GraphInfo> getGraphInfos() {
+        return graphInfos;
     }
 }
