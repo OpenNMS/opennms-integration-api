@@ -38,7 +38,6 @@ public class ImmutableGraphInfo implements GraphInfo {
     private final String description;
     private final String label;
 
-    // TODO MVR should not be empty or null
     public ImmutableGraphInfo(String namespace, String label, String description) {
         this.namespace = Objects.requireNonNull(namespace);
         this.label = Objects.requireNonNull(label);

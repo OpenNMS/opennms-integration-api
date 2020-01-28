@@ -35,7 +35,7 @@ public interface GraphProvider {
     Graph loadGraph();
     GraphInfo getGraphInfo();
 
-    default Configuration getConfiguration() {
-        return new Configuration() {};
+    default TopologyConfiguration getConfiguration() {
+        return new TopologyConfiguration() {};
     }
 }

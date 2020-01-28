@@ -65,6 +65,21 @@ public final class ImmutableGraph extends ImmutableElement implements Graph {
     }
 
     @Override
+    public String getNamespace() {
+        return getProperty(Properties.Graph.NAMESPACE);
+    }
+
+    @Override
+    public String getLabel() {
+        return getProperty(Properties.Graph.LABEL);
+    }
+
+    @Override
+    public String getDescription() {
+        return getProperty(Properties.Graph.DESCRIPTION);
+    }
+
+    @Override
     public List<Vertex> getVertices() {
         return new ArrayList<>(vertexToIdMap.values());
     }
@@ -73,12 +88,6 @@ public final class ImmutableGraph extends ImmutableElement implements Graph {
     public List<Edge> getEdges() {
         return new ArrayList<>(edgeToIdMap.values());
     }
-
-    @Override
-    public String getDescription() {
-        return getProperty(Properties.DESCRIPTION);
-    }
-
 
     @Override
     public Vertex getVertex(String id) {
@@ -131,7 +140,7 @@ public final class ImmutableGraph extends ImmutableElement implements Graph {
         private ImmutableGraphBuilder(final GraphInfo graphInfo) {
             graphInfo(graphInfo);
         }
-     
+
         public ImmutableGraphBuilder graph(Graph graph) {
             this.properties(graph.getProperties());
             this.addVertices(graph.getVertices());
@@ -139,9 +148,13 @@ public final class ImmutableGraph extends ImmutableElement implements Graph {
             this.defaultFocus(graph.getDefaultFocus());
             return this;
         }
-        
+
+        public ImmutableGraphBuilder label(String label){
+            property(Properties.Graph.LABEL, label);
+            return this;
+        }
         public ImmutableGraphBuilder description(String description) {
-            property(Properties.DESCRIPTION, description);
+            property(Properties.Graph.DESCRIPTION, description);
             return this;
         }
         
@@ -221,6 +234,14 @@ public final class ImmutableGraph extends ImmutableElement implements Graph {
             return this;
         }
 
+        public ImmutableVertex.ImmutableVertexBuilder vertex(final String id) {
+            return ImmutableVertex.builder(getNamespace(), id);
+        }
+
+        public ImmutableEdge.ImmutableEdgeBuilder edge(final String id, final VertexRef source, final VertexRef target) {
+            return ImmutableEdge.builder(getNamespace(), id, source, target);
+        }
+
         // Verifies that either the source or target vertex are known by the graph
         private void assertEdgeContainsAtLeastOneKnownVertex(Edge edge) {
             Objects.requireNonNull(edge.getSource(), "Source vertex must be provided");
@@ -263,7 +284,7 @@ public final class ImmutableGraph extends ImmutableElement implements Graph {
         }
         
         public String getNamespace() {
-            return Objects.requireNonNull((String)this.properties.get(Properties.NAMESPACE), "Namespace is not set yet. Please call namespace(...) first.");
+            return Objects.requireNonNull((String)this.properties.get(Properties.Graph.NAMESPACE), "Namespace is not set yet. Please call namespace(...) first.");
         }
         
         public Vertex getVertex(String id) {
@@ -272,19 +293,19 @@ public final class ImmutableGraph extends ImmutableElement implements Graph {
 
         public ImmutableGraphBuilder namespace(String namespace) {
             checkIfNamespaceChangeIsAllowed(namespace);
-            return super.namespace(namespace);
+            return property(Properties.Graph.NAMESPACE, namespace);
         }
     
         public ImmutableGraphBuilder property(String name, Object value) {
-            if(Properties.NAMESPACE.equals(name)) {
+            if(Properties.Graph.NAMESPACE.equals(name)) {
                 checkIfNamespaceChangeIsAllowed((String)value);
             }
             return super.property(name, value);
         }
         
         public ImmutableGraphBuilder properties(Map<String, Object> properties) {
-            if(properties != null && properties.containsKey(Properties.NAMESPACE)) {
-                checkIfNamespaceChangeIsAllowed((String)properties.get(Properties.NAMESPACE));
+            if(properties != null && properties.containsKey(Properties.Graph.NAMESPACE)) {
+                checkIfNamespaceChangeIsAllowed((String)properties.get(Properties.Graph.NAMESPACE));
             }
             return super.properties(properties);
         }

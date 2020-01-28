@@ -38,30 +38,56 @@ public final class ImmutableVertex extends ImmutableElement implements Vertex {
     private ImmutableVertex(Map<String, Object> properties) {
         super(properties);
         Objects.requireNonNull(getId(), "id cannot be null");
-        // TODO MVR make it easier. Just always use the namespace of the graph?!
         Objects.requireNonNull(getNamespace(), "namespace cannot be null");
     }
 
-    public static ImmutableVertexBuilder builder() {
-    	return new ImmutableVertexBuilder();
+    @Override
+    public String getNamespace() {
+        return getProperty(Properties.Vertex.NAMESPACE);
     }
-    
+
+    @Override
+    public String getId() {
+        return getProperty(Properties.Vertex.ID);
+    }
+
+    public static ImmutableVertexBuilder builder(final String namespace, final String id) {
+    	return new ImmutableVertexBuilder()
+                .namespace(namespace)
+                .id(id);
+    }
+
     public final static class ImmutableVertexBuilder extends ImmutableElementBuilder<ImmutableVertexBuilder> {
     	
         private ImmutableVertexBuilder() {}
+
+        public ImmutableVertexBuilder namespace(String namespace) {
+            Objects.requireNonNull(namespace, "namespace cannot be null.");
+            property(Properties.Vertex.NAMESPACE, namespace);
+            return this;
+        }
         
-        public ImmutableVertexBuilder vertex(Vertex vertex) {
-            Objects.requireNonNull(vertex);
-//            properties(vertex.getProperties());
+        public ImmutableVertexBuilder id(String id) {
+            property(Properties.Vertex.ID, id);
+            return this;
+        }
+
+        public ImmutableVertexBuilder label(String label){
+            property(Properties.Vertex.LABEL, label);
             return this;
         }
 
         public ImmutableVertexBuilder nodeRef(String foreignSource, String foreignId) {
-            property(Properties.FOREIGN_SOURCE, foreignSource);
-            property(Properties.FOREIGN_ID, foreignId);
+            property(Properties.Vertex.FOREIGN_SOURCE, foreignSource);
+            property(Properties.Vertex.FOREIGN_ID, foreignId);
             return this;
         }
-    	
+
+        public ImmutableVertexBuilder iconKey(String iconKey) {
+            property("iconKey", iconKey);
+            return this;
+        }
+
     	public ImmutableVertex build() {
     		return new ImmutableVertex(properties);
     	}

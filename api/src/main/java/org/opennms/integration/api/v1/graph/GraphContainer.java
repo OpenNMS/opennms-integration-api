@@ -38,12 +38,6 @@ public interface GraphContainer {
 
     String getLabel();
 
-//    GraphInfo getGraphInfo(String namespace);
-//
-//    GraphInfo getPrimaryGraphInfo();
-//
-//    List<GraphInfo> getGraphInfos();
-
     /**
      * Returns the list of graphs provided by the container. The returned list, should never be null or empty.
      *

@@ -37,11 +37,11 @@ public class ImmutableVertexRef implements VertexRef {
     private final String namespace;
     private final String id;
 
-    public ImmutableVertexRef(Vertex vertex) {
+    public ImmutableVertexRef(final Vertex vertex) {
         this(Objects.requireNonNull(vertex).getNamespace(), vertex.getId());
     }
 
-    public ImmutableVertexRef(String namespace, String id) {
+    public ImmutableVertexRef(final String namespace, final String id) {
         this.namespace = Objects.requireNonNull(namespace);
         this.id = Objects.requireNonNull(id);
     }

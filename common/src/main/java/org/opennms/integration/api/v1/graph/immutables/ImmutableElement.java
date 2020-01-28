@@ -61,18 +61,6 @@ public abstract class ImmutableElement {
         return properties;
     }
 
-    public String getNamespace() {
-        return getProperty(Properties.NAMESPACE);
-    }
-
-    public String getLabel(){
-        return getProperty(Properties.LABEL);
-    }
-
-    public String getId() {
-        return getProperty(Properties.ID);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -88,6 +76,7 @@ public abstract class ImmutableElement {
 
     @Override
     public String toString() {
+        // TODO MVR this is not consistent with rest of stuff in the api layer
         return MoreObjects.toStringHelper(this)
                 .omitNullValues()
                 .add("properties", properties)
@@ -99,32 +88,16 @@ public abstract class ImmutableElement {
 //    	protected final NamespaceValidator namespaceValidator = new NamespaceValidator();
     	
         protected ImmutableElementBuilder() {}
-    	
-        public T id(String id) {
-            property(Properties.ID, id);
-        	return (T) this;
-        }
-        
-        public T label(String label){
-            property(Properties.LABEL, label);
-        	return (T) this;
-        }
-        
-        public T namespace(String namespace) {
-            Objects.requireNonNull(namespace, "namespace cannot be null.");
-            property(Properties.NAMESPACE, namespace);
-        	return (T) this;
-        }
 
         public T property(String name, Object value) {
-            if(name == null || value == null) {
+//            if(name == null || value == null) {
 //                LOG.debug("Property name ({}) or value ({}) is null => ignoring it.", name, value);
-                return (T) this;
-            }
+//                return (T) this;
+//            }
             // Ensure the namespace is valid before changing it
-            if (Properties.NAMESPACE.equals(name)) {
+//            if (Properties.NAMESPACE.equals(name)) {
 //                namespaceValidator.validate((String) value);
-            }
+//            }
             properties.put(name, value);
             return (T) this;
         }
@@ -135,14 +108,6 @@ public abstract class ImmutableElement {
                 property(entry.getKey(), entry.getValue());
             }
             return (T) this;
-        }
-
-        public String getNamespace() {
-            return (String) properties.get(Properties.NAMESPACE);
-        }
-
-        public String getId() {
-            return (String) properties.get(Properties.ID);
         }
     }
 }

@@ -34,7 +34,7 @@ import org.opennms.integration.api.v1.annotations.Exposable;
 public interface GraphContainerProvider {
     GraphContainer loadGraphContainer();
     GraphContainerInfo getGraphContainerInfo();
-    default Configuration getConfiguration() {
-        return new Configuration() {};
+    default TopologyConfiguration getConfiguration() {
+        return new TopologyConfiguration() {};
     }
 }

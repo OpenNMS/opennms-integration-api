@@ -41,7 +41,7 @@ public final class ImmutableEdge extends ImmutableElement implements Edge {
     private final VertexRef source;
     private final VertexRef target;
 
-    // TODO MVr we do not calculate the id here, so the edge must have one set, otherwise it fails
+    // TODO MVR we do not calculate the id here, so the edge must have one set, otherwise it fails
     private ImmutableEdge(final VertexRef source, final VertexRef target, final Map<String, Object> properties) {
         super(properties);
         this.source = Objects.requireNonNull(source);
@@ -52,8 +52,17 @@ public final class ImmutableEdge extends ImmutableElement implements Edge {
                             source.getNamespace(), target.getNamespace(), getNamespace()));
         }
         Objects.requireNonNull(getId(), "id cannot be null");
-        // TODO MVR make it easier. Just always use the namespace of the graph?!
         Objects.requireNonNull(getNamespace(), "namespace cannot be null");
+    }
+
+    @Override
+    public String getNamespace() {
+        return getProperty(Properties.Edge.NAMESPACE);
+    }
+
+    @Override
+    public String getId() {
+        return getProperty(Properties.Edge.ID);
     }
 
     @Override
@@ -66,6 +75,7 @@ public final class ImmutableEdge extends ImmutableElement implements Edge {
         return target;
     }
 
+    // TODO MVR verify toString() as it is not consistent with rest of API implementations
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
@@ -90,8 +100,12 @@ public final class ImmutableEdge extends ImmutableElement implements Edge {
         return Objects.hash(super.hashCode(), source, target);
     }
 
-    public static ImmutableEdgeBuilder builder() {
-        return new ImmutableEdgeBuilder();
+    public static ImmutableEdgeBuilder builder(final String namespace, final String id, final VertexRef source, final VertexRef target) {
+        return new ImmutableEdgeBuilder()
+                .namespace(namespace)
+                .id(id)
+                .source(source)
+                .target(target);
     }
 
     public final static class ImmutableEdgeBuilder extends ImmutableElementBuilder<ImmutableEdgeBuilder> {
@@ -101,11 +115,19 @@ public final class ImmutableEdge extends ImmutableElement implements Edge {
 
         private ImmutableEdgeBuilder() {}
 
-        public ImmutableEdgeBuilder edge(final Edge edge) {
-            Objects.requireNonNull(edge);
-//            properties(edge.getProperties());
-            source(edge.getSource());
-            target(edge.getTarget());
+        public ImmutableEdgeBuilder namespace(String namespace) {
+            Objects.requireNonNull(namespace, "namespace cannot be null.");
+            property(Properties.Edge.NAMESPACE, namespace);
+            return this;
+        }
+
+        public ImmutableEdgeBuilder id(String id) {
+            property(Properties.Edge.ID, id);
+            return this;
+        }
+
+        public ImmutableEdgeBuilder label(String label){
+            property(Properties.Edge.LABEL, label);
             return this;
         }
 

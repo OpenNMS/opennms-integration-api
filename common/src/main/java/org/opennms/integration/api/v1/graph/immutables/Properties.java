@@ -33,29 +33,37 @@ package org.opennms.integration.api.v1.graph.immutables;
  *
  * @author mvrueden
  */
-// TODO MVR maybe simply use VertexProperties / GraphProperties, etc. to help the user
 public interface Properties {
-    /** The id of the element */
-    String ID = "id";
 
-    /** The namespace of the element. */
-    String NAMESPACE = "namespace";
+    interface Container {
+        String ID = "id";
+        String LABEL = "label";
+        String DESCRIPTION = "description";
+    }
 
-    /** The description of the element */
-    String DESCRIPTION = "description";
+    interface Graph {
+        String NAMESPACE = "namespace";
+        String LABEL = "label";
+        String DESCRIPTION = "description";
 
-    /** The label of the element */
-    String LABEL = "label";
+    }
 
-    /** Reference to a node, either the id, or a <foreignSource>:<foreignId> statement */
-    String NODE_CRITERIA = "nodeCriteria";
+    interface Vertex {
+        String ID = "id";
+        String LABEL = "label";
+        String NAMESPACE = "namespace";
 
-    String NODE_INFO = "nodeInfo";
+        /** Reference to a node, either the id, or a <&lt;foreignSource&gt;:&lt;foreignId&gt; statement */
+        String NODE_CRITERIA = "nodeCriteria";
 
-    String NODE_ID = "nodeID";
-    String FOREIGN_SOURCE = "foreignSource";
-    String FOREIGN_ID = "foreignID";
+        String NODE_ID = "nodeID";
+        String FOREIGN_SOURCE = "foreignSource";
+        String FOREIGN_ID = "foreignID";
+    }
 
-    /** Determines if vertices containing a node ref should be enriched with the node information. */
-    String ENRICHMENT_RESOLVE_NODES = "enrichment.resolveNodes";
+    interface Edge {
+        String ID = "id";
+        String LABEL = "label";
+        String NAMESPACE = "namespace";
+    }
 }
