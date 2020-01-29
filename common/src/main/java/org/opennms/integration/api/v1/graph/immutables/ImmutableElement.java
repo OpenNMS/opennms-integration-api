@@ -32,7 +32,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 
 public abstract class ImmutableElement {
@@ -44,7 +43,6 @@ public abstract class ImmutableElement {
     */
     protected ImmutableElement(Map<String, Object> properties) {
         Objects.requireNonNull(properties);
-        // TODO MVR WTF?!
         this.properties = ImmutableMap.copyOf(properties);
     }
 
@@ -75,17 +73,15 @@ public abstract class ImmutableElement {
 
     @Override
     public String toString() {
-        // TODO MVR this is not consistent with rest of stuff in the api layer
-        return MoreObjects.toStringHelper(this)
-                .omitNullValues()
-                .add("properties", properties)
-                .toString();
+        return "ImmutableElement{" +
+                "properties=" + properties +
+                '}';
     }
-    
-    public static abstract class ImmutableElementBuilder<T extends ImmutableElementBuilder> {
+
+    public static abstract class AbstractBuilder<T extends AbstractBuilder> {
     	protected final Map<String, Object> properties = new HashMap<>();
 
-        protected ImmutableElementBuilder() {}
+        protected AbstractBuilder() {}
 
         public T property(String name, Object value) {
             if (name == null || value == null) {

@@ -70,4 +70,30 @@ public class ImmutableGraphContainerInfo implements GraphContainerInfo {
     public List<GraphInfo> getGraphInfos() {
         return graphInfos;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final ImmutableGraphContainerInfo that = (ImmutableGraphContainerInfo) o;
+        return Objects.equals(containerId, that.containerId)
+                && Objects.equals(description, that.description)
+                && Objects.equals(label, that.label)
+                && Objects.equals(graphInfos, that.graphInfos);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(containerId, description, label, graphInfos);
+    }
+
+    @Override
+    public String toString() {
+        return "ImmutableGraphContainerInfo{" +
+                "containerId='" + containerId + '\'' +
+                ", description='" + description + '\'' +
+                ", label='" + label + '\'' +
+                ", graphInfos=" + graphInfos +
+                '}';
+    }
 }

@@ -69,4 +69,12 @@ public class ImmutableVertexRef implements VertexRef {
     public int hashCode() {
         return Objects.hash(namespace, id);
     }
+
+    @Override
+    public String toString() {
+        return "ImmutableVertexRef{" +
+                "namespace='" + namespace + '\'' +
+                ", id='" + id + '\'' +
+                '}';
+    }
 }

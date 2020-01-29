@@ -102,7 +102,15 @@ public class ImmutableGraphContainer implements GraphContainer {
     public int hashCode() {
         return Objects.hash(graphs, properties);
     }
-    
+
+    @Override
+    public String toString() {
+        return "ImmutableGraphContainer{" +
+                "graphs=" + graphs +
+                ", properties=" + properties +
+                '}';
+    }
+
     public static Builder newBuilder(GraphContainerInfo containerInfo) {
         Objects.requireNonNull(containerInfo);
         return new Builder()
@@ -111,9 +119,6 @@ public class ImmutableGraphContainer implements GraphContainer {
 
     public static class Builder {
 
-//        private final static Logger LOG = LoggerFactory.getLogger(ImmutableGraphContainerBuilder.class);
-
-        // allow graphs to be replaced in builder : use a Map
         private final Map<String, Graph> graphs = new HashMap<>();
         private final Map<String, Object> properties = new HashMap<>();
         

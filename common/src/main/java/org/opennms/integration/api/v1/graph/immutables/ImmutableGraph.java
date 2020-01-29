@@ -113,7 +113,17 @@ public final class ImmutableGraph extends ImmutableElement implements Graph {
     public int hashCode() {
         return Objects.hash(super.hashCode(), vertexToIdMap, edgeToIdMap, defaultFocus);
     }
-    
+
+    @Override
+    public String toString() {
+        return "ImmutableGraph{" +
+                "vertexToIdMap=" + vertexToIdMap +
+                ", edgeToIdMap=" + edgeToIdMap +
+                ", defaultFocus=" + defaultFocus +
+                ", properties=" + properties +
+                '}';
+    }
+
     public static Builder newBuilder(final GraphInfo graphInfo) {
         return new Builder(graphInfo);
     }
@@ -124,7 +134,7 @@ public final class ImmutableGraph extends ImmutableElement implements Graph {
     }
 
     // ImmutableGraphBuilder
-    public final static class Builder extends ImmutableElementBuilder<Builder> {
+    public final static class Builder extends AbstractBuilder<Builder> {
 
         private final Map<String, Vertex> vertexToIdMap = new HashMap<>();
         private final Map<String, Edge> edgeToIdMap = new HashMap<>();

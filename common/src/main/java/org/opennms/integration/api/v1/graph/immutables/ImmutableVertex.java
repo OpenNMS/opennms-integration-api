@@ -51,6 +51,13 @@ public final class ImmutableVertex extends ImmutableElement implements Vertex {
         return getProperty(Properties.Vertex.ID);
     }
 
+    @Override
+    public String toString() {
+        return "ImmutableVertex{" +
+                "properties=" + properties +
+                '}';
+    }
+
     public static Builder newBuilder(final String namespace, final String id) {
     	return new Builder()
                 .namespace(namespace)
@@ -58,7 +65,7 @@ public final class ImmutableVertex extends ImmutableElement implements Vertex {
     }
 
     // ImmutableVertexBuilder
-    public final static class Builder extends ImmutableElementBuilder<Builder> {
+    public final static class Builder extends AbstractBuilder<Builder> {
     	
         private Builder() {}
 

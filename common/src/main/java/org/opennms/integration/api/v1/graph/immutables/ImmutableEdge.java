@@ -34,8 +34,6 @@ import java.util.Objects;
 import org.opennms.integration.api.v1.graph.Edge;
 import org.opennms.integration.api.v1.graph.VertexRef;
 
-import com.google.common.base.MoreObjects;
-
 public final class ImmutableEdge extends ImmutableElement implements Edge {
 
     private final VertexRef source;
@@ -69,16 +67,6 @@ public final class ImmutableEdge extends ImmutableElement implements Edge {
         return target;
     }
 
-    // TODO MVR verify toString() as it is not consistent with rest of API implementations
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("source", source)
-                .add("target", target)
-                .add("properties", properties)
-                .toString();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -94,6 +82,15 @@ public final class ImmutableEdge extends ImmutableElement implements Edge {
         return Objects.hash(super.hashCode(), source, target);
     }
 
+    @Override
+    public String toString() {
+        return "ImmutableEdge{" +
+                "source=" + source +
+                ", target=" + target +
+                ", properties=" + properties +
+                '}';
+    }
+
     public static Builder newBuilder(final String namespace, final String id, final VertexRef source, final VertexRef target) {
         return new Builder()
                 .namespace(namespace)
@@ -103,7 +100,7 @@ public final class ImmutableEdge extends ImmutableElement implements Edge {
     }
 
     // ImmutableEdgeBuilder
-    public final static class Builder extends ImmutableElementBuilder<Builder> {
+    public final static class Builder extends AbstractBuilder<Builder> {
 
         private VertexRef source;
         private VertexRef target;

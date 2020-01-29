@@ -58,4 +58,28 @@ public class ImmutableGraphInfo implements GraphInfo {
     public String getLabel() {
         return label;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final ImmutableGraphInfo that = (ImmutableGraphInfo) o;
+        return Objects.equals(namespace, that.namespace)
+                && Objects.equals(description, that.description)
+                && Objects.equals(label, that.label);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(namespace, description, label);
+    }
+
+    @Override
+    public String toString() {
+        return "ImmutableGraphInfo{" +
+                "namespace='" + namespace + '\'' +
+                ", description='" + description + '\'' +
+                ", label='" + label + '\'' +
+                '}';
+    }
 }
