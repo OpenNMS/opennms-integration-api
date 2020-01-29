@@ -28,8 +28,6 @@
 
 package org.opennms.integration.api.v1.graph.immutables;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -43,21 +41,17 @@ import org.opennms.integration.api.v1.graph.GraphInfo;
 import org.opennms.integration.api.v1.graph.Vertex;
 import org.opennms.integration.api.v1.graph.VertexRef;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
-/**
- * Immutable generic graph.
- */
 public final class ImmutableGraph extends ImmutableElement implements Graph {
 
     private final Map<String, Vertex> vertexToIdMap;
     private final Map<String, Edge> edgeToIdMap;
     private final List<VertexRef> defaultFocus;
 
-    private ImmutableGraph(ImmutableGraphBuilder builder) {
+    private ImmutableGraph(Builder builder) {
         super(builder.properties);
         this.vertexToIdMap = ImmutableMap.copyOf(builder.vertexToIdMap);
         this.edgeToIdMap = ImmutableMap.copyOf(builder.edgeToIdMap);
@@ -120,28 +114,29 @@ public final class ImmutableGraph extends ImmutableElement implements Graph {
         return Objects.hash(super.hashCode(), vertexToIdMap, edgeToIdMap, defaultFocus);
     }
     
-    public static ImmutableGraphBuilder builder(final GraphInfo graphInfo) {
-        return new ImmutableGraphBuilder(graphInfo);
+    public static Builder newBuilder(final GraphInfo graphInfo) {
+        return new Builder(graphInfo);
     }
 
-    public static ImmutableGraphBuilder from(Graph graph) {
+    public static Builder newBuilderFrom(Graph graph) {
         Objects.requireNonNull(graph);
-        return new ImmutableGraphBuilder().graph(graph);
+        return new Builder().graph(graph);
     }
-    
-    public final static class ImmutableGraphBuilder extends ImmutableElementBuilder<ImmutableGraphBuilder> {
+
+    // ImmutableGraphBuilder
+    public final static class Builder extends ImmutableElementBuilder<Builder> {
 
         private final Map<String, Vertex> vertexToIdMap = new HashMap<>();
         private final Map<String, Edge> edgeToIdMap = new HashMap<>();
         private final List<VertexRef> defaultFocus = new ArrayList<>();
 
-        private ImmutableGraphBuilder() {}
+        private Builder() {}
 
-        private ImmutableGraphBuilder(final GraphInfo graphInfo) {
+        private Builder(final GraphInfo graphInfo) {
             graphInfo(graphInfo);
         }
 
-        public ImmutableGraphBuilder graph(Graph graph) {
+        public Builder graph(Graph graph) {
             this.properties(graph.getProperties());
             this.addVertices(graph.getVertices());
             this.addEdges(graph.getEdges());
@@ -149,23 +144,23 @@ public final class ImmutableGraph extends ImmutableElement implements Graph {
             return this;
         }
 
-        public ImmutableGraphBuilder label(String label){
+        public Builder label(String label){
             property(Properties.Graph.LABEL, label);
             return this;
         }
-        public ImmutableGraphBuilder description(String description) {
+        public Builder description(String description) {
             property(Properties.Graph.DESCRIPTION, description);
             return this;
         }
         
-        public ImmutableGraphBuilder graphInfo(GraphInfo graphInfo) {
+        public Builder graphInfo(GraphInfo graphInfo) {
             namespace(graphInfo.getNamespace());
             description(graphInfo.getDescription());
             label(graphInfo.getLabel());
             return this;
         }
 
-        public ImmutableGraphBuilder defaultFocus(VertexRef... vertexRefs) {
+        public Builder defaultFocus(VertexRef... vertexRefs) {
             if (vertexRefs != null) {
                 for (VertexRef eachVertexRef : vertexRefs) {
                     defaultFocus(eachVertexRef);
@@ -174,7 +169,7 @@ public final class ImmutableGraph extends ImmutableElement implements Graph {
             return this;
         }
 
-        public ImmutableGraphBuilder defaultFocus(VertexRef vertexRef) {
+        public Builder defaultFocus(VertexRef vertexRef) {
             if (vertexRef != null) {
                 if (!this.defaultFocus.contains(vertexRef)) {
                     this.defaultFocus.add(vertexRef);
@@ -183,96 +178,52 @@ public final class ImmutableGraph extends ImmutableElement implements Graph {
             return this;
         }
 
-        public ImmutableGraphBuilder defaultFocus(List<VertexRef> vertexRefList) {
+        public Builder defaultFocus(List<VertexRef> vertexRefList) {
             Objects.requireNonNull(vertexRefList);
-            for(VertexRef eachVertexRef : vertexRefList) {
+            for (VertexRef eachVertexRef : vertexRefList) {
                 defaultFocus(eachVertexRef);
             }
             return this;
         }
 
-        public ImmutableGraphBuilder addEdges(Collection<Edge> edges) {
+        public Builder addEdges(Collection<Edge> edges) {
             for (Edge eachEdge : edges) {
                 addEdge(eachEdge);
             }
             return this;
         }
 
-        public ImmutableGraphBuilder addVertices(Collection<Vertex> vertices) {
+        public Builder addVertices(Collection<Vertex> vertices) {
             for (Vertex eachVertex : vertices) {
                 addVertex(eachVertex);
             }
             return this;
         }
 
-        public ImmutableGraphBuilder addVertex(Vertex vertex) {
+        public Builder addVertex(Vertex vertex) {
             Objects.requireNonNull(getNamespace(), "Please set a namespace before adding elements to this graph.");
             Objects.requireNonNull(vertex, "GenericVertex can not be null");
-            checkArgument(!Strings.isNullOrEmpty(vertex.getId()) , "GenericVertex.getId() can not be empty or null. Vertex= %s", vertex);
-            if (!this.getNamespace().equals(vertex.getNamespace())) {
-                throw new IllegalArgumentException(
-                    String.format("The namespace of the vertex (%s) doesn't match the namespace of this graph (%s). Vertex: %s ",
-                        vertex.getNamespace(), this.getNamespace(), vertex.toString()));
-            }
             if (vertexToIdMap.containsKey(vertex.getId())) return this; // already added
             vertexToIdMap.put(vertex.getId(), vertex);
             return this;
         }
 
-        public ImmutableGraphBuilder addEdge(Edge edge) {
+        public Builder addEdge(Edge edge) {
             Objects.requireNonNull(getNamespace(), "Please set a namespace before adding elements to this graph.");
             Objects.requireNonNull(edge, "GenericEdge cannot be null");
-            checkArgument(!Strings.isNullOrEmpty(edge.getId()) , "GenericEdge.getId() can not be empty or null. Vertex= %s", edge);
-            if(!this.getNamespace().equals(edge.getNamespace())){
-                throw new IllegalArgumentException(
-                        String.format("The namespace of the edge (%s) doesn't match the namespace of this graph (%s). Edge: %s ",
-                        edge.getNamespace(), this.getNamespace(), edge.toString()));
-            }
-            assertEdgeContainsAtLeastOneKnownVertex(edge);
             if (edgeToIdMap.containsKey(edge.getId())) return this; // already added
             edgeToIdMap.put(edge.getId(), edge);
             return this;
         }
 
-        public ImmutableVertex.ImmutableVertexBuilder vertex(final String id) {
-            return ImmutableVertex.builder(getNamespace(), id);
+        public ImmutableVertex.Builder vertex(final String id) {
+            return ImmutableVertex.newBuilder(getNamespace(), id);
         }
 
-        public ImmutableEdge.ImmutableEdgeBuilder edge(final String id, final VertexRef source, final VertexRef target) {
-            return ImmutableEdge.builder(getNamespace(), id, source, target);
+        public ImmutableEdge.Builder edge(final String id, final VertexRef source, final VertexRef target) {
+            return ImmutableEdge.newBuilder(getNamespace(), id, source, target);
         }
 
-        // Verifies that either the source or target vertex are known by the graph
-        private void assertEdgeContainsAtLeastOneKnownVertex(Edge edge) {
-            Objects.requireNonNull(edge.getSource(), "Source vertex must be provided");
-            Objects.requireNonNull(edge.getTarget(), "Target vertex must be provided");
-            final VertexRef sourceRef = edge.getSource();
-            final VertexRef targetRef = edge.getTarget();
-
-            // neither source nor target share the same namespace => both unknown => not valid
-            if (!sourceRef.getNamespace().equals(getNamespace()) && !targetRef.getNamespace().equals(getNamespace())) {
-                throw new IllegalArgumentException(
-                        String.format("Adding an Edge with two vertices of unknown namespace. Either the source or target vertex must match the graph's namespace (%s). But got: (%s, %s)",
-                                getNamespace(), sourceRef.getNamespace(), targetRef.getNamespace()));
-            }
-            // source vertex is shared -> check if known
-            if (sourceRef.getNamespace().equals(getNamespace())) {
-                assertVertexFromSameNamespaceIsKnown(sourceRef);
-            }
-            // target vertex is shared -> check if known
-            if (targetRef.getNamespace().equals(getNamespace())) {
-                assertVertexFromSameNamespaceIsKnown(targetRef);
-            }
-        }
-
-        private void assertVertexFromSameNamespaceIsKnown(VertexRef vertex) {
-            if (vertex.getNamespace().equals(getNamespace()) && getVertex(vertex.getId()) == null) {
-                throw new IllegalArgumentException(
-                        String.format("Adding a VertexRef to an unknown Vertex with id=%s in our namespace (%s). Please add the Vertex first to the graph",
-                                vertex.getId(), this.getNamespace()));
-            }
-        }
-        
         public void removeEdge(Edge edge) {
             Objects.requireNonNull(edge);
             edgeToIdMap.remove(edge.getId());
@@ -291,19 +242,19 @@ public final class ImmutableGraph extends ImmutableElement implements Graph {
             return vertexToIdMap.get(id);
         }
 
-        public ImmutableGraphBuilder namespace(String namespace) {
+        public Builder namespace(String namespace) {
             checkIfNamespaceChangeIsAllowed(namespace);
             return property(Properties.Graph.NAMESPACE, namespace);
         }
     
-        public ImmutableGraphBuilder property(String name, Object value) {
+        public Builder property(String name, Object value) {
             if(Properties.Graph.NAMESPACE.equals(name)) {
                 checkIfNamespaceChangeIsAllowed((String)value);
             }
             return super.property(name, value);
         }
         
-        public ImmutableGraphBuilder properties(Map<String, Object> properties) {
+        public Builder properties(Map<String, Object> properties) {
             if(properties != null && properties.containsKey(Properties.Graph.NAMESPACE)) {
                 checkIfNamespaceChangeIsAllowed((String)properties.get(Properties.Graph.NAMESPACE));
             }

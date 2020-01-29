@@ -46,7 +46,6 @@ public abstract class ImmutableElement {
         Objects.requireNonNull(properties);
         // TODO MVR WTF?!
         this.properties = ImmutableMap.copyOf(properties);
-//        new NamespaceValidator().validate(getNamespace());
     }
 
     public <T> T getProperty(String key) {
@@ -85,19 +84,13 @@ public abstract class ImmutableElement {
     
     public static abstract class ImmutableElementBuilder<T extends ImmutableElementBuilder> {
     	protected final Map<String, Object> properties = new HashMap<>();
-//    	protected final NamespaceValidator namespaceValidator = new NamespaceValidator();
-    	
+
         protected ImmutableElementBuilder() {}
 
         public T property(String name, Object value) {
-//            if(name == null || value == null) {
-//                LOG.debug("Property name ({}) or value ({}) is null => ignoring it.", name, value);
-//                return (T) this;
-//            }
-            // Ensure the namespace is valid before changing it
-//            if (Properties.NAMESPACE.equals(name)) {
-//                namespaceValidator.validate((String) value);
-//            }
+            if (name == null || value == null) {
+                return (T) this;
+            }
             properties.put(name, value);
             return (T) this;
         }

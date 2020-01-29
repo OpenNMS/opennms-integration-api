@@ -29,7 +29,11 @@
 package org.opennms.integration.api.v1.graph;
 
 import java.util.List;
+import java.util.Map;
 
+import org.opennms.integration.api.v1.annotations.Model;
+
+@Model
 public interface GraphContainer {
 
     String getId();
@@ -53,5 +57,5 @@ public interface GraphContainer {
      */
     Graph getGraph(String namespace);
 
-    List<String> getNamespaces();
+    Map<String, Object> getProperties();
 }

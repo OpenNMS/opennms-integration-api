@@ -51,39 +51,40 @@ public final class ImmutableVertex extends ImmutableElement implements Vertex {
         return getProperty(Properties.Vertex.ID);
     }
 
-    public static ImmutableVertexBuilder builder(final String namespace, final String id) {
-    	return new ImmutableVertexBuilder()
+    public static Builder newBuilder(final String namespace, final String id) {
+    	return new Builder()
                 .namespace(namespace)
                 .id(id);
     }
 
-    public final static class ImmutableVertexBuilder extends ImmutableElementBuilder<ImmutableVertexBuilder> {
+    // ImmutableVertexBuilder
+    public final static class Builder extends ImmutableElementBuilder<Builder> {
     	
-        private ImmutableVertexBuilder() {}
+        private Builder() {}
 
-        public ImmutableVertexBuilder namespace(String namespace) {
+        public Builder namespace(String namespace) {
             Objects.requireNonNull(namespace, "namespace cannot be null.");
             property(Properties.Vertex.NAMESPACE, namespace);
             return this;
         }
         
-        public ImmutableVertexBuilder id(String id) {
+        public Builder id(String id) {
             property(Properties.Vertex.ID, id);
             return this;
         }
 
-        public ImmutableVertexBuilder label(String label){
+        public Builder label(String label){
             property(Properties.Vertex.LABEL, label);
             return this;
         }
 
-        public ImmutableVertexBuilder nodeRef(String foreignSource, String foreignId) {
+        public Builder nodeRef(String foreignSource, String foreignId) {
             property(Properties.Vertex.FOREIGN_SOURCE, foreignSource);
             property(Properties.Vertex.FOREIGN_ID, foreignId);
             return this;
         }
 
-        public ImmutableVertexBuilder iconKey(String iconKey) {
+        public Builder iconKey(String iconKey) {
             property("iconKey", iconKey);
             return this;
         }

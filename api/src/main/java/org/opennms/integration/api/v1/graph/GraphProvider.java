@@ -34,8 +34,7 @@ import org.opennms.integration.api.v1.annotations.Exposable;
 public interface GraphProvider {
     Graph loadGraph();
     GraphInfo getGraphInfo();
-
-    default TopologyConfiguration getConfiguration() {
-        return new TopologyConfiguration() {};
+    default TopologyConfiguration getTopologyConfiguration() {
+        return TopologyConfiguration.DEFAULT;
     }
 }

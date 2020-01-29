@@ -44,13 +44,10 @@ public class ImmutableGraphContainerInfo implements GraphContainerInfo {
     private final List<GraphInfo> graphInfos;
 
     public ImmutableGraphContainerInfo(final String containerId, final String label, final String description, GraphInfo... graphInfos) {
+        Objects.requireNonNull(graphInfos);
         this.containerId = Objects.requireNonNull(containerId);
         this.description = Objects.requireNonNull(description);
         this.label = Objects.requireNonNull(label);
-        Objects.requireNonNull(graphInfos);
-        if (graphInfos.length == 0) {
-            throw new IllegalStateException("Must not be 0"); // TODO MVR
-        }
         this.graphInfos = ImmutableList.copyOf(graphInfos);
     }
 

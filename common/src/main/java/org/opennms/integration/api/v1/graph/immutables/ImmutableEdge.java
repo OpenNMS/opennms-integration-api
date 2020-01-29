@@ -41,16 +41,10 @@ public final class ImmutableEdge extends ImmutableElement implements Edge {
     private final VertexRef source;
     private final VertexRef target;
 
-    // TODO MVR we do not calculate the id here, so the edge must have one set, otherwise it fails
     private ImmutableEdge(final VertexRef source, final VertexRef target, final Map<String, Object> properties) {
         super(properties);
         this.source = Objects.requireNonNull(source);
         this.target = Objects.requireNonNull(target);
-        if (!source.getNamespace().equals(getNamespace()) && !target.getNamespace().equals(getNamespace())) {
-            throw new IllegalArgumentException(
-                    String.format("Neither the namespace of the source VertexRef(namespace=%s) nor the target VertexRef(%s) matches our namespace=%s",
-                            source.getNamespace(), target.getNamespace(), getNamespace()));
-        }
         Objects.requireNonNull(getId(), "id cannot be null");
         Objects.requireNonNull(getNamespace(), "namespace cannot be null");
     }
@@ -100,54 +94,55 @@ public final class ImmutableEdge extends ImmutableElement implements Edge {
         return Objects.hash(super.hashCode(), source, target);
     }
 
-    public static ImmutableEdgeBuilder builder(final String namespace, final String id, final VertexRef source, final VertexRef target) {
-        return new ImmutableEdgeBuilder()
+    public static Builder newBuilder(final String namespace, final String id, final VertexRef source, final VertexRef target) {
+        return new Builder()
                 .namespace(namespace)
                 .id(id)
                 .source(source)
                 .target(target);
     }
 
-    public final static class ImmutableEdgeBuilder extends ImmutableElementBuilder<ImmutableEdgeBuilder> {
+    // ImmutableEdgeBuilder
+    public final static class Builder extends ImmutableElementBuilder<Builder> {
 
         private VertexRef source;
         private VertexRef target;
 
-        private ImmutableEdgeBuilder() {}
+        private Builder() {}
 
-        public ImmutableEdgeBuilder namespace(String namespace) {
+        public Builder namespace(String namespace) {
             Objects.requireNonNull(namespace, "namespace cannot be null.");
             property(Properties.Edge.NAMESPACE, namespace);
             return this;
         }
 
-        public ImmutableEdgeBuilder id(String id) {
+        public Builder id(String id) {
             property(Properties.Edge.ID, id);
             return this;
         }
 
-        public ImmutableEdgeBuilder label(String label){
+        public Builder label(String label){
             property(Properties.Edge.LABEL, label);
             return this;
         }
 
-        public ImmutableEdgeBuilder source(String namespace, String id) {
+        public Builder source(String namespace, String id) {
             source(new ImmutableVertexRef(namespace, id));
             return this;
         }
 
-        public ImmutableEdgeBuilder source(VertexRef source) {
+        public Builder source(VertexRef source) {
             Objects.requireNonNull(source);
             this.source = source;
             return this;
         }
 
-        public ImmutableEdgeBuilder target(String namespace, String id) {
+        public Builder target(String namespace, String id) {
             target(new ImmutableVertexRef(namespace, id));
             return this;
         }
 
-        public ImmutableEdgeBuilder target(VertexRef target) {
+        public Builder target(VertexRef target) {
             Objects.requireNonNull(target);
             this.target = target;
             return this;

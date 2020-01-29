@@ -29,7 +29,8 @@
 package org.opennms.integration.api.v1.graph.immutables;
 
 /**
- * These properties are generally supported and may be used to persist as values when building a {@link ImmutableElement}.
+ * These properties are generally supported and may be used to keys when building any
+ * graph element (vertex, edge, graph, graph container).
  *
  * @author mvrueden
  */

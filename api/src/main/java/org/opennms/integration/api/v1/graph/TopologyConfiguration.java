@@ -36,6 +36,23 @@ package org.opennms.integration.api.v1.graph;
  */
 public interface TopologyConfiguration {
 
+    TopologyConfiguration DEFAULT = new TopologyConfiguration() {
+        @Override
+        public boolean isLegacyTopology() {
+            return true;
+        }
+
+        @Override
+        public boolean shouldResolveNodes() {
+            return true;
+        }
+
+        @Override
+        public LegacyStatusStrategy getLegacyStatusStrategy() {
+            return LegacyStatusStrategy.Default;
+        }
+    };
+
     enum LegacyStatusStrategy {
         /**
          * Status calculated by the worst alarm associated with a node assigned to a vertex.
@@ -55,7 +72,7 @@ public interface TopologyConfiguration {
      * @return <code>true</code> if the {@link Graph} or {@link GraphContainer} should show up in the Topology UI
      */
     default boolean isLegacyTopology() {
-        return true;
+        return DEFAULT.isLegacyTopology();
     }
 
     /**
@@ -73,7 +90,7 @@ public interface TopologyConfiguration {
      * @return <code>true</code> if nodes should be resolved (meaning a vertex is associated with the proper nodeID).
      */
     default boolean shouldResolveNodes() {
-        return true;
+        return DEFAULT.shouldResolveNodes();
     }
 
     /**
@@ -81,6 +98,6 @@ public interface TopologyConfiguration {
      * @return
      */
     default LegacyStatusStrategy getLegacyStatusStrategy() {
-        return LegacyStatusStrategy.Default;
+        return DEFAULT.getLegacyStatusStrategy();
     }
 }
