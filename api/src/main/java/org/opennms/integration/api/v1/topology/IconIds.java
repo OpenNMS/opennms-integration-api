@@ -28,7 +28,8 @@
 
 package org.opennms.integration.api.v1.topology;
 
-public interface IconKeys {
+public interface IconIds {
+
     // Default Icons
     String Router = "router";
     String Switch = "switch";
@@ -76,7 +77,7 @@ public interface IconKeys {
             String Standby = "vmware-hostsystem-standby";
         }
 
-        interface virtualmachine {
+        interface Virtualmachine {
             String Unknown = "vmware-virtualmachine-unknown";
             String On = "vmware-virtualmachine-on";
             String Off = "vmware-virtualmachine-off";
