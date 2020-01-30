@@ -59,6 +59,7 @@ public interface Properties {
         String NODE_ID = "nodeID";
         String FOREIGN_SOURCE = "foreignSource";
         String FOREIGN_ID = "foreignID";
+        String ICON_ID = "iconKey"; // The value is iconKey on purpose!
     }
 
     interface Edge {

@@ -103,8 +103,8 @@ public final class ImmutableVertex extends ImmutableElement implements Vertex {
             return this;
         }
 
-        public Builder iconKey(String iconKey) {
-            property("iconKey", iconKey);
+        public Builder iconId(String iconId) {
+            property(Properties.Vertex.ICON_ID, iconId);
             return this;
         }
 
