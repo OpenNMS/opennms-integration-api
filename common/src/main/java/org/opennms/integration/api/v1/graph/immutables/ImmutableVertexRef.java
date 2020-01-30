@@ -33,17 +33,13 @@ import java.util.Objects;
 import org.opennms.integration.api.v1.graph.Vertex;
 import org.opennms.integration.api.v1.graph.VertexRef;
 
-public class ImmutableVertexRef implements VertexRef {
+public final class ImmutableVertexRef implements VertexRef {
     private final String namespace;
     private final String id;
 
-    public ImmutableVertexRef(final Vertex vertex) {
-        this(Objects.requireNonNull(vertex).getNamespace(), vertex.getId());
-    }
-
-    public ImmutableVertexRef(final String namespace, final String id) {
-        this.namespace = Objects.requireNonNull(namespace);
-        this.id = Objects.requireNonNull(id);
+    private ImmutableVertexRef(final Builder builder) {
+        this.namespace = builder.namespace;
+        this.id = builder.id;
     }
 
     @Override
@@ -76,5 +72,50 @@ public class ImmutableVertexRef implements VertexRef {
                 "namespace='" + namespace + '\'' +
                 ", id='" + id + '\'' +
                 '}';
+    }
+
+    public static Builder newBuilder(final Vertex vertex) {
+        Objects.requireNonNull(vertex);
+        return newBuilder(vertex.getNamespace(), vertex.getId());
+    }
+
+    public static Builder newBuilder(final String namespace, final String id) {
+        return new Builder().namespace(namespace).id(id);
+    }
+
+    public static Builder newBuilderFrom(VertexRef vertexRef) {
+        Objects.requireNonNull(vertexRef);
+        return new Builder()
+                .namespace(vertexRef.getNamespace())
+                .id(vertexRef.getId());
+    }
+
+    public static VertexRef immutableCopy(VertexRef vertexRef) {
+        if (vertexRef == null || vertexRef instanceof ImmutableVertexRef) {
+            return vertexRef;
+        }
+        return newBuilderFrom(vertexRef).build();
+    }
+
+    public static final class Builder {
+
+        private String namespace;
+        private String id;
+
+        private Builder() {}
+
+        public Builder namespace(String namespace) {
+            this.namespace = Objects.requireNonNull(namespace);
+            return this;
+        }
+
+        public Builder id(String id) {
+            this.id = Objects.requireNonNull(id);
+            return this;
+        }
+
+        public VertexRef build() {
+            return new ImmutableVertexRef(this);
+        }
     }
 }

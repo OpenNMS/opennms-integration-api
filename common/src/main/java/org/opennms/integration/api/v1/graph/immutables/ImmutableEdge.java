@@ -28,7 +28,6 @@
 
 package org.opennms.integration.api.v1.graph.immutables;
 
-import java.util.Map;
 import java.util.Objects;
 
 import org.opennms.integration.api.v1.graph.Edge;
@@ -39,10 +38,10 @@ public final class ImmutableEdge extends ImmutableElement implements Edge {
     private final VertexRef source;
     private final VertexRef target;
 
-    private ImmutableEdge(final VertexRef source, final VertexRef target, final Map<String, Object> properties) {
-        super(properties);
-        this.source = Objects.requireNonNull(source);
-        this.target = Objects.requireNonNull(target);
+    private ImmutableEdge(final Builder builder) {
+        super(builder.properties);
+        this.source = ImmutableVertexRef.immutableCopy(builder.source);
+        this.target = ImmutableVertexRef.immutableCopy(builder.target);
         Objects.requireNonNull(getId(), "id cannot be null");
         Objects.requireNonNull(getNamespace(), "namespace cannot be null");
     }
@@ -99,6 +98,19 @@ public final class ImmutableEdge extends ImmutableElement implements Edge {
                 .target(target);
     }
 
+    public static Builder newBuilderFrom(Edge fromEdge) {
+        final VertexRef sourceCopy = ImmutableVertexRef.immutableCopy(fromEdge.getSource());
+        final VertexRef targetCopy = ImmutableVertexRef.immutableCopy(fromEdge.getSource());
+        return new Builder().properties(fromEdge.getProperties()).source(sourceCopy).target(targetCopy);
+    }
+
+    public static Edge immutableCopy(Edge edge) {
+        if (edge == null || edge instanceof ImmutableEdge) {
+            return edge;
+        }
+        return newBuilderFrom(edge).build();
+    }
+
     // ImmutableEdgeBuilder
     public final static class Builder extends AbstractBuilder<Builder> {
 
@@ -124,7 +136,8 @@ public final class ImmutableEdge extends ImmutableElement implements Edge {
         }
 
         public Builder source(String namespace, String id) {
-            source(new ImmutableVertexRef(namespace, id));
+            final VertexRef sourceVertexRef = ImmutableVertexRef.newBuilder(namespace, id).build();
+            source(sourceVertexRef);
             return this;
         }
 
@@ -135,7 +148,8 @@ public final class ImmutableEdge extends ImmutableElement implements Edge {
         }
 
         public Builder target(String namespace, String id) {
-            target(new ImmutableVertexRef(namespace, id));
+            final VertexRef targetVertexRef = ImmutableVertexRef.newBuilder(namespace, id).build();
+            target(targetVertexRef);
             return this;
         }
 
@@ -146,7 +160,7 @@ public final class ImmutableEdge extends ImmutableElement implements Edge {
         }
 
         public ImmutableEdge build() {
-            return new ImmutableEdge(source, target, properties);
+            return new ImmutableEdge(this);
         }
     }
 }

@@ -28,27 +28,26 @@
 
 package org.opennms.integration.api.v1.graph.immutables;
 
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import org.opennms.integration.api.v1.graph.GraphContainerInfo;
 import org.opennms.integration.api.v1.graph.GraphInfo;
+import org.opennms.integration.api.v1.util.ImmutableCollections;
 
-public class ImmutableGraphContainerInfo implements GraphContainerInfo {
+public final class ImmutableGraphContainerInfo implements GraphContainerInfo {
 
     private final String containerId;
     private final String description;
     private final String label;
     private final List<GraphInfo> graphInfos;
 
-    public ImmutableGraphContainerInfo(final String containerId, final String label, final String description, GraphInfo... graphInfos) {
-        Objects.requireNonNull(graphInfos);
-        this.containerId = Objects.requireNonNull(containerId);
-        this.description = Objects.requireNonNull(description);
-        this.label = Objects.requireNonNull(label);
-        this.graphInfos = Collections.unmodifiableList(Arrays.asList(graphInfos));
+    private ImmutableGraphContainerInfo(final Builder builder) {
+        this.containerId = builder.containerId;
+        this.description = builder.description;
+        this.label = builder.label;
+        this.graphInfos = ImmutableCollections.with(ImmutableGraphInfo::immutableCopy).newList(builder.graphInfos);
         if (this.graphInfos.isEmpty()) {
             throw new IllegalArgumentException("graphInfos must not be empty");
         }
@@ -98,5 +97,70 @@ public class ImmutableGraphContainerInfo implements GraphContainerInfo {
                 ", label='" + label + '\'' +
                 ", graphInfos=" + graphInfos +
                 '}';
+    }
+
+    public static Builder newBuilder(final String containerId, final String label, final String description, GraphInfo... graphInfos) {
+        final Builder builder = new Builder()
+                .containerId(containerId)
+                .label(label)
+                .description(description);
+        if (graphInfos != null) {
+            for (GraphInfo eachGraphInfo : graphInfos) {
+                builder.addGraphInfo(eachGraphInfo);
+            }
+        }
+        return builder;
+    }
+
+    public static Builder newBuilderFrom(GraphContainerInfo fromGraphContainerInfo) {
+        return new Builder().graphContainerInfo(fromGraphContainerInfo);
+    }
+
+    public static GraphContainerInfo immutableCopy(GraphContainerInfo graphContainerInfo) {
+        if (graphContainerInfo == null || graphContainerInfo instanceof ImmutableGraphContainerInfo) {
+            return graphContainerInfo;
+        }
+        return newBuilderFrom(graphContainerInfo).build();
+    }
+
+    public static final class Builder {
+        private String containerId;
+        private String description;
+        private String label;
+        private List<GraphInfo> graphInfos = new ArrayList<>();
+
+        public Builder containerId(final String containerId) {
+            this.containerId = Objects.requireNonNull(containerId);
+            return this;
+        }
+
+        public Builder description(final String description) {
+            this.description = Objects.requireNonNull(description);
+            return this;
+        }
+
+        public Builder label(final String label) {
+            this.label = Objects.requireNonNull(label);
+            return this;
+        }
+
+        public Builder graphContainerInfo(GraphContainerInfo graphContainerInfo) {
+            Objects.requireNonNull(graphContainerInfo);
+            containerId(graphContainerInfo.getContainerId());
+            description(graphContainerInfo.getContainerId());
+            label(graphContainerInfo.getContainerId());
+            return this;
+        }
+
+        public Builder addGraphInfo(final GraphInfo graphInfo) {
+            if (!graphInfos.contains(graphInfo)) {
+                graphInfos.add(graphInfo);
+            }
+            return this;
+        }
+
+        public GraphContainerInfo build() {
+            return new ImmutableGraphContainerInfo(this);
+        }
     }
 }

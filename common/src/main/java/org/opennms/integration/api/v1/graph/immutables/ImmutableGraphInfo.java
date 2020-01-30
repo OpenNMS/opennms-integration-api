@@ -32,16 +32,16 @@ import java.util.Objects;
 
 import org.opennms.integration.api.v1.graph.GraphInfo;
 
-public class ImmutableGraphInfo implements GraphInfo {
+public final class ImmutableGraphInfo implements GraphInfo {
 
     private final String namespace;
     private final String description;
     private final String label;
 
-    public ImmutableGraphInfo(String namespace, String label, String description) {
-        this.namespace = Objects.requireNonNull(namespace);
-        this.label = Objects.requireNonNull(label);
-        this.description = Objects.requireNonNull(description);
+    private ImmutableGraphInfo(Builder builder) {
+        this.namespace = builder.namespace;
+        this.label = builder.label;
+        this.description = builder.description;
     }
 
     @Override
@@ -81,5 +81,57 @@ public class ImmutableGraphInfo implements GraphInfo {
                 ", description='" + description + '\'' +
                 ", label='" + label + '\'' +
                 '}';
+    }
+
+    public static Builder newBuilder(final String namespace, final String label, final String description) {
+        return new Builder()
+                .namespace(namespace)
+                .label(label)
+                .description(description);
+    }
+
+    public static Builder newBuilderFrom(GraphInfo fromGraphInfo) {
+        return new Builder().graphInfo(fromGraphInfo);
+    }
+
+    public static GraphInfo immutableCopy(GraphInfo graphInfo) {
+        if (graphInfo == null || graphInfo instanceof ImmutableGraphInfo) {
+            return graphInfo;
+        }
+        return newBuilderFrom(graphInfo).build();
+    }
+
+    public final static class Builder {
+        private String namespace;
+        private String label;
+        private String description;
+
+
+        public Builder namespace(final String namespace) {
+            this.namespace = Objects.requireNonNull(namespace);
+            return this;
+        }
+
+        public Builder label(final String label) {
+            this.label = Objects.requireNonNull(label);
+            return this;
+        }
+
+        public Builder description(final String description) {
+            this.description = Objects.requireNonNull(description);
+            return this;
+        }
+
+        public Builder graphInfo(final GraphInfo graphInfo) {
+            Objects.requireNonNull(graphInfo);
+            namespace(graphInfo.getNamespace());
+            label(graphInfo.getLabel());
+            description(graphInfo.getDescription());
+            return this;
+        }
+
+        public GraphInfo build() {
+            return new ImmutableGraphInfo(this);
+        }
     }
 }

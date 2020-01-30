@@ -64,6 +64,17 @@ public final class ImmutableVertex extends ImmutableElement implements Vertex {
                 .id(id);
     }
 
+    public static Builder newBuilderFrom(Vertex fromVertex) {
+        return new Builder().properties(fromVertex.getProperties());
+    }
+
+    public static Vertex immutableCopy(Vertex vertex) {
+        if (vertex == null || vertex instanceof ImmutableVertex) {
+            return vertex;
+        }
+        return newBuilderFrom(vertex).build();
+    }
+
     // ImmutableVertexBuilder
     public final static class Builder extends AbstractBuilder<Builder> {
     	

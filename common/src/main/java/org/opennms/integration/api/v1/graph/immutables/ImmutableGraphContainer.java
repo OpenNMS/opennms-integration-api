@@ -43,14 +43,17 @@ import org.opennms.integration.api.v1.graph.GraphContainer;
 import org.opennms.integration.api.v1.graph.GraphContainerInfo;
 import org.opennms.integration.api.v1.graph.GraphInfo;
 
-public class ImmutableGraphContainer implements GraphContainer {
+public final class ImmutableGraphContainer implements GraphContainer {
 
     private final List<Graph> graphs;
     private final Map<String, Object> properties;
 
     private ImmutableGraphContainer(Builder builder) {
         this.properties = Collections.unmodifiableMap(builder.properties);
-        this.graphs = Collections.unmodifiableList(builder.graphs.values().stream().sorted(Comparator.comparing(Graph::getNamespace)).collect(Collectors.toList()));
+        this.graphs = Collections.unmodifiableList(builder.graphs.values().stream()
+                .map(ImmutableGraph::immutableCopy)
+                .sorted(Comparator.comparing(Graph::getNamespace))
+                .collect(Collectors.toList()));
     }
 
     @Override
@@ -115,7 +118,19 @@ public class ImmutableGraphContainer implements GraphContainer {
                 .containerInfo(containerInfo);
     }
 
-    public static class Builder {
+    public static Builder newBuilderFrom(GraphContainer fromGraphContainer) {
+        Objects.requireNonNull(fromGraphContainer);
+        return new Builder().graphContainer(fromGraphContainer);
+    }
+
+    public static GraphContainer immutableCopy(GraphContainer graphContainer) {
+        if (graphContainer == null || graphContainer instanceof ImmutableGraphContainer) {
+            return graphContainer;
+        }
+        return newBuilderFrom(graphContainer).build();
+    }
+
+    public static final class Builder {
 
         private final Map<String, Graph> graphs = new HashMap<>();
         private final Map<String, Object> properties = new HashMap<>();
@@ -159,6 +174,12 @@ public class ImmutableGraphContainer implements GraphContainer {
             this.description(containerInfo.getDescription());
             return this;
         }
+
+        public Builder graphContainer(GraphContainer fromGraphContainer) {
+            Objects.requireNonNull(fromGraphContainer);
+            properties(fromGraphContainer.getProperties());
+            return this;
+        }
         
         public Builder addGraph(Graph graph) {
             Objects.requireNonNull(graph, "Graph cannot be null");
@@ -169,7 +190,7 @@ public class ImmutableGraphContainer implements GraphContainer {
         public GraphInfo getGraphInfo(String namespace) {
             final Graph graph = graphs.get(namespace);
             if (graph != null) {
-                return new ImmutableGraphInfo(graph.getNamespace(), graph.getLabel(), graph.getDescription());
+                return ImmutableGraphInfo.newBuilder(graph.getNamespace(), graph.getLabel(), graph.getDescription()).build();
             }
             throw new NoSuchElementException("No graph with namespace '" + namespace + "' found");
         }

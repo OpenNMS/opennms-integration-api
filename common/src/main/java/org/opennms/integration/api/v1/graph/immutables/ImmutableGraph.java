@@ -35,12 +35,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.opennms.integration.api.v1.graph.Edge;
 import org.opennms.integration.api.v1.graph.Graph;
 import org.opennms.integration.api.v1.graph.GraphInfo;
 import org.opennms.integration.api.v1.graph.Vertex;
 import org.opennms.integration.api.v1.graph.VertexRef;
+import org.opennms.integration.api.v1.util.ImmutableCollections;
 
 public final class ImmutableGraph extends ImmutableElement implements Graph {
 
@@ -48,11 +50,13 @@ public final class ImmutableGraph extends ImmutableElement implements Graph {
     private final Map<String, Edge> edgeToIdMap;
     private final List<VertexRef> defaultFocus;
 
-    private ImmutableGraph(Builder builder) {
+    private ImmutableGraph(final Builder builder) {
         super(builder.properties);
-        this.vertexToIdMap = Collections.unmodifiableMap(builder.vertexToIdMap);
-        this.edgeToIdMap = Collections.unmodifiableMap(builder.edgeToIdMap);
-        this.defaultFocus = Collections.unmodifiableList(builder.defaultFocus);
+        this.defaultFocus = ImmutableCollections.with(ImmutableVertexRef::immutableCopy).newList(builder.defaultFocus);
+        this.vertexToIdMap = builder.vertexToIdMap.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> ImmutableVertex.immutableCopy(entry.getValue())));
+        this.edgeToIdMap = builder.edgeToIdMap.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> ImmutableEdge.immutableCopy(entry.getValue())));
     }
 
     @Override
@@ -128,6 +132,13 @@ public final class ImmutableGraph extends ImmutableElement implements Graph {
     public static Builder newBuilderFrom(Graph graph) {
         Objects.requireNonNull(graph);
         return new Builder().graph(graph);
+    }
+
+    public static Graph immutableCopy(Graph graph) {
+        if (graph == null || graph instanceof ImmutableGraph) {
+            return graph;
+        }
+        return newBuilderFrom(graph).build();
     }
 
     // ImmutableGraphBuilder
