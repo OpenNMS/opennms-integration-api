@@ -31,6 +31,7 @@ package org.opennms.integration.api.v1.graph.immutables;
 import java.util.Objects;
 
 import org.opennms.integration.api.v1.graph.Edge;
+import org.opennms.integration.api.v1.graph.Properties;
 import org.opennms.integration.api.v1.graph.VertexRef;
 
 public final class ImmutableEdge extends ImmutableElement implements Edge {

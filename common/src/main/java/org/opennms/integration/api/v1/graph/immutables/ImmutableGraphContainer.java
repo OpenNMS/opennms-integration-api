@@ -42,6 +42,7 @@ import org.opennms.integration.api.v1.graph.Graph;
 import org.opennms.integration.api.v1.graph.GraphContainer;
 import org.opennms.integration.api.v1.graph.GraphContainerInfo;
 import org.opennms.integration.api.v1.graph.GraphInfo;
+import org.opennms.integration.api.v1.graph.Properties;
 
 public final class ImmutableGraphContainer implements GraphContainer {
 

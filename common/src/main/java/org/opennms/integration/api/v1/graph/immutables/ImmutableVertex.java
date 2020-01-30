@@ -31,6 +31,7 @@ package org.opennms.integration.api.v1.graph.immutables;
 import java.util.Map;
 import java.util.Objects;
 
+import org.opennms.integration.api.v1.graph.Properties;
 import org.opennms.integration.api.v1.graph.Vertex;
 
 public final class ImmutableVertex extends ImmutableElement implements Vertex {

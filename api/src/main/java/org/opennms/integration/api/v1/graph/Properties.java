@@ -26,7 +26,7 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.graph.immutables;
+package org.opennms.integration.api.v1.graph;
 
 /**
  * These properties are generally supported and may be used to keys when building any
@@ -46,7 +46,6 @@ public interface Properties {
         String NAMESPACE = "namespace";
         String LABEL = "label";
         String DESCRIPTION = "description";
-
     }
 
     interface Vertex {
