@@ -132,4 +132,8 @@
         <bean class="org.opennms.integration.api.sample.MyTopologyEdgeConsumer"/>
     </service>
 
+
+    <service interface="org.opennms.integration.api.v1.graph.GraphContainerProvider" >
+        <bean class="org.opennms.integration.api.sample.MyGraphContainerProvider"/>
+    </service>
 </blueprint>
