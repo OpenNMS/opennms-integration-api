@@ -29,6 +29,7 @@
 package org.opennms.integration.api.v1.graph;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.opennms.integration.api.v1.annotations.Model;
 
@@ -39,7 +40,15 @@ public interface GraphContainerInfo {
     String getDescription();
     List<GraphInfo> getGraphInfos();
 
+    default GraphInfo getGraphInfo(String namespace) {
+        final GraphInfo graphInfo = getGraphInfos().stream()
+                .filter(gi -> gi.getNamespace().equals(namespace))
+                .findAny()
+                .orElseThrow(() -> new NoSuchElementException("No GraphInfo with namespace '" + namespace + "' found"));
+        return graphInfo;
+    }
+
     default GraphInfo getDefaultGraphInfo() {
         return getGraphInfos().get(0);
-    };
+    }
 }
