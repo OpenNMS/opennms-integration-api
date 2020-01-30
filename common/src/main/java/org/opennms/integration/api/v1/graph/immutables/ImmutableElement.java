@@ -28,11 +28,10 @@
 
 package org.opennms.integration.api.v1.graph.immutables;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import com.google.common.collect.ImmutableMap;
 
 public abstract class ImmutableElement {
 
@@ -43,7 +42,7 @@ public abstract class ImmutableElement {
     */
     protected ImmutableElement(Map<String, Object> properties) {
         Objects.requireNonNull(properties);
-        this.properties = ImmutableMap.copyOf(properties);
+        this.properties = Collections.unmodifiableMap(properties);
     }
 
     public <T> T getProperty(String key) {

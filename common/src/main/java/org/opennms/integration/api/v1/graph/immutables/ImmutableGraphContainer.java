@@ -29,6 +29,7 @@
 package org.opennms.integration.api.v1.graph.immutables;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -42,17 +43,14 @@ import org.opennms.integration.api.v1.graph.GraphContainer;
 import org.opennms.integration.api.v1.graph.GraphContainerInfo;
 import org.opennms.integration.api.v1.graph.GraphInfo;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-
 public class ImmutableGraphContainer implements GraphContainer {
 
     private final List<Graph> graphs;
     private final Map<String, Object> properties;
 
     private ImmutableGraphContainer(Builder builder) {
-        this.properties = ImmutableMap.copyOf(builder.properties);
-        this.graphs = ImmutableList.copyOf(builder.graphs.values().stream().sorted(Comparator.comparing(Graph::getNamespace)).collect(Collectors.toList()));
+        this.properties = Collections.unmodifiableMap(builder.properties);
+        this.graphs = Collections.unmodifiableList(builder.graphs.values().stream().sorted(Comparator.comparing(Graph::getNamespace)).collect(Collectors.toList()));
     }
 
     @Override

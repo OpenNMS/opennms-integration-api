@@ -30,6 +30,7 @@ package org.opennms.integration.api.v1.graph.immutables;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,10 +42,6 @@ import org.opennms.integration.api.v1.graph.GraphInfo;
 import org.opennms.integration.api.v1.graph.Vertex;
 import org.opennms.integration.api.v1.graph.VertexRef;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-
 public final class ImmutableGraph extends ImmutableElement implements Graph {
 
     private final Map<String, Vertex> vertexToIdMap;
@@ -53,9 +50,9 @@ public final class ImmutableGraph extends ImmutableElement implements Graph {
 
     private ImmutableGraph(Builder builder) {
         super(builder.properties);
-        this.vertexToIdMap = ImmutableMap.copyOf(builder.vertexToIdMap);
-        this.edgeToIdMap = ImmutableMap.copyOf(builder.edgeToIdMap);
-        this.defaultFocus = ImmutableList.copyOf(builder.defaultFocus);
+        this.vertexToIdMap = Collections.unmodifiableMap(builder.vertexToIdMap);
+        this.edgeToIdMap = Collections.unmodifiableMap(builder.edgeToIdMap);
+        this.defaultFocus = Collections.unmodifiableList(builder.defaultFocus);
     }
 
     @Override
@@ -278,7 +275,7 @@ public final class ImmutableGraph extends ImmutableElement implements Graph {
         }
 
         public List<Vertex> getVertices() {
-            return Lists.newArrayList(vertexToIdMap.values());
+            return Collections.unmodifiableList(new ArrayList<>(vertexToIdMap.values()));
         }
         
         public ImmutableGraph build() {

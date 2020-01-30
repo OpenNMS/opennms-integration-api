@@ -28,13 +28,13 @@
 
 package org.opennms.integration.api.v1.graph.immutables;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 import org.opennms.integration.api.v1.graph.GraphContainerInfo;
 import org.opennms.integration.api.v1.graph.GraphInfo;
-
-import com.google.common.collect.ImmutableList;
 
 public class ImmutableGraphContainerInfo implements GraphContainerInfo {
 
@@ -48,7 +48,10 @@ public class ImmutableGraphContainerInfo implements GraphContainerInfo {
         this.containerId = Objects.requireNonNull(containerId);
         this.description = Objects.requireNonNull(description);
         this.label = Objects.requireNonNull(label);
-        this.graphInfos = ImmutableList.copyOf(graphInfos);
+        this.graphInfos = Collections.unmodifiableList(Arrays.asList(graphInfos));
+        if (this.graphInfos.isEmpty()) {
+            throw new IllegalArgumentException("graphInfos must not be empty");
+        }
     }
 
     @Override
