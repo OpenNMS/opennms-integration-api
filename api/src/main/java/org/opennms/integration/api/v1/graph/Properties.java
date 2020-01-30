@@ -53,7 +53,7 @@ public interface Properties {
         String LABEL = "label";
         String NAMESPACE = "namespace";
 
-        /** Reference to a node, either the id, or a <&lt;foreignSource&gt;:&lt;foreignId&gt; statement */
+        /** Reference to a node, either the id, or a &lt;foreignSource&gt;:&lt;foreignId&gt; statement */
         String NODE_CRITERIA = "nodeCriteria";
 
         String NODE_ID = "nodeID";
