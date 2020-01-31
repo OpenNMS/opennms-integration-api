@@ -114,16 +114,23 @@ public class MyGraphContainerProvider implements GraphContainerProvider {
     @Override
     public TopologyConfiguration getTopologyConfiguration() {
         return new TopologyConfiguration() {
+
+            // By default status is calculated based on alarms.
+            // In this example status calculation is disabled
             @Override
             public LegacyStatusStrategy getLegacyStatusStrategy() {
                 return LegacyStatusStrategy.None;
             }
 
+            // Expose this GraphContainerProvider to the Topology UI as well
             @Override
             public boolean isLegacyTopology() {
                 return true;
             }
 
+            // By default the provider assigns the node id to each vertex associated with
+            // a nodeCriteria or foreignSource and foreignId. In this example we disable it.
+            @Override
             public boolean shouldResolveNodes() {
                 return false;
             }
