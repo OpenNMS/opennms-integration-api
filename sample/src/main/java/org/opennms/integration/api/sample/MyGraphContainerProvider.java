@@ -107,7 +107,7 @@ public class MyGraphContainerProvider implements GraphContainerProvider {
     public GraphContainerInfo getGraphContainerInfo() {
         return ImmutableGraphContainerInfo.newBuilder("my-container", "Example Graph Provider", "This is an example graph provider",
                 ImmutableGraphInfo.newBuilder("1", "Graph 1", "This is the first Graph within the Example Graph Provider").build(),
-                ImmutableGraphInfo.newBuilder("2", "Bla 2", "This is the second Graph within the Example Graph Provider").build())
+                ImmutableGraphInfo.newBuilder("2", "Graph 2", "This is the second Graph within the Example Graph Provider").build())
             .build();
     }
 
