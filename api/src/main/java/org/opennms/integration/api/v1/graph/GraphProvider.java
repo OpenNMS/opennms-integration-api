@@ -29,6 +29,8 @@
 package org.opennms.integration.api.v1.graph;
 
 import org.opennms.integration.api.v1.annotations.Exposable;
+import org.opennms.integration.api.v1.graph.configuration.GraphConfiguration;
+import org.opennms.integration.api.v1.graph.configuration.TopologyConfiguration;
 
 @Exposable
 public interface GraphProvider {
@@ -36,5 +38,8 @@ public interface GraphProvider {
     GraphInfo getGraphInfo();
     default TopologyConfiguration getTopologyConfiguration() {
         return TopologyConfiguration.DEFAULT;
+    }
+    default GraphConfiguration getGraphConfiguration() {
+        return GraphConfiguration.DEFAULT;
     }
 }

@@ -35,8 +35,9 @@ import org.opennms.integration.api.v1.graph.Edge;
 import org.opennms.integration.api.v1.graph.GraphContainer;
 import org.opennms.integration.api.v1.graph.GraphContainerInfo;
 import org.opennms.integration.api.v1.graph.GraphContainerProvider;
-import org.opennms.integration.api.v1.graph.TopologyConfiguration;
 import org.opennms.integration.api.v1.graph.Vertex;
+import org.opennms.integration.api.v1.graph.configuration.GraphConfiguration;
+import org.opennms.integration.api.v1.graph.configuration.TopologyConfiguration;
 import org.opennms.integration.api.v1.graph.immutables.ImmutableGraph;
 import org.opennms.integration.api.v1.graph.immutables.ImmutableGraphContainer;
 import org.opennms.integration.api.v1.graph.immutables.ImmutableGraphContainerInfo;
@@ -48,11 +49,14 @@ import com.google.common.collect.Lists;
 
 public class MyGraphContainerProvider implements GraphContainerProvider {
 
+    public static final String NAMESPACE_1 = "1";
+    public static final String NAMESPACE_2 = "2";
+
     @Override
     public GraphContainer loadGraphContainer() {
         final GraphContainerInfo graphContainerInfo = getGraphContainerInfo();
         final ImmutableGraphContainer.Builder containerBuilder = ImmutableGraphContainer.newBuilder(graphContainerInfo);
-        final ImmutableGraph.Builder graphBuilderA = ImmutableGraph.newBuilder(graphContainerInfo.getGraphInfo("1"));
+        final ImmutableGraph.Builder graphBuilderA = ImmutableGraph.newBuilder(graphContainerInfo.getGraphInfo(NAMESPACE_1));
         final List<Vertex> vertices = Lists.newArrayList(
                 graphBuilderA
                         .vertex("v1")
@@ -74,13 +78,13 @@ public class MyGraphContainerProvider implements GraphContainerProvider {
         graphBuilderA.addVertices(vertices);
 
         final List<Edge> edges = Lists.newArrayList(
-                graphBuilderA.edge("e1", ImmutableVertexRef.newBuilder("1", "v1").build(), ImmutableVertexRef.newBuilder("1", "v2").build()).build(),
-                graphBuilderA.edge("e2", ImmutableVertexRef.newBuilder("1", "v2").build(), ImmutableVertexRef.newBuilder("1", "v3").build()).build()
+                graphBuilderA.edge("e1", ImmutableVertexRef.newBuilder(NAMESPACE_1, "v1").build(), ImmutableVertexRef.newBuilder(NAMESPACE_1, "v2").build()).build(),
+                graphBuilderA.edge("e2", ImmutableVertexRef.newBuilder(NAMESPACE_1, "v2").build(), ImmutableVertexRef.newBuilder(NAMESPACE_1, "v3").build()).build()
         );
         graphBuilderA.addEdges(edges);
-        graphBuilderA.defaultFocus(ImmutableVertexRef.newBuilder("1", "v1").build());
+        graphBuilderA.defaultFocus(ImmutableVertexRef.newBuilder(NAMESPACE_1, "v1").build());
 
-        final ImmutableGraph.Builder graphBuilderB = ImmutableGraph.newBuilder(graphContainerInfo.getGraphInfo("2"));
+        final ImmutableGraph.Builder graphBuilderB = ImmutableGraph.newBuilder(graphContainerInfo.getGraphInfo(NAMESPACE_2));
         final List<String> iconKeys = Lists.newArrayList(
                 IconIds.BusinessService,
                 IconIds.Server,
@@ -106,9 +110,24 @@ public class MyGraphContainerProvider implements GraphContainerProvider {
     @Override
     public GraphContainerInfo getGraphContainerInfo() {
         return ImmutableGraphContainerInfo.newBuilder("my-container", "Example Graph Provider", "This is an example graph provider",
-                ImmutableGraphInfo.newBuilder("1", "Graph 1", "This is the first Graph within the Example Graph Provider").build(),
-                ImmutableGraphInfo.newBuilder("2", "Graph 2", "This is the second Graph within the Example Graph Provider").build())
+                ImmutableGraphInfo.newBuilder(NAMESPACE_1, "Graph 1", "This is the first Graph within the Example Graph Provider").build(),
+                ImmutableGraphInfo.newBuilder(NAMESPACE_2, "Graph 2", "This is the second Graph within the Example Graph Provider").build())
             .build();
+    }
+
+    @Override
+    public GraphConfiguration getGraphConfiguration() {
+        return new GraphConfiguration() {
+            @Override
+            public GraphConfiguration.GraphStatusStrategy getGraphStatusStrategy() {
+                return GraphStatusStrategy.Custom;
+            }
+
+            @Override
+            public boolean shouldEnrichNodeInfo() {
+                return true;
+            }
+        };
     }
 
     @Override
@@ -119,7 +138,7 @@ public class MyGraphContainerProvider implements GraphContainerProvider {
             // In this example status calculation is disabled
             @Override
             public LegacyStatusStrategy getLegacyStatusStrategy() {
-                return LegacyStatusStrategy.None;
+                return LegacyStatusStrategy.Custom;
             }
 
             // Expose this GraphContainerProvider to the Topology UI as well
@@ -132,7 +151,7 @@ public class MyGraphContainerProvider implements GraphContainerProvider {
             // a nodeCriteria or foreignSource and foreignId. In this example we disable it.
             @Override
             public boolean shouldResolveNodes() {
-                return false;
+                return true;
             }
         };
     }

@@ -26,7 +26,13 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.graph;
+package org.opennms.integration.api.v1.graph.configuration;
+
+import org.opennms.integration.api.v1.graph.Graph;
+import org.opennms.integration.api.v1.graph.GraphContainer;
+import org.opennms.integration.api.v1.graph.GraphContainerProvider;
+import org.opennms.integration.api.v1.graph.GraphProvider;
+import org.opennms.integration.api.v1.graph.Vertex;
 
 /**
  * Configuration object to define if and how a certain Graph or GraphContainer is supposed to be exposed to
@@ -60,9 +66,10 @@ public interface TopologyConfiguration {
         Default,
 
         /**
-         * No status is calculated
+         * Status calculation is delegated to a {@link org.opennms.integration.api.v1.graph.status.LegacyStatusProvider}.
+         * If none is exposed, no status is calculated.
          */
-        None
+        Custom,
     }
 
     /**
@@ -93,10 +100,6 @@ public interface TopologyConfiguration {
         return DEFAULT.shouldResolveNodes();
     }
 
-    /**
-     *
-     * @return
-     */
     default LegacyStatusStrategy getLegacyStatusStrategy() {
         return DEFAULT.getLegacyStatusStrategy();
     }

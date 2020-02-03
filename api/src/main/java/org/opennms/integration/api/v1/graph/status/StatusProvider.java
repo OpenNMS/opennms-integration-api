@@ -26,20 +26,15 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.graph;
+package org.opennms.integration.api.v1.graph.status;
 
 import org.opennms.integration.api.v1.annotations.Exposable;
-import org.opennms.integration.api.v1.graph.configuration.GraphConfiguration;
-import org.opennms.integration.api.v1.graph.configuration.TopologyConfiguration;
+import org.opennms.integration.api.v1.graph.Edge;
+import org.opennms.integration.api.v1.graph.Vertex;
 
 @Exposable
-public interface GraphContainerProvider {
-    GraphContainer loadGraphContainer();
-    GraphContainerInfo getGraphContainerInfo();
-    default TopologyConfiguration getTopologyConfiguration() {
-        return TopologyConfiguration.DEFAULT;
-    }
-    default GraphConfiguration getGraphConfiguration() {
-        return GraphConfiguration.DEFAULT;
-    }
+public interface StatusProvider {
+    boolean canCalculate(String namespace);
+    StatusInfo calculateStatus(Vertex vertex);
+    StatusInfo calculateStatus(Edge edge);
 }
