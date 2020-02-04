@@ -56,12 +56,8 @@ public final class ImmutableVertex extends ImmutableElement implements Vertex {
 
     @Override
     public Optional<NodeRef> getNodeRef() {
-        final String nodeCriteria = getProperty(Properties.Vertex.NODE_CRITERIA);
         final String foreignSource = getProperty(Properties.Vertex.FOREIGN_SOURCE);
         final String foreignId = getProperty(Properties.Vertex.FOREIGN_ID);
-        if (nodeCriteria != null) {
-            return Optional.of(ImmutableNodeRef.newBuilder(nodeCriteria).build());
-        }
         if (foreignSource != null && foreignId != null) {
             return Optional.of(ImmutableNodeRef.newBuilder(foreignSource, foreignId).build());
         }

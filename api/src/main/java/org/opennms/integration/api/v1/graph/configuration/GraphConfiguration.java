@@ -29,7 +29,6 @@
 package org.opennms.integration.api.v1.graph.configuration;
 
 import org.opennms.integration.api.v1.graph.Graph;
-import org.opennms.integration.api.v1.graph.GraphContainer;
 import org.opennms.integration.api.v1.graph.Vertex;
 
 /**
@@ -67,15 +66,15 @@ public interface GraphConfiguration {
     }
 
     /**
-     * Defines if a {@link Vertex} is enriched with node information, if node criteria is present.
-     * A node criteria is a property on a {@link Vertex} as follows:
-     *  - a property named foreignSource and foreignID referencing to an existing node
-     *  - a property named nodeCriteria with a value foreignSource:foreignID
+     * Defines if a {@link Vertex} is enriched with node information.
      *
-     *  If any of the above properties is defined, as soon as a view of the {@link Graph}/{@link GraphContainer} is requested
+     * Enrichment is performed if a property named foreignSource and foreignID is present
+     * on the {@link Vertex} and the referenced node must exist.
+     *
+     *  As soon as a view of the {@link Graph} is requested
      *  all Vertices associated with a node will contain the relevant node information such as node id, categories, etc.
      *
-     * @return <code>true</code> if vertices should be enriched with node information (if node criteria is present)
+     * @return <code>true</code> if vertices should be enriched with node information (if foreignSource and foreignID properties are present)
      */
     default boolean shouldEnrichNodeInfo() {
         return DEFAULT.shouldEnrichNodeInfo();

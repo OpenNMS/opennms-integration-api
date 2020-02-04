@@ -84,14 +84,11 @@ public interface TopologyConfiguration {
     }
 
     /**
-     * Only relevant if {@link #isLegacyTopology()} is <code>true</code> and defines if Nodes
-     * should be resolved if a node criteria is provided.
-     * A node criteria is a property on a {@link Vertex} as follows:
-     *  - a property named foreignSource and foreignID referencing to an existing node
-     *  - a property named nodeCriteria with a value foreignSource:foreignID
+     * Defines if nodes should be resolved if a {@link Vertex} references a node via a property named foreignSource and foreignID.
+     * This is only relevant, if {@link #isLegacyTopology()} is <code>true</code>.
      *
-     *  If any of the above properties is defined, when loading the {@link Graph}/{@link GraphContainer} all nodes are resolved
-     *  and Vertices will have that node associated.
+     *  When loading the {@link Graph}/{@link GraphContainer} all nodes are resolved according to their foreignSource/foreignID properties
+     *  which results in Vertices having the nodeID property properly populated.
      *
      *  If performance is an issue, disable this option
      *
