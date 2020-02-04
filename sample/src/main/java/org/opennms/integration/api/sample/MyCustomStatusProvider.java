@@ -31,16 +31,28 @@ package org.opennms.integration.api.sample;
 import static org.opennms.integration.api.sample.MyGraphContainerProvider.NAMESPACE_1;
 import static org.opennms.integration.api.sample.MyGraphContainerProvider.NAMESPACE_2;
 
+import java.util.Objects;
+import java.util.Optional;
+
+import org.opennms.integration.api.v1.dao.AlarmDao;
 import org.opennms.integration.api.v1.graph.Edge;
+import org.opennms.integration.api.v1.graph.NodeRef;
 import org.opennms.integration.api.v1.graph.Vertex;
 import org.opennms.integration.api.v1.graph.status.LegacyStatusProvider;
 import org.opennms.integration.api.v1.graph.status.StatusInfo;
 import org.opennms.integration.api.v1.graph.status.immutables.StatusInfoImmutable;
+import org.opennms.integration.api.v1.model.Alarm;
 import org.opennms.integration.api.v1.model.Severity;
 
 import com.google.common.collect.Lists;
 
 public class MyCustomStatusProvider implements LegacyStatusProvider {
+
+    private final AlarmDao alarmDao;
+
+    public MyCustomStatusProvider(final AlarmDao alarmDao) {
+        this.alarmDao = Objects.requireNonNull(alarmDao);
+    }
 
     @Override
     public boolean canCalculate(String namespace) {
@@ -49,10 +61,14 @@ public class MyCustomStatusProvider implements LegacyStatusProvider {
 
     @Override
     public StatusInfo calculateStatus(Vertex vertex) {
-        if (vertex.getNamespace().equals(NAMESPACE_1)) {
-            return StatusInfoImmutable.newBuilder(Severity.WARNING).count(2).build();
+        final Optional<NodeRef> nodeRef = vertex.getNodeRef();
+        if (nodeRef.isPresent()) {
+            final Optional<Alarm> worstAlarm = alarmDao.getWorstAlarm(nodeRef.get());
+            if (worstAlarm.isPresent()) {
+                return StatusInfoImmutable.newBuilder(worstAlarm.get().getSeverity()).build();
+            }
         }
-        return StatusInfoImmutable.newBuilder(Severity.MAJOR).count(5).build();
+        return StatusInfoImmutable.newBuilder(Severity.NORMAL).build();
     }
 
     @Override

@@ -29,8 +29,10 @@
 package org.opennms.integration.api.v1.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.opennms.integration.api.v1.annotations.Consumable;
+import org.opennms.integration.api.v1.graph.NodeRef;
 import org.opennms.integration.api.v1.model.Alarm;
 
 /**
@@ -45,4 +47,5 @@ public interface AlarmDao {
 
     List<Alarm> getAlarms();
 
+    Optional<Alarm> getWorstAlarm(NodeRef nodeRef);
 }
