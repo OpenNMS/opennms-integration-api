@@ -32,6 +32,17 @@ import java.util.Map;
 
 import org.opennms.integration.api.v1.annotations.Model;
 
+/**
+ * An edge within the {@link Graph}.
+ *
+ * Each edge must share the same namespace as the {@link Graph} it is part of.
+ * Each edge id must uniquely identify the edge within the {@link Graph}.
+ *
+ * Either the source or target must have the same namespaces as the edge itself.
+ *
+ *
+ * @author mvrueden.
+ */
 @Model
 public interface Edge {
     String getNamespace();

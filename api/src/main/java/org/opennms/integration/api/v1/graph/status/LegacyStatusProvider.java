@@ -29,7 +29,19 @@
 package org.opennms.integration.api.v1.graph.status;
 
 import org.opennms.integration.api.v1.annotations.Exposable;
+import org.opennms.integration.api.v1.graph.Edge;
+import org.opennms.integration.api.v1.graph.Vertex;
+import org.opennms.integration.api.v1.graph.configuration.TopologyConfiguration;
 
+/**
+ * The {@link LegacyStatusProvider} allows to set a concrete {@link StatusInfo} for each {@link Vertex} and {@link Edge}
+ * within the {@link org.opennms.integration.api.v1.graph.Graph}.
+ *
+ * Please note, that in order to use this, the {@link TopologyConfiguration#getLegacyStatusStrategy()} ()}
+ * must return {@link org.opennms.integration.api.v1.graph.configuration.TopologyConfiguration.LegacyStatusStrategy#Custom}.
+ *
+ * @author mvrueden
+ */
 @Exposable
 public interface LegacyStatusProvider extends StatusProvider {
 }

@@ -32,13 +32,49 @@ import org.opennms.integration.api.v1.annotations.Exposable;
 import org.opennms.integration.api.v1.graph.configuration.GraphConfiguration;
 import org.opennms.integration.api.v1.graph.configuration.TopologyConfiguration;
 
+/**
+ * A {@link GraphContainerProvider} is responsible for providing an {@link GraphContainer}
+ * as well as the meta information of that container.
+ *
+ * If possible the implementators should not load the full container when {@link #getGraphContainerInfo()} is invoked.
+ *
+ * @author mvrueden
+ */
 @Exposable
 public interface GraphContainerProvider {
+
+    /**
+     * Returns a fully populated {@link GraphContainer}, containing ALL vertices and edges.
+     *
+     * @return The populated container
+     */
     GraphContainer loadGraphContainer();
+
+    /**
+     * Invoking {@link #loadGraphContainer()} may take some time, so it is not feasible to invoke it,
+     * if only the meta data of the container is requested.
+     * Therefore the {@link #getGraphContainerInfo()} should return very quickly with the meta data of
+     * the container and its graphs.
+     *
+     * @return The container's meta data
+     */
     GraphContainerInfo getGraphContainerInfo();
+
+    /**
+     * This method allows to configure how and if the {@link GraphContainer} should
+     * be exposed to the (legacy) Topology UI
+     *
+     * @return (legacy) Topology UI related configuration
+     */
     default TopologyConfiguration getTopologyConfiguration() {
         return TopologyConfiguration.DEFAULT;
     }
+
+    /**
+     * This method allows to configure how the {@link GraphContainer} is exposed to the new Graph API
+     *
+     * @return Graph API related configuration
+     */
     default GraphConfiguration getGraphConfiguration() {
         return GraphConfiguration.DEFAULT;
     }

@@ -33,6 +33,13 @@ import java.util.NoSuchElementException;
 
 import org.opennms.integration.api.v1.annotations.Model;
 
+/**
+ * Meta data about the {@link GraphContainer}.
+ *
+ * This allows to fetch meta data about a {@link GraphContainer} without loading it.
+ *
+ * @author mvrueden
+ */
 @Model
 public interface GraphContainerInfo {
     String getContainerId();

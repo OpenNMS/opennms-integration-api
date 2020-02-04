@@ -33,9 +33,20 @@ import java.util.Map;
 
 import org.opennms.integration.api.v1.annotations.Model;
 
+/**
+ * The {@link GraphContainer} which must hold at least one {@link Graph}.
+ * The id of the {@link GraphContainer} must be unique overall existing {@link GraphContainer}s.
+ * Each {@link Graph}'s namespace must also be unique overall existing {@link GraphContainer}s.
+ *
+ * @author mvrueden
+ */
 @Model
 public interface GraphContainer {
 
+    /**
+     * The unique id of this container.
+     * @return
+     */
     String getId();
 
     String getDescription();

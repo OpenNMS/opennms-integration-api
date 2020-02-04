@@ -30,6 +30,13 @@ package org.opennms.integration.api.v1.graph;
 
 import org.opennms.integration.api.v1.annotations.Model;
 
+/**
+ * The meta information about a {@link Graph}.
+ * This is used to fetch the meta data of the graph without fully loading it.
+ * This allows for generating menu entries or fetching a list of available graphs without loading them.
+ *
+ * @author mvrueden
+ */
 @Model
 public interface GraphInfo {
     /** The namespace of the graph. Should be unique over all Graphs */

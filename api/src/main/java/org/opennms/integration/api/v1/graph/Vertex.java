@@ -33,6 +33,11 @@ import java.util.Optional;
 
 import org.opennms.integration.api.v1.annotations.Model;
 
+/**
+ * A vertex within a graph.
+ *
+ * @author mvrueden
+ */
 @Model
 public interface Vertex extends VertexRef {
     String getNamespace();

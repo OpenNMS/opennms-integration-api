@@ -30,6 +30,12 @@ package org.opennms.integration.api.v1.graph;
 
 import org.opennms.integration.api.v1.annotations.Model;
 
+/**
+ * Describes a reference to a {@link Vertex}.
+ * Each {@link Vertex} is uniquely identifiable by its namespace and id.
+ *
+ * @author mvrueden
+ */
 @Model
 public interface VertexRef {
     String getNamespace();

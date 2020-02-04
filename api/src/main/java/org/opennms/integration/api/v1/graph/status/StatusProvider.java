@@ -32,9 +32,37 @@ import org.opennms.integration.api.v1.annotations.Exposable;
 import org.opennms.integration.api.v1.graph.Edge;
 import org.opennms.integration.api.v1.graph.Vertex;
 
+/**
+ * The {@link StatusProvider} allows to set a concrete {@link StatusInfo} for each {@link Vertex} and {@link Edge}
+ * within the {@link org.opennms.integration.api.v1.graph.Graph}.
+ *
+ * Please note, that in order to use this, the {@link org.opennms.integration.api.v1.graph.configuration.GraphConfiguration#getGraphStatusStrategy()}
+ * must return {@link org.opennms.integration.api.v1.graph.configuration.GraphConfiguration.GraphStatusStrategy#Custom}.
+ *
+ * @author mvrueden
+ */
 @Exposable
 public interface StatusProvider {
+    /**
+     * Return <code>true</code> if this {@link StatusProvider} can calculate the status for the provided namespace.
+     * @param namespace The namespace to calculate status for.
+     * @return true if status can be calculated, false otherwise
+     */
     boolean canCalculate(String namespace);
+
+    /**
+     * Calculates the status for the given {@link Vertex}
+     *
+     * @param vertex The vertex to calculate the status for
+     * @return The status of the provided vertex. If null, the status is assumed to be {@link org.opennms.integration.api.v1.model.Severity#NORMAL}.
+     */
     StatusInfo calculateStatus(Vertex vertex);
+
+    /**
+     * Calculates the status for the given {@link Edge}
+     *
+     * @param edge The edge to calculate the status for
+     * @return The status of the provided edge. If null, the status is assumed to be {@link org.opennms.integration.api.v1.model.Severity#NORMAL}.
+     */
     StatusInfo calculateStatus(Edge edge);
 }

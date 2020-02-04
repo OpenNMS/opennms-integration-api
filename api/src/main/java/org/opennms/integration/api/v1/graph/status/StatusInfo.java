@@ -31,6 +31,11 @@ package org.opennms.integration.api.v1.graph.status;
 import org.opennms.integration.api.v1.annotations.Model;
 import org.opennms.integration.api.v1.model.Severity;
 
+/**
+ * Holds information about the status of a graph element.
+ *
+ * @author mvrueden
+ */
 @Model
 public interface StatusInfo {
     Severity getSeverity();

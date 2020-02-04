@@ -33,6 +33,11 @@ import java.util.Map;
 
 import org.opennms.integration.api.v1.annotations.Model;
 
+/**
+ * The Graph containing vertices and edges.
+ *
+ * @author mvrueden
+ */
 @Model
 public interface Graph extends GraphInfo {
     List<Vertex> getVertices();

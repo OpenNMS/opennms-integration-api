@@ -32,13 +32,45 @@ import org.opennms.integration.api.v1.annotations.Exposable;
 import org.opennms.integration.api.v1.graph.configuration.GraphConfiguration;
 import org.opennms.integration.api.v1.graph.configuration.TopologyConfiguration;
 
+/**
+ * Convenient interface if a {@link GraphContainerProvider} only provides a single graph.
+ *
+ * @author mvrueden
+ */
 @Exposable
 public interface GraphProvider {
+    /**
+     * Fully populates the {@link Graph}.
+     *
+     * @return The populated graph.
+     */
     Graph loadGraph();
+
+    /**
+     * The {@link GraphInfo} should be used to provide details of the graph's nature, e.g. the namespace, label or description
+     * A {@link Graph} should also embed this information. The difference is, that the info should always be available,
+     * even if the graph is not yet loaded, and should also never change during the provider's live time, whereas the
+     * graph itself may change (e.g. different vertices/edges and properties (besides the ones defining the info)).
+     *
+     * @return the meta information of the graph
+     */
     GraphInfo getGraphInfo();
+
+    /**
+     * This method allows to configure how and if the {@link Graph} should
+     * be exposed to the (legacy) Topology UI
+     *
+     * @return (legacy) Topology UI related configuration
+     */
     default TopologyConfiguration getTopologyConfiguration() {
         return TopologyConfiguration.DEFAULT;
     }
+
+    /**
+     * This method allows to configure how the {@link Graph} is exposed to the new Graph API
+     *
+     * @return Graph API related configuration
+     */
     default GraphConfiguration getGraphConfiguration() {
         return GraphConfiguration.DEFAULT;
     }
