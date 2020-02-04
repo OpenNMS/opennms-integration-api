@@ -40,6 +40,7 @@ import org.opennms.integration.api.v1.graph.Vertex;
  * must return {@link org.opennms.integration.api.v1.graph.configuration.GraphConfiguration.GraphStatusStrategy#Custom}.
  *
  * @author mvrueden
+ * @since 1.0.0
  */
 @Exposable
 public interface StatusProvider {

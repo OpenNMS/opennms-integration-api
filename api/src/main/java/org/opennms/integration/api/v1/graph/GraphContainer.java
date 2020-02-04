@@ -39,6 +39,7 @@ import org.opennms.integration.api.v1.annotations.Model;
  * Each {@link Graph}'s namespace must also be unique overall existing {@link GraphContainer}s.
  *
  * @author mvrueden
+ * @since 1.0.0
  */
 @Model
 public interface GraphContainer {

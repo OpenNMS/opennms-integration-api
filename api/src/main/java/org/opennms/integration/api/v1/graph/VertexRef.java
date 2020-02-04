@@ -35,6 +35,7 @@ import org.opennms.integration.api.v1.annotations.Model;
  * Each {@link Vertex} is uniquely identifiable by its namespace and id.
  *
  * @author mvrueden
+ * @since 1.0.0
  */
 @Model
 public interface VertexRef {

@@ -33,6 +33,7 @@ package org.opennms.integration.api.v1.graph;
  * graph element (vertex, edge, graph, graph container).
  *
  * @author mvrueden
+ * @since 1.0.0
  */
 public interface Properties {
 

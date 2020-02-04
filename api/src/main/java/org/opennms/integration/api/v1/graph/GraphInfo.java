@@ -36,6 +36,7 @@ import org.opennms.integration.api.v1.annotations.Model;
  * This allows for generating menu entries or fetching a list of available graphs without loading them.
  *
  * @author mvrueden
+ * @since 1.0.0
  */
 @Model
 public interface GraphInfo {

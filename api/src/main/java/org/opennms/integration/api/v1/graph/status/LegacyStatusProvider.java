@@ -41,6 +41,7 @@ import org.opennms.integration.api.v1.graph.configuration.TopologyConfiguration;
  * must return {@link org.opennms.integration.api.v1.graph.configuration.TopologyConfiguration.LegacyStatusStrategy#Custom}.
  *
  * @author mvrueden
+ * @since 1.0.0
  */
 @Exposable
 public interface LegacyStatusProvider extends StatusProvider {

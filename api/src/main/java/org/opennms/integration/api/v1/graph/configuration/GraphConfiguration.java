@@ -37,6 +37,7 @@ import org.opennms.integration.api.v1.graph.Vertex;
  * the (new) Graph API.
  *
  * @author mvrueden
+ * @since 1.0.0
  */
 public interface GraphConfiguration {
 

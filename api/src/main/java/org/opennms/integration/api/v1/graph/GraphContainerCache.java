@@ -34,6 +34,7 @@ import org.opennms.integration.api.v1.annotations.Consumable;
  * Provides access to the underlying cache of all graph containers to manually invalidate a cached entry of {@link GraphContainer}.
  *
  * @author mvrueden
+ * @since 1.0.0
  */
 @Consumable
 public interface GraphContainerCache {

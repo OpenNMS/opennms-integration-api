@@ -37,6 +37,7 @@ import org.opennms.integration.api.v1.annotations.Model;
  * The Graph containing vertices and edges.
  *
  * @author mvrueden
+ * @since 1.0.0
  */
 @Model
 public interface Graph extends GraphInfo {

@@ -39,6 +39,7 @@ import org.opennms.integration.api.v1.annotations.Model;
  * This allows to fetch meta data about a {@link GraphContainer} without loading it.
  *
  * @author mvrueden
+ * @since 1.0.0
  */
 @Model
 public interface GraphContainerInfo {

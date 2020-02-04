@@ -35,6 +35,7 @@ import org.opennms.integration.api.v1.model.Severity;
  * Holds information about the status of a graph element.
  *
  * @author mvrueden
+ * @since 1.0.0
  */
 @Model
 public interface StatusInfo {

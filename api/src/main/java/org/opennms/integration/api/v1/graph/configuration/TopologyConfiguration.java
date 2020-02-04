@@ -39,6 +39,7 @@ import org.opennms.integration.api.v1.graph.Vertex;
  * the (legacy) Topology API.
  *
  * @author mvrueden
+ * @since 1.0.0
  */
 public interface TopologyConfiguration {
 

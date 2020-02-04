@@ -41,7 +41,8 @@ import org.opennms.integration.api.v1.annotations.Model;
  * Either the source or target must have the same namespaces as the edge itself.
  *
  *
- * @author mvrueden.
+ * @author mvrueden
+ * @since 1.0.0
  */
 @Model
 public interface Edge {

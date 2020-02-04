@@ -36,6 +36,7 @@ import org.opennms.integration.api.v1.graph.configuration.TopologyConfiguration;
  * Convenient interface if a {@link GraphContainerProvider} only provides a single graph.
  *
  * @author mvrueden
+ * @since 1.0.0
  */
 @Exposable
 public interface GraphProvider {

@@ -34,6 +34,7 @@ import org.opennms.integration.api.v1.annotations.Model;
  * Reference to a node.
  *
  * @author mvrueden
+ * @since 1.0.0
  */
 @Model
 public interface NodeRef {
