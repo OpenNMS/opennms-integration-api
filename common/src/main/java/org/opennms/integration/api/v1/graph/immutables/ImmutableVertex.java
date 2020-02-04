@@ -30,7 +30,9 @@ package org.opennms.integration.api.v1.graph.immutables;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
+import org.opennms.integration.api.v1.graph.NodeRef;
 import org.opennms.integration.api.v1.graph.Properties;
 import org.opennms.integration.api.v1.graph.Vertex;
 
@@ -50,6 +52,20 @@ public final class ImmutableVertex extends ImmutableElement implements Vertex {
     @Override
     public String getId() {
         return getProperty(Properties.Vertex.ID);
+    }
+
+    @Override
+    public Optional<NodeRef> getNodeRef() {
+        final String nodeCriteria = getProperty(Properties.Vertex.NODE_CRITERIA);
+        final String foreignSource = getProperty(Properties.Vertex.FOREIGN_SOURCE);
+        final String foreignId = getProperty(Properties.Vertex.FOREIGN_ID);
+        if (nodeCriteria != null) {
+            return Optional.of(ImmutableNodeRef.newBuilder(nodeCriteria).build());
+        }
+        if (foreignSource != null && foreignId != null) {
+            return Optional.of(ImmutableNodeRef.newBuilder(foreignSource, foreignId).build());
+        }
+        return Optional.empty();
     }
 
     @Override

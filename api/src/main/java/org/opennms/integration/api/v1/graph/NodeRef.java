@@ -28,16 +28,13 @@
 
 package org.opennms.integration.api.v1.graph;
 
-import java.util.Map;
-import java.util.Optional;
-
 import org.opennms.integration.api.v1.annotations.Model;
 
+/**
+ * Reference to a node.
+ */
 @Model
-public interface Vertex extends VertexRef {
-    String getNamespace();
-    String getId();
-    Map<String, Object> getProperties();
-    <T> T getProperty(String key);
-    Optional<NodeRef> getNodeRef();
+public interface NodeRef {
+    String getForeignSource();
+    String getForeignId();
 }
