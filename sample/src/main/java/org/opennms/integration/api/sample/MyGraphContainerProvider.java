@@ -36,6 +36,7 @@ import org.opennms.integration.api.v1.graph.GraphContainer;
 import org.opennms.integration.api.v1.graph.GraphContainerInfo;
 import org.opennms.integration.api.v1.graph.GraphContainerProvider;
 import org.opennms.integration.api.v1.graph.Vertex;
+import org.opennms.integration.api.v1.graph.configuration.GraphCacheStrategy;
 import org.opennms.integration.api.v1.graph.configuration.GraphConfiguration;
 import org.opennms.integration.api.v1.graph.configuration.TopologyConfiguration;
 import org.opennms.integration.api.v1.graph.immutables.ImmutableGraph;
@@ -126,6 +127,12 @@ public class MyGraphContainerProvider implements GraphContainerProvider {
             @Override
             public boolean shouldEnrichNodeInfo() {
                 return true;
+            }
+
+            @Override
+            public GraphCacheStrategy getGraphCacheStrategy() {
+                // As we expose a static graph there is no need to ever reload it, so we set it to FOREVER.
+                return GraphCacheStrategy.FOREVER;
             }
         };
     }

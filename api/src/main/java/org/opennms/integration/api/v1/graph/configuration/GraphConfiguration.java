@@ -50,6 +50,11 @@ public interface GraphConfiguration {
         public GraphStatusStrategy getGraphStatusStrategy() {
             return GraphStatusStrategy.Default;
         }
+
+        @Override
+        public GraphCacheStrategy getGraphCacheStrategy() {
+            return GraphCacheStrategy.DEFAULT;
+        }
     };
 
     enum GraphStatusStrategy {
@@ -86,5 +91,9 @@ public interface GraphConfiguration {
      */
     default GraphStatusStrategy getGraphStatusStrategy() {
         return DEFAULT.getGraphStatusStrategy();
+    }
+
+    default GraphCacheStrategy getGraphCacheStrategy() {
+        return DEFAULT.getGraphCacheStrategy();
     }
 }
