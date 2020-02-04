@@ -132,4 +132,13 @@
         <bean class="org.opennms.integration.api.sample.MyTopologyEdgeConsumer"/>
     </service>
 
+
+    <service interface="org.opennms.integration.api.v1.graph.GraphContainerProvider" >
+        <bean class="org.opennms.integration.api.sample.MyGraphContainerProvider"/>
+    </service>
+    <bean id="exampleGraphStatusProvider" class="org.opennms.integration.api.sample.MyCustomStatusProvider">
+        <argument ref="alarmDao" />
+    </bean>
+    <service ref="exampleGraphStatusProvider" interface="org.opennms.integration.api.v1.graph.status.StatusProvider" />
+    <service ref="exampleGraphStatusProvider" interface="org.opennms.integration.api.v1.graph.status.LegacyStatusProvider" />
 </blueprint>

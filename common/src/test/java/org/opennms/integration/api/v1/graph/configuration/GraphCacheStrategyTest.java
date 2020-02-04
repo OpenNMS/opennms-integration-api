@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2018 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2018 The OpenNMS Group, Inc.
+ * Copyright (C) 2020-2020 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2020 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -26,26 +26,22 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.dao;
+package org.opennms.integration.api.v1.graph.configuration;
 
-import java.util.List;
-import java.util.Optional;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
-import org.opennms.integration.api.v1.annotations.Consumable;
-import org.opennms.integration.api.v1.graph.NodeRef;
-import org.opennms.integration.api.v1.model.Alarm;
+import java.util.concurrent.TimeUnit;
 
-/**
- * Lookup alarms.
- *
- * @since 1.0.0
- */
-@Consumable
-public interface AlarmDao {
+import org.junit.Test;
 
-    Long getAlarmCount();
+public class GraphCacheStrategyTest {
 
-    List<Alarm> getAlarms();
-
-    Optional<Alarm> getAlarmWithHighestSeverity(NodeRef nodeRef);
+    @Test
+    public void verifyCacheReloadIntervalInSeconds() {
+        assertThat(GraphCacheStrategy.DEFAULT.getCacheReloadIntervalInSeconds(), is(300L)); // 5 Minutes in seconds
+        assertThat(GraphCacheStrategy.TIMED(1, TimeUnit.MINUTES).getCacheReloadIntervalInSeconds(), is(60L)); // 1 Minute in seconds
+        assertThat(GraphCacheStrategy.TIMED(10, TimeUnit.SECONDS).getCacheReloadIntervalInSeconds(), is(10L));
+        assertThat(GraphCacheStrategy.TIMED(1000, TimeUnit.MILLISECONDS).getCacheReloadIntervalInSeconds(), is(1L));
+    }
 }

@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2018 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2018 The OpenNMS Group, Inc.
+ * Copyright (C) 2020-2020 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2020 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -26,26 +26,23 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.dao;
+package org.opennms.integration.api.v1.graph.status;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.opennms.integration.api.v1.annotations.Consumable;
-import org.opennms.integration.api.v1.graph.NodeRef;
-import org.opennms.integration.api.v1.model.Alarm;
+import org.opennms.integration.api.v1.annotations.Exposable;
+import org.opennms.integration.api.v1.graph.Edge;
+import org.opennms.integration.api.v1.graph.Vertex;
+import org.opennms.integration.api.v1.graph.configuration.TopologyConfiguration;
 
 /**
- * Lookup alarms.
+ * The {@link LegacyStatusProvider} allows to set a concrete {@link StatusInfo} for each {@link Vertex} and {@link Edge}
+ * within the {@link org.opennms.integration.api.v1.graph.Graph}.
  *
+ * Please note, that in order to use this, the {@link TopologyConfiguration#getLegacyStatusStrategy()} ()}
+ * must return {@link org.opennms.integration.api.v1.graph.configuration.TopologyConfiguration.LegacyStatusStrategy#Custom}.
+ *
+ * @author mvrueden
  * @since 1.0.0
  */
-@Consumable
-public interface AlarmDao {
-
-    Long getAlarmCount();
-
-    List<Alarm> getAlarms();
-
-    Optional<Alarm> getAlarmWithHighestSeverity(NodeRef nodeRef);
+@Exposable
+public interface LegacyStatusProvider extends StatusProvider {
 }

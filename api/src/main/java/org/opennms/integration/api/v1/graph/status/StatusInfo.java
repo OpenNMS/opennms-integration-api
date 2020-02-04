@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2018 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2018 The OpenNMS Group, Inc.
+ * Copyright (C) 2020-2020 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2020 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -26,26 +26,19 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.dao;
+package org.opennms.integration.api.v1.graph.status;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.opennms.integration.api.v1.annotations.Consumable;
-import org.opennms.integration.api.v1.graph.NodeRef;
-import org.opennms.integration.api.v1.model.Alarm;
+import org.opennms.integration.api.v1.annotations.Model;
+import org.opennms.integration.api.v1.model.Severity;
 
 /**
- * Lookup alarms.
+ * Holds information about the status of a graph element.
  *
+ * @author mvrueden
  * @since 1.0.0
  */
-@Consumable
-public interface AlarmDao {
-
-    Long getAlarmCount();
-
-    List<Alarm> getAlarms();
-
-    Optional<Alarm> getAlarmWithHighestSeverity(NodeRef nodeRef);
+@Model
+public interface StatusInfo {
+    Severity getSeverity();
+    long getCount();
 }

@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2018 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2018 The OpenNMS Group, Inc.
+ * Copyright (C) 2020-2020 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2020 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -26,26 +26,37 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.dao;
+package org.opennms.integration.api.v1.graph;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
-import org.opennms.integration.api.v1.annotations.Consumable;
-import org.opennms.integration.api.v1.graph.NodeRef;
-import org.opennms.integration.api.v1.model.Alarm;
+import org.opennms.integration.api.v1.annotations.Model;
 
 /**
- * Lookup alarms.
+ * Meta data about the {@link GraphContainer}.
  *
+ * This allows to fetch meta data about a {@link GraphContainer} without loading it.
+ *
+ * @author mvrueden
  * @since 1.0.0
  */
-@Consumable
-public interface AlarmDao {
+@Model
+public interface GraphContainerInfo {
+    String getContainerId();
+    String getLabel();
+    String getDescription();
+    List<GraphInfo> getGraphInfos();
 
-    Long getAlarmCount();
+    default GraphInfo getGraphInfo(String namespace) {
+        final GraphInfo graphInfo = getGraphInfos().stream()
+                .filter(gi -> gi.getNamespace().equals(namespace))
+                .findAny()
+                .orElseThrow(() -> new NoSuchElementException("No GraphInfo with namespace '" + namespace + "' found"));
+        return graphInfo;
+    }
 
-    List<Alarm> getAlarms();
-
-    Optional<Alarm> getAlarmWithHighestSeverity(NodeRef nodeRef);
+    default GraphInfo getDefaultGraphInfo() {
+        return getGraphInfos().get(0);
+    }
 }

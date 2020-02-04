@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2018 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2018 The OpenNMS Group, Inc.
+ * Copyright (C) 2020-2020 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2020 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -26,26 +26,30 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.dao;
+package org.opennms.integration.api.v1.graph;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.opennms.integration.api.v1.annotations.Consumable;
-import org.opennms.integration.api.v1.graph.NodeRef;
-import org.opennms.integration.api.v1.model.Alarm;
+import org.opennms.integration.api.v1.annotations.Model;
 
 /**
- * Lookup alarms.
+ * The meta information about a {@link Graph}.
+ * This is used to fetch the meta data of the graph without fully loading it.
+ * This allows for generating menu entries or fetching a list of available graphs without loading them.
  *
+ * @author mvrueden
  * @since 1.0.0
  */
-@Consumable
-public interface AlarmDao {
+@Model
+public interface GraphInfo {
+    /** The namespace of the graph. Should be unique over all Graphs */
+    String getNamespace();
 
-    Long getAlarmCount();
+    /**
+     * A short description of the graph to help user's understand what the context of the graph is, e.g.:
+     * "This provider shows the hierarchy of the defined Business Services and their computed operational states."
+     */
+    String getDescription();
 
-    List<Alarm> getAlarms();
+    /** A user friendly name/label of the graph, e.g. "Business Service Graph" */
+    String getLabel();
 
-    Optional<Alarm> getAlarmWithHighestSeverity(NodeRef nodeRef);
 }

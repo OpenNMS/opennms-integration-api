@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2018 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2018 The OpenNMS Group, Inc.
+ * Copyright (C) 2019-2019 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2019 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -26,26 +26,41 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.dao;
-
-import java.util.List;
-import java.util.Optional;
-
-import org.opennms.integration.api.v1.annotations.Consumable;
-import org.opennms.integration.api.v1.graph.NodeRef;
-import org.opennms.integration.api.v1.model.Alarm;
+package org.opennms.integration.api.v1.graph;
 
 /**
- * Lookup alarms.
+ * These properties are generally supported and may be used to keys when building any
+ * graph element (vertex, edge, graph, graph container).
  *
+ * @author mvrueden
  * @since 1.0.0
  */
-@Consumable
-public interface AlarmDao {
+public interface Properties {
 
-    Long getAlarmCount();
+    interface Container {
+        String ID = "id";
+        String LABEL = "label";
+        String DESCRIPTION = "description";
+    }
 
-    List<Alarm> getAlarms();
+    interface Graph {
+        String NAMESPACE = "namespace";
+        String LABEL = "label";
+        String DESCRIPTION = "description";
+    }
 
-    Optional<Alarm> getAlarmWithHighestSeverity(NodeRef nodeRef);
+    interface Vertex {
+        String ID = "id";
+        String LABEL = "label";
+        String NAMESPACE = "namespace";
+        String FOREIGN_SOURCE = "foreignSource";
+        String FOREIGN_ID = "foreignID";
+        String ICON_ID = "iconKey"; // The value is iconKey on purpose!
+    }
+
+    interface Edge {
+        String ID = "id";
+        String LABEL = "label";
+        String NAMESPACE = "namespace";
+    }
 }
