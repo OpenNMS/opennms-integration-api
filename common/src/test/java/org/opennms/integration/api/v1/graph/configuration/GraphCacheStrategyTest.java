@@ -28,38 +28,20 @@
 
 package org.opennms.integration.api.v1.graph.configuration;
 
-import java.util.Objects;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+
 import java.util.concurrent.TimeUnit;
 
-/**
- * Marker interface for available {@link GraphCacheStrategy}s.
- */
-public interface GraphCacheStrategy {
-    // Invalidate every 5 minutes
-    TimedGraphCacheStrategy DEFAULT = TIMED(5, TimeUnit.MINUTES);
+import org.junit.Test;
 
-    // Manually invalidate
-    GraphCacheStrategy FOREVER = new GraphCacheStrategy() {};
+public class GraphCacheStrategyTest {
 
-    // Invalidate every n seconds
-    static TimedGraphCacheStrategy TIMED(int duration, TimeUnit timeUnit) {
-        Objects.requireNonNull(timeUnit);
-        if (duration <= 0) {
-            throw new IllegalArgumentException("duration must be > 0");
-        }
-        return () -> timeUnit.toSeconds(duration);
-    }
-
-    /**
-     * Periodically invalidate the cache.
-     */
-    interface TimedGraphCacheStrategy extends GraphCacheStrategy {
-
-        /**
-         * Defines the time in seconds when a cache entry is invalidated.
-         *
-         * @return the time in seconds when a cache entry is invalidated.
-         */
-        long getCacheReloadIntervalInSeconds();
+    @Test
+    public void verifyCacheReloadIntervalInSeconds() {
+        assertThat(GraphCacheStrategy.DEFAULT.getCacheReloadIntervalInSeconds(), is(300L)); // 5 Minutes in seconds
+        assertThat(GraphCacheStrategy.TIMED(1, TimeUnit.MINUTES).getCacheReloadIntervalInSeconds(), is(60L)); // 1 Minute in seconds
+        assertThat(GraphCacheStrategy.TIMED(10, TimeUnit.SECONDS).getCacheReloadIntervalInSeconds(), is(10L));
+        assertThat(GraphCacheStrategy.TIMED(1000, TimeUnit.MILLISECONDS).getCacheReloadIntervalInSeconds(), is(1L));
     }
 }
