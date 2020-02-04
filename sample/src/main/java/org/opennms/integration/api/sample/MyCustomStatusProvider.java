@@ -63,7 +63,7 @@ public class MyCustomStatusProvider implements LegacyStatusProvider {
     public StatusInfo calculateStatus(Vertex vertex) {
         final Optional<NodeRef> nodeRef = vertex.getNodeRef();
         if (nodeRef.isPresent()) {
-            final Optional<Alarm> worstAlarm = alarmDao.getWorstAlarm(nodeRef.get());
+            final Optional<Alarm> worstAlarm = alarmDao.getAlarmWithHighestSeverity(nodeRef.get());
             if (worstAlarm.isPresent()) {
                 return StatusInfoImmutable.newBuilder(worstAlarm.get().getSeverity()).build();
             }

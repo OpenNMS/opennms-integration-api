@@ -47,5 +47,5 @@ public interface AlarmDao {
 
     List<Alarm> getAlarms();
 
-    Optional<Alarm> getWorstAlarm(NodeRef nodeRef);
+    Optional<Alarm> getAlarmWithHighestSeverity(NodeRef nodeRef);
 }
