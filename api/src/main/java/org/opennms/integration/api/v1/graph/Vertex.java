@@ -37,4 +37,5 @@ public interface Vertex extends VertexRef {
     String getNamespace();
     String getId();
     Map<String, Object> getProperties();
+    <T> T getProperty(String key);
 }

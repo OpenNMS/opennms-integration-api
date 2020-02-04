@@ -92,6 +92,11 @@ public final class ImmutableGraphContainer implements GraphContainer {
     }
 
     @Override
+    public <T> T getProperty(String key) {
+        return (T) properties.get(key);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

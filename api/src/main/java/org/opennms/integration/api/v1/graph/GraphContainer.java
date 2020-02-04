@@ -58,4 +58,6 @@ public interface GraphContainer {
     Graph getGraph(String namespace);
 
     Map<String, Object> getProperties();
+
+    <T> T getProperty(String key);
 }

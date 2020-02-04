@@ -40,5 +40,6 @@ public interface Graph extends GraphInfo {
     Vertex getVertex(String id);
     Edge getEdge(String id);
     Map<String, Object> getProperties();
+    <T> T getProperty(String key);
     List<VertexRef> getDefaultFocus();
 }

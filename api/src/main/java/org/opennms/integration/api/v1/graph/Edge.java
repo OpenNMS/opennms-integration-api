@@ -39,4 +39,5 @@ public interface Edge {
     VertexRef getSource();
     VertexRef getTarget();
     Map<String, Object> getProperties();
+    <T> T getProperty(String key);
 }
