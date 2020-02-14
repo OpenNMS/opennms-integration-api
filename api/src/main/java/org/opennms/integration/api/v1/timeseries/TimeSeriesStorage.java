@@ -2,7 +2,7 @@
  * This file is part of OpenNMS(R).
  *
  * Copyright (C) 2020 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2019 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2020 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -31,9 +31,12 @@ package org.opennms.integration.api.v1.timeseries;
 import java.util.Collection;
 import java.util.List;
 
+import org.opennms.integration.api.v1.annotations.Exposable;
+
 /***
  * Implement this interface to integrate a timeseries database into opennms.
  */
+@Exposable
 public interface TimeSeriesStorage {
 
     /** Stores a list of Samples in the timeseries database. */
