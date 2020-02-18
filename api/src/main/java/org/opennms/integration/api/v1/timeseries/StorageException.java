@@ -28,7 +28,6 @@
 
 package org.opennms.integration.api.v1.timeseries;
 
-/** TODO: Patrick: do we need to / should define our own exception here? */
 public class StorageException extends Exception {
     public StorageException (Exception e) {
         super(e);
