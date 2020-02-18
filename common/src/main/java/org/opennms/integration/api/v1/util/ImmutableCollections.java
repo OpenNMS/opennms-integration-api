@@ -32,9 +32,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -93,6 +95,20 @@ public class ImmutableCollections<T> {
             return Collections.emptyList();
         }
         return Collections.unmodifiableList(new ArrayList<>(toCopy));
+    }
+
+    /**
+     * Creates an unmodifiable Set of a Collection that already contains immutable types. This is essentially a
+     * convenience method for avoiding NPE when using a Set copy constructor.
+     *
+     * @param toCopy the Collection to copy
+     * @return an unmodifiable Set containing the same elements as in the given Collection
+     */
+    public static <T> Set<T> newSetOfImmutableType(Collection<T> toCopy) {
+        if (toCopy == null || toCopy.isEmpty()) {
+            return Collections.emptySet();
+        }
+        return Collections.unmodifiableSet(new HashSet<>(toCopy));
     }
 
     /**
