@@ -30,7 +30,6 @@ package org.opennms.integration.api.v1.timeseries.immutables;
 
 import java.util.Comparator;
 import java.util.Objects;
-import java.util.StringJoiner;
 
 import org.opennms.integration.api.v1.timeseries.Tag;
 
@@ -53,10 +52,7 @@ public class ImmutableTag implements Tag {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", ImmutableTag.class.getSimpleName() + "[", "]")
-                .add("key='" + key + "'")
-                .add("value='" + value + "'")
-                .toString();
+        return key + "=" + value;
     }
 
     @Override
@@ -89,8 +85,8 @@ public class ImmutableTag implements Tag {
             return 1;
         }
         return Comparator
-                .comparing(Tag::getKey)
-                .thenComparing(Tag::getValue)
+                .comparing(Tag::getKey, Comparator.nullsFirst(Comparator.naturalOrder()))
+                .thenComparing(Tag::getValue) // cannot be null
                 .compare(this, other);
     }
 }

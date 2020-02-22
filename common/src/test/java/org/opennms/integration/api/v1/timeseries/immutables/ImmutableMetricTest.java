@@ -28,6 +28,7 @@
 
 package org.opennms.integration.api.v1.timeseries.immutables;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
@@ -56,5 +57,18 @@ public class ImmutableMetricTest {
             fail("Expected Exception " + expectedType.getName() + " but caught " + t.getClass());
         }
         fail("Expected Exception " + expectedType.getName() + " was not thrown");
+    }
+
+    @Test
+    public void shouldGenerateKey() {
+        // we want to keep this format since the implementations will rely on it.
+        assertEquals("null=a_mtype=counter_tag2=b_tag3=c_unit=ms", ImmutableMetric.builder()
+                .tag( "a")
+                .tag("tag3", "c")
+                .tag("tag2", "b")
+                .tag(ImmutableMetric.MandatoryTag.unit.name(), "ms")
+                .tag(ImmutableMetric.MandatoryTag.mtype.name(), ImmutableMetric.Mtype.counter.name())
+                .metaTag("shouldn't be included", "-")
+                .build().getKey());
     }
 }
