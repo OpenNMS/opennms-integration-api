@@ -136,7 +136,7 @@ public class ImmutableMetric implements Metric {
         }
 
         public MetricBuilder tag(String value) {
-            return this.metaTag(new ImmutableTag(value));
+            return this.tag(new ImmutableTag(value));
         }
 
         public MetricBuilder metaTag(Tag tag) {
