@@ -94,13 +94,13 @@ public class ImmutableTimeSeriesFetchRequest implements TimeSeriesFetchRequest {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ImmutableTimeSeriesFetchRequest that = (ImmutableTimeSeriesFetchRequest) o;
-        return Objects.equals(metric, that.metric) &&
-                Objects.equals(start, that.start) &&
-                Objects.equals(end, that.end) &&
-                Objects.equals(step, that.step) &&
-                aggregation == that.aggregation;
+        if (!(o instanceof TimeSeriesFetchRequest)) return false;
+        TimeSeriesFetchRequest that = (TimeSeriesFetchRequest) o;
+        return Objects.equals(metric, that.getMetric()) &&
+                Objects.equals(start, that.getStart()) &&
+                Objects.equals(end, that.getEnd()) &&
+                Objects.equals(step, that.getStep()) &&
+                aggregation == that.getAggregation();
     }
 
     @Override
