@@ -65,11 +65,11 @@ public class ImmutableSample implements Sample {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ImmutableSample that = (ImmutableSample) o;
-        return Objects.equals(metric, that.metric) &&
-                Objects.equals(time, that.time) &&
-                Objects.equals(value, that.value);
+        if (!(o instanceof Sample)) return false;
+        Sample that = (Sample) o;
+        return Objects.equals(metric, that.getMetric()) &&
+                Objects.equals(time, that.getTime()) &&
+                Objects.equals(value, that.getValue());
     }
 
     @Override

@@ -94,9 +94,9 @@ public class ImmutableMetric implements Metric {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ImmutableMetric metric = (ImmutableMetric) o;
-        return Objects.equals(tags, metric.tags);
+        if (!(o instanceof Metric)) return false;
+        Metric metric = (Metric) o;
+        return Objects.equals(tags, metric.getTags());
     }
 
     // the metric (timeseries) identity is directly tied to the metric key (if any) and tags values (but not their order).
