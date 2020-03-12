@@ -29,10 +29,12 @@
 package org.opennms.integration.api.v1.timeseries.immutables;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.opennms.integration.api.v1.timeseries.Metric;
 import org.opennms.integration.api.v1.timeseries.Tag;
@@ -44,39 +46,43 @@ import org.opennms.integration.api.v1.util.ImmutableCollections;
 public class ImmutableMetric implements Metric {
 
     private final String key;
-    private final Set<Tag> tags;
+    private final Set<Tag> intrinsicTags;
     private final Set<Tag> metaTags;
 
-    public ImmutableMetric(final Set<Tag> tags) {
-        this(tags, new HashSet<>());
+    public ImmutableMetric(final Set<Tag> intrinsicTags) {
+        this(intrinsicTags, new HashSet<>());
     }
 
-    public ImmutableMetric(final Set<Tag> tags, final Set<Tag> metaTags) {
-        new MetricValidator(tags, metaTags).validate();
-        this.tags = ImmutableCollections.newSetOfImmutableType(tags);
+    public ImmutableMetric(final Set<Tag> intrinsicTags, final Set<Tag> metaTags) {
+        new MetricValidator(intrinsicTags, metaTags).validate();
+        this.intrinsicTags = ImmutableCollections.newSetOfImmutableType(intrinsicTags);
         this.metaTags = ImmutableCollections.newSetOfImmutableType(metaTags);
 
         // create the key out of all tags => they form the composite key
         StringBuilder b = new StringBuilder();
-        this.tags.stream().sorted().forEach(tag -> b.append("_").append(tag.toString()));
+        this.intrinsicTags.stream().sorted().forEach(tag -> b.append("_").append(tag.toString()));
         this.key = b.substring(1);
 
     }
 
     @Override
     public Set<Tag> getTagsByKey(final String key) {
-        return tags.stream().filter(t -> Objects.equals(t.getKey(), key)).collect(Collectors.toSet());
+        return Stream.concat(intrinsicTags.stream(), metaTags.stream())
+                .filter(t -> Objects.equals(t.getKey(), key))
+                .collect(Collectors.toSet());
     }
 
     @Override
     public Tag getFirstTagByKey(final String key) {
-        Set<Tag> tags = getTagsByKey(key);
-        return (tags.size() > 0) ? tags.iterator().next() : null;
+        List<Tag> tags = Stream.concat(intrinsicTags.stream(), metaTags.stream())
+                .filter(t -> Objects.equals(t.getKey(), key))
+                .collect(Collectors.toList());
+        return (tags.size() > 0) ? tags.get(0) : null;
     }
 
     @Override
-    public Set<Tag> getTags() {
-        return tags;
+    public Set<Tag> getIntrinsicTags() {
+        return intrinsicTags;
     }
 
     /** Gets the composite key consisting of all tags. */
@@ -96,20 +102,20 @@ public class ImmutableMetric implements Metric {
         if (this == o) return true;
         if (!(o instanceof Metric)) return false;
         Metric metric = (Metric) o;
-        return Objects.equals(tags, metric.getTags());
+        return Objects.equals(intrinsicTags, metric.getIntrinsicTags());
     }
 
     // the metric (timeseries) identity is directly tied to the metric key (if any) and tags values (but not their order).
     @Override
     public int hashCode() {
-        return Objects.hash(tags);
+        return Objects.hash(intrinsicTags);
     }
 
     @Override
     public String toString() {
         return new StringJoiner(", ", ImmutableMetric.class.getSimpleName() + "[", "]")
                 .add("key='" + key + "'")
-                .add("tags=" + tags)
+                .add("tags=" + intrinsicTags)
                 .add("metaTags=" + metaTags)
                 .toString();
     }
@@ -119,24 +125,20 @@ public class ImmutableMetric implements Metric {
     }
 
     public final static class MetricBuilder {
-        private final Set<Tag> tags = new HashSet<>();
+        private final Set<Tag> intrinsicTags = new HashSet<>();
         private final Set<Tag> metaTags = new HashSet<>();
 
-        public MetricBuilder tag(Tag tag) {
-            this.tags.add(tag);
+        public MetricBuilder intrinsicTag(Tag tag) {
+            this.intrinsicTags.add(tag);
             return this;
         }
 
-        public MetricBuilder tag(String key, String value) {
-            return this.tag(new ImmutableTag(key, value));
+        public MetricBuilder intrinsicTag(String key, String value) {
+            return this.intrinsicTag(new ImmutableTag(key, value));
         }
 
-        public MetricBuilder tag(MandatoryTag key, String value) {
-            return this.tag(key.name(), value);
-        }
-
-        public MetricBuilder tag(String value) {
-            return this.tag(new ImmutableTag(value));
+        public MetricBuilder intrinsicTag(String value) {
+            return this.intrinsicTag(new ImmutableTag(value));
         }
 
         public MetricBuilder metaTag(Tag tag) {
@@ -153,7 +155,7 @@ public class ImmutableMetric implements Metric {
         }
 
         public ImmutableMetric build() {
-            return new ImmutableMetric(this.tags, this.metaTags);
+            return new ImmutableMetric(this.intrinsicTags, this.metaTags);
         }
     }
 

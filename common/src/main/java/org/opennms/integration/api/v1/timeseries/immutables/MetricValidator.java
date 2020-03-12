@@ -28,7 +28,6 @@
 
 package org.opennms.integration.api.v1.timeseries.immutables;
 
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,45 +36,31 @@ import org.opennms.integration.api.v1.timeseries.Tag;
 
 class MetricValidator {
 
-    private final Set<Tag> tags;
+    private final Set<Tag> intrinsicTags;
     private final Set<Tag> metaTags;
 
-    public MetricValidator(final Set<Tag> tags, final Set<Tag> metaTags) {
-        this.tags = tags;
+    public MetricValidator(final Set<Tag> intrinsicTags, final Set<Tag> metaTags) {
+        this.intrinsicTags = intrinsicTags;
         this.metaTags = metaTags;
     }
 
     public Set<Tag> getTagsByKey(final String key) {
-        return tags.stream().filter(t -> Objects.equals(t.getKey(), key)).collect(Collectors.toSet());
+        return intrinsicTags.stream().filter(t -> Objects.equals(t.getKey(), key)).collect(Collectors.toSet());
     }
 
     public void validate() {
         requireNonNullTagSets();
-        requireAllMandatoryTagsArePresent();
-        requireMtypeToHaveValidValue();
+        requireAtLeastOneIntrinsicTagToBePresent();
     }
 
     private void requireNonNullTagSets() {
-        Objects.requireNonNull(tags);
+        Objects.requireNonNull(intrinsicTags);
         Objects.requireNonNull(metaTags);
     }
 
-    private void requireAllMandatoryTagsArePresent() {
-        for(ImmutableMetric.MandatoryTag tag: ImmutableMetric.MandatoryTag.values()) {
-            if(getTagsByKey(tag.name()).size() <1) {
-                throw new IllegalArgumentException(String.format("Mandatory tag %s missing", tag.name()));
-            }
-            if(getTagsByKey(tag.name()).size() >1) {
-                throw new IllegalArgumentException(String.format("Mandatory tag %s can be defined only once", tag.name()));
-            }
-        }
-    }
-
-    private void requireMtypeToHaveValidValue() {
-        final Tag tag = getTagsByKey(ImmutableMetric.MandatoryTag.mtype.name()).iterator().next();
-        if (Arrays.stream(ImmutableMetric.Mtype.values()).noneMatch(mtype -> mtype.name().equals(tag.getValue()))) {
-            throw new IllegalArgumentException(String.format("Tag value=%s for key=%s is not valid. Valid values: %s",
-                    tag.getValue(), tag.getKey(), Arrays.toString(ImmutableMetric.Mtype.values())));
+    private void requireAtLeastOneIntrinsicTagToBePresent() {
+        if (this.intrinsicTags.isEmpty()) {
+            throw new IllegalArgumentException("At least one intrinsic tag is required");
         }
     }
 }

@@ -31,20 +31,19 @@ package org.opennms.integration.api.v1.timeseries.immutables;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.junit.Test;
+import org.opennms.integration.api.v1.timeseries.Tag;
 
 public class ImmutableMetricTest {
 
     @Test
     public void shouldValidate() {
-        // needs mandatory tags
-        assertThrows(IllegalArgumentException.class, () -> ImmutableMetric.builder().build());
-        assertThrows(IllegalArgumentException.class, () -> ImmutableMetric.builder().tag(ImmutableMetric.MandatoryTag.unit.name(), "ms").build());
-
-        // mtype needs to be of known value
-        assertThrows(IllegalArgumentException.class, () -> ImmutableMetric.builder().tag(ImmutableMetric.MandatoryTag.mtype.name(), ImmutableMetric.Mtype.counter.name()).build());
-        ImmutableMetric.builder().tag(ImmutableMetric.MandatoryTag.unit.name(), "ms").tag(ImmutableMetric.MandatoryTag.mtype.name(), ImmutableMetric.Mtype.counter.name()).build();
-        assertThrows(IllegalArgumentException.class, () -> ImmutableMetric.builder().tag(ImmutableMetric.MandatoryTag.mtype.name(), "unknown").build());
+        // needs at least one intrinsic tag
+       assertThrows(IllegalArgumentException.class, () -> ImmutableMetric.builder().build());
     }
 
     public static <T extends Throwable> void assertThrows(Class<T> expectedType, Runnable runnable) {
@@ -62,13 +61,25 @@ public class ImmutableMetricTest {
     @Test
     public void shouldGenerateKey() {
         // we want to keep this format since the implementations will rely on it.
-        assertEquals("null=a_mtype=counter_tag2=b_tag3=c_unit=ms", ImmutableMetric.builder()
-                .tag( "a")
-                .tag("tag3", "c")
-                .tag("tag2", "b")
-                .tag(ImmutableMetric.MandatoryTag.unit.name(), "ms")
-                .tag(ImmutableMetric.MandatoryTag.mtype.name(), ImmutableMetric.Mtype.counter.name())
+        assertEquals("null=a_tag2=b_tag3=c", ImmutableMetric.builder()
+                .intrinsicTag( "a")
+                .intrinsicTag("tag3", "c")
+                .intrinsicTag("tag2", "b")
                 .metaTag("shouldn't be included", "-")
                 .build().getKey());
+    }
+
+    @Test
+    public void getFirstTagByKeyShouldLookInIntrinsicAndMetaTags() {
+        assertEquals("intrinsic", ImmutableMetric.builder().intrinsicTag("a", "intrinsic").metaTag("a", "meta").build().getFirstTagByKey("a").getValue());
+        assertEquals("meta", ImmutableMetric.builder().intrinsicTag("b").metaTag("a", "meta").build().getFirstTagByKey("a").getValue());
+    }
+
+    @Test
+    public void getTagsByKeyShouldReturnIntrinsicAndMetaTags() {
+        List<String> result = ImmutableMetric.builder().intrinsicTag("key", "a").metaTag("key", "b").metaTag("key", "c").build()
+                .getTagsByKey("key")
+                .stream().map(Tag::getValue).collect(Collectors.toList());
+        assertEquals(Arrays.asList("a", "b", "c"), result);
     }
 }
