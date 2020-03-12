@@ -50,7 +50,7 @@ class MetricValidator {
 
     public void validate() {
         requireNonNullTagSets();
-        requireAtLeastOneMandatoryTagToBePresent();
+        requireAtLeastOneIntrinsicTagToBePresent();
     }
 
     private void requireNonNullTagSets() {
