@@ -34,43 +34,42 @@ import java.util.Set;
  * A set of tags and meta tags that identify a metric.
  *
  * All intrinsic tags form the composite key of the metric. Change a value and you get a different metric.
- * Additional meta data can be added they don't result in a diferent metric.
+ * Additional meta data can be added they don't result in a different metric.
  *
- * Mandatory tags must be present - if not, the creation of the object should be refused.
+ * Please note there are no mandatory tags. We take here a more relaxed approach than the Metrics 20 specification.
+ * The reason is that the two mandatory tags from the specification (unit and type) are not available in OpenNMS at
+ * query time. However at least one intrinsic tag must be present.
  *
  * It is inspired by Metrics 2.0,
  * @see <a href="http://metrics20.org/spec/">http://metrics20.org/spec/</a>
  */
 public interface Metric {
+
+    /** Returns all intrinsic and meta tags with the given key. */
     Set<Tag> getTagsByKey(String key);
 
+    /** Returns the first tag with the given key. Intrinsic tags are searched first. */
     Tag getFirstTagByKey(String key);
 
-    Set<Tag> getTags();
-
-    /** Returns all deterministically concatenated tags. */
-    String getKey();
+    Set<Tag> getIntrinsicTags();
 
     Set<Tag> getMetaTags();
 
-    public enum MandatoryTag {
-        /** See: https://github.com/metrics20/spec/blob/master/spec.md#tag-values-unit */
-        unit,
-        /** See: https://github.com/metrics20/spec/blob/master/spec.md#tag-values-mtype */
-        mtype
-    }
+    /** Returns all deterministically concatenated intrinsic tags. */
+    String getKey();
+
 
     /** See https://github.com/metrics20/spec/blob/master/spec.md#tag-values-mtype */
-    public enum Mtype {
+    enum Mtype {
         rate, // 	a number per second (implies that unit ends on ‘/s’)
         count, // 	a number per a given interval (such as a statsd flushInterval)
         gauge, // 	values at each point in time
         counter, // 	keeps increasing over time (but might wrap/reset at some point) i.e. a gauge with the added notion of “i usually want to derive this to see the rate”
-        timestamp//  	value represents a unix timestamp. so basically a gauge or counter but we know we can also render the “age” at each point.}
+        timestamp //  	value represents a unix timestamp. so basically a gauge or counter but we know we can also render the “age” at each point.}
     }
 
     /** See: https://github.com/metrics20/spec/blob/master/spec.md#glossary */
-    public enum TagType {
+    enum TagType {
         /** All intrinsic tags form the composite key of the metric. Change a value and you get a different metric. */
         intrinsic,
         /** Additional meta data. Not part of the identity (key). Change a value and you get a different metric. */
