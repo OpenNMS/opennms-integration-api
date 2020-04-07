@@ -29,7 +29,16 @@
 package org.opennms.integration.api.v1.timeseries;
 
 public class StorageException extends Exception {
-    public StorageException (Exception e) {
+
+    public StorageException(final String message) {
+        super(message);
+    }
+
+    public StorageException (final Throwable e) {
+        super(e);
+    }
+
+    public StorageException (final String message, Throwable e) {
         super(e);
     }
 }
