@@ -142,6 +142,10 @@ public final class ImmutableGraph extends ImmutableElement implements Graph {
         return newBuilderFrom(graph).build();
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     // ImmutableGraphBuilder
     public final static class Builder extends AbstractBuilder<Builder> {
 

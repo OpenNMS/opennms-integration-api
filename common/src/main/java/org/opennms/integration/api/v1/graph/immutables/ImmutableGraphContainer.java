@@ -136,6 +136,10 @@ public final class ImmutableGraphContainer implements GraphContainer {
         return newBuilderFrom(graphContainer).build();
     }
 
+    public static Builder builder(){
+        return new Builder();
+    }
+
     public static final class Builder {
 
         private final Map<String, Graph> graphs = new HashMap<>();

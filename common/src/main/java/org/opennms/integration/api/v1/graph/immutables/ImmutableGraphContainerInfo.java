@@ -99,6 +99,10 @@ public final class ImmutableGraphContainerInfo implements GraphContainerInfo {
                 '}';
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static Builder newBuilder(final String containerId, final String label, final String description, GraphInfo... graphInfos) {
         final Builder builder = new Builder()
                 .containerId(containerId)

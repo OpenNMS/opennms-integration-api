@@ -39,7 +39,7 @@ public final class StatusInfoImmutable implements StatusInfo {
     private final long count;
 
     public StatusInfoImmutable(final Builder builder) {
-        this.severity = builder.severity;
+        this.severity = Objects.requireNonNull(builder.severity, "severity cannot be null.");
         this.count = builder.count;
     }
 
@@ -51,6 +51,10 @@ public final class StatusInfoImmutable implements StatusInfo {
     @Override
     public long getCount() {
         return count;
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     public static Builder newBuilder(final Severity severity) {

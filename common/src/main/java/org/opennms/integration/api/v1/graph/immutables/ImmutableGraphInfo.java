@@ -83,6 +83,10 @@ public final class ImmutableGraphInfo implements GraphInfo {
                 '}';
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static Builder newBuilder(final String namespace, final String label, final String description) {
         return new Builder()
                 .namespace(namespace)

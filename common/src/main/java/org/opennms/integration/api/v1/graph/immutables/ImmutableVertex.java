@@ -71,6 +71,10 @@ public final class ImmutableVertex extends ImmutableElement implements Vertex {
                 '}';
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static Builder newBuilder(final String namespace, final String id) {
     	return new Builder()
                 .namespace(namespace)

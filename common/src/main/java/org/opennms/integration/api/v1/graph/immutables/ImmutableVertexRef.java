@@ -74,6 +74,10 @@ public final class ImmutableVertexRef implements VertexRef {
                 '}';
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static Builder newBuilder(final Vertex vertex) {
         Objects.requireNonNull(vertex);
         return newBuilder(vertex.getNamespace(), vertex.getId());
