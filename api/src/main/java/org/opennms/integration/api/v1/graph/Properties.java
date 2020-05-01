@@ -56,12 +56,14 @@ public interface Properties {
         String FOREIGN_SOURCE = "foreignSource";
         String FOREIGN_ID = "foreignID";
         String ICON_ID = "iconKey"; // The value is iconKey on purpose!
+        String TOOLTIP_TEXT = "tooltipText";
     }
 
     interface Edge {
         String ID = "id";
         String LABEL = "label";
         String NAMESPACE = "namespace";
+        String TOOLTIP_TEXT = "tooltipText";
     }
 
     interface Enrichment {
