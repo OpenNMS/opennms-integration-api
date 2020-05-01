@@ -63,4 +63,9 @@ public interface Properties {
         String LABEL = "label";
         String NAMESPACE = "namespace";
     }
+
+    interface Enrichment {
+        /** Determines if vertices containing a node ref should be enriched with the node information. */
+        String RESOLVE_NODES = "enrichment.resolveNodes";
+    }
 }
