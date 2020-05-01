@@ -47,6 +47,10 @@ public final class ImmutableNodeRef implements NodeRef {
         return foreignId;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static ImmutableNodeRef.Builder newBuilder(final String nodeCriteria) {
         final String[] split = nodeCriteria.split(":");
         if (split.length != 2) {

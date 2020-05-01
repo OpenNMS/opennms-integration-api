@@ -43,6 +43,8 @@ public final class ImmutableEdge extends ImmutableElement implements Edge {
         super(builder.properties);
         this.source = ImmutableVertexRef.immutableCopy(builder.source);
         this.target = ImmutableVertexRef.immutableCopy(builder.target);
+        Objects.requireNonNull(this.source, "source cannot be null.");
+        Objects.requireNonNull(this.target, "target cannot be null.");
         Objects.requireNonNull(getId(), "id cannot be null");
         Objects.requireNonNull(getNamespace(), "namespace cannot be null");
     }
@@ -110,6 +112,10 @@ public final class ImmutableEdge extends ImmutableElement implements Edge {
             return edge;
         }
         return newBuilderFrom(edge).build();
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     // ImmutableEdgeBuilder

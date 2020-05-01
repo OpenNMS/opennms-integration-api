@@ -56,11 +56,18 @@ public interface Properties {
         String FOREIGN_SOURCE = "foreignSource";
         String FOREIGN_ID = "foreignID";
         String ICON_ID = "iconKey"; // The value is iconKey on purpose!
+        String TOOLTIP_TEXT = "tooltipText";
     }
 
     interface Edge {
         String ID = "id";
         String LABEL = "label";
         String NAMESPACE = "namespace";
+        String TOOLTIP_TEXT = "tooltipText";
+    }
+
+    interface Enrichment {
+        /** Determines if vertices containing a node ref should be enriched with the node information. */
+        String RESOLVE_NODES = "enrichment.resolveNodes";
     }
 }
