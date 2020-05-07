@@ -43,16 +43,30 @@ import org.opennms.integration.api.v1.health.Status;
 public class ChainedHealthCheck implements HealthCheck {
 
     private final String description;
+    private final String name;
+    private final boolean isLocalCheck;
     private final HealthCheck[] healthChecks;
 
-    public ChainedHealthCheck(String description, HealthCheck... healthChecks) {
+    public ChainedHealthCheck(String description, String name, boolean isLocalCheck, HealthCheck... healthChecks) {
         this.description = Objects.requireNonNull(description);
+        this.name = Objects.requireNonNull(name);
+        this.isLocalCheck = Objects.requireNonNull(isLocalCheck);
         this.healthChecks = healthChecks;
     }
 
     @Override
     public String getDescription() {
         return description;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public boolean isLocalCheck() {
+        return isLocalCheck;
     }
 
     @Override

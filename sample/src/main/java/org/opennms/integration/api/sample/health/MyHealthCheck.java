@@ -35,8 +35,12 @@ package org.opennms.integration.api.sample.health;
 public class MyHealthCheck extends ChainedHealthCheck {
     private static final String DESCR = "OIA :: Sample Project :: Health Check";
 
+    private static final String NAME = "oia-sampleproject-healthcheck";
+
+    private static final boolean ISLOCALCHECK = false;
+
     public MyHealthCheck(AlarmLifecyleHealthCheck alHc, ServiceExtensionHealthCheck seHc,
                          RequisitionHealthCheck reHc, UserDefinedLinkHealthCheck udlHc) {
-        super(DESCR, alHc, seHc, reHc, udlHc);
+        super(DESCR, NAME, ISLOCALCHECK, alHc, seHc, reHc, udlHc);
     }
 }

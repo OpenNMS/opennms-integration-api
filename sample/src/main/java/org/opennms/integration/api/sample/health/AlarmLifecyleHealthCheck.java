@@ -65,6 +65,16 @@ public class AlarmLifecyleHealthCheck implements HealthCheck {
     }
 
     @Override
+    public String getName() {
+        return "oia-sampleproject-alarmlifecycle";
+    }
+
+    @Override
+    public boolean isLocalCheck() {
+        return true;
+    }
+
+    @Override
     public Response perform(Context context) throws Exception {
         try (AlarmTestContextManager.AlarmTestSession session = alarmManager.newSession()) {
             InMemoryEvent trigger = ImmutableInMemoryEvent.newBuilder()

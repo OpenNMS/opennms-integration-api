@@ -59,6 +59,16 @@ public class UserDefinedLinkHealthCheck implements HealthCheck {
     }
 
     @Override
+    public String getName() {
+        return "oia-sampleproject-userdefinedlink";
+    }
+
+    @Override
+    public boolean isLocalCheck() {
+        return true;
+    }
+
+    @Override
     public Response perform(Context context) {
         final List<Node> nodes = nodeDao.getNodes();
         // We need at least two nodes to run the check

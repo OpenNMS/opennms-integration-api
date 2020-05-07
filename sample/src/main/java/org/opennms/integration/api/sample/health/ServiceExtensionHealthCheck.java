@@ -74,6 +74,16 @@ public class ServiceExtensionHealthCheck implements HealthCheck {
     }
 
     @Override
+    public String getName() {
+        return "oia-sampleproject-serviceextensions";
+    }
+
+    @Override
+    public boolean isLocalCheck() {
+        return false;
+    }
+
+    @Override
     public Response perform(Context context) {
         // Sample Detector Health Check
         Map<String, String> attributes = new HashMap<>();

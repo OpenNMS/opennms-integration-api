@@ -85,6 +85,16 @@ public class RequisitionHealthCheck implements HealthCheck {
     }
 
     @Override
+    public String getName() {
+        return "oia-sampleproject-requisition";
+    }
+
+    @Override
+    public boolean isLocalCheck() {
+        return true;
+    }
+
+    @Override
     public Response perform(Context context) throws InterruptedException {
         try (RequisitionTestContextManager.RequisitionTestSession testSession = requisitionManager.newSession()) {
             final String foreignSource = "oia-test-requisition-" + testSession.getSessionId();
