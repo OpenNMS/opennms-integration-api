@@ -105,7 +105,7 @@ public class ImmutableMetric implements Metric {
         return Objects.equals(intrinsicTags, metric.getIntrinsicTags());
     }
 
-    // the metric (timeseries) identity is directly tied to the metric key (if any) and tags values (but not their order).
+    // the metric (timeseries) identity is directly tied to the intrinsic tags (but not their order).
     @Override
     public int hashCode() {
         return Objects.hash(intrinsicTags);
