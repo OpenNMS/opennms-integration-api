@@ -33,5 +33,5 @@ public interface IntrinsicTagNames {
     String name = "name";
     String resourceId = "resourceId";
     @Deprecated // moved to meta tag names
-            String mtype = "mtype";
+    String mtype = "mtype";
 }
