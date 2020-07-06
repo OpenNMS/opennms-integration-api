@@ -26,6 +26,11 @@
             <groupId>org.opennms.integration.api</groupId>
             <artifactId>common</artifactId>
         </dependency>
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>${jakarta.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
