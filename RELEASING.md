@@ -7,7 +7,7 @@ mvn versions:set -DnewVersion=0.1.1
 
 Commit pom update:
 ```
-mvn commit
+git commit
 ```
 
 Tag:
@@ -29,7 +29,7 @@ mvn versions:set -DnewVersion=0.1.2-SNAPSHOT
 
 Commit pom update:
 ```
-mvn commit
+git commit
 ```
 
 Push commits and tags:
