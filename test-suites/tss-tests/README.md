@@ -1,16 +1,15 @@
-# Time Series Storage Plugin Tests [![CircleCI](https://circleci.com/gh/OpenNMS/opennms-tss-plugin-tests.svg?style=svg)](https://circleci.com/gh/OpenNMS/opennms-tss-plugin-tests)
+# Time Series Storage Plugin Tests
 
-This repository contains tools to test Time Series Storage Plugins.
+This module contains tools to test TimeSeriesStorage plugins.
 
-## Tests
 We have developed a set of test cases to check if a plugin implementation works properly.
 In order to create a test for your plugin do the following:
 * add a dependency to this jar:
   
   ```xml
   <dependency>
-    <groupId>org.opennms.plugins.tss</groupId>
-    <artifactId>plugin-tests</artifactId>
+    <groupId>org.opennms.integration.api</groupId>
+    <artifactId>tss-tests</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <scope>test</scope>
   </dependency>
