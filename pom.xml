@@ -36,6 +36,7 @@
         <module>sample</module>
         <module>test-api</module>
         <module>config</module>
+        <module>test-suites</module>
     </modules>
 
     <properties>
