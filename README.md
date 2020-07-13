@@ -35,6 +35,7 @@ See the interfaces defined in the `api` module for a complete list.
  * Service collectors
  * Provisiond detectors
  * Ticketers
+ * Time Series Storage
 
 
 ## Versioning
