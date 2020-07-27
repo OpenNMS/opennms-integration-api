@@ -61,6 +61,7 @@ public final class ImmutableAlarm implements Alarm {
     private final Date lastEventTime;
     private final Date firstEventTime;
     private final DatabaseEvent lastEvent;
+    private final boolean acknowledged;
 
     private ImmutableAlarm(Builder builder) {
         reductionKey = builder.reductionKey;
@@ -77,6 +78,7 @@ public final class ImmutableAlarm implements Alarm {
         lastEventTime = builder.lastEventTime;
         firstEventTime = builder.firstEventTime;
         lastEvent = builder.lastEvent;
+        acknowledged = builder.acknowledged;
     }
 
     public static Builder newBuilder() {
@@ -109,6 +111,7 @@ public final class ImmutableAlarm implements Alarm {
         private Date lastEventTime;
         private Date firstEventTime;
         private DatabaseEvent lastEvent;
+        private boolean acknowledged;
 
         private Builder() {
         }
@@ -128,6 +131,7 @@ public final class ImmutableAlarm implements Alarm {
             lastEventTime = alarm.getLastEventTime();
             firstEventTime = alarm.getFirstEventTime();
             lastEvent = alarm.getLastEvent();
+            acknowledged = alarm.isAcknowledged();
         }
 
         public Builder setReductionKey(String reductionKey) {
@@ -216,6 +220,11 @@ public final class ImmutableAlarm implements Alarm {
             return this;
         }
 
+        public Builder setAcknowledged(boolean acknowledged) {
+            this.acknowledged = acknowledged;
+            return this;
+        }
+
         public ImmutableAlarm build() {
             return new ImmutableAlarm(this);
         }
@@ -297,6 +306,11 @@ public final class ImmutableAlarm implements Alarm {
     }
 
     @Override
+    public boolean isAcknowledged() {
+        return acknowledged;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -314,13 +328,15 @@ public final class ImmutableAlarm implements Alarm {
                 Objects.equals(description, that.description) &&
                 Objects.equals(lastEventTime, that.lastEventTime) &&
                 Objects.equals(firstEventTime, that.firstEventTime) &&
-                Objects.equals(lastEvent, that.lastEvent);
+                Objects.equals(lastEvent, that.lastEvent) &&
+                Objects.equals(acknowledged, that.acknowledged);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(reductionKey, id, node, managedObjectInstance, managedObjectType, type, severity,
-                attributes, relatedAlarms, logMessage, description, lastEventTime, firstEventTime, lastEvent);
+                attributes, relatedAlarms, logMessage, description, lastEventTime, firstEventTime,
+                lastEvent, acknowledged);
     }
 
     @Override
@@ -340,6 +356,7 @@ public final class ImmutableAlarm implements Alarm {
                 ", lastEventTime=" + lastEventTime +
                 ", firstEventTime=" + firstEventTime +
                 ", lastEvent=" + lastEvent +
+                ", acknowledged=" + acknowledged +
                 '}';
     }
 }

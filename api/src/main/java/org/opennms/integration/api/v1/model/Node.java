@@ -64,4 +64,6 @@ public interface Node {
 
     List<MetaData> getMetaData();
 
+    List<String> getCategories();
+
 }
