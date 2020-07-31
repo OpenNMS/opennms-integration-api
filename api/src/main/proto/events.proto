@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package oia;
+
+option go_package = ".;oia";
+option java_package = "org.opennms.integration.api.v1.proto";
+
+import "model.proto";
+
+
+message Ack {
+    bool succeeded = 1;
+}
+
+message EventListenerId {
+    string name = 1;
+}
+
+service EventForwarder {
+
+    // Send the given event synchronously with ack when it is successful.
+    rpc SendEvent(InMemoryEvent) returns (Ack) {}
+
+}
+
+service EventListener {
+
+    // Listen to all the events from OpenNMS.
+    rpc OnEvent (EventListenerId) returns (stream InMemoryEvent) {}
+}

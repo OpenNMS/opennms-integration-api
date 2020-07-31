@@ -1,0 +1,117 @@
+syntax = "proto3";
+
+package oia;
+
+option go_package = ".;oia";
+option java_package = "org.opennms.integration.api.v1.proto";
+
+message Empty {
+}
+
+enum Severity {
+    INDETERMINATE = 0;
+    CLEARED = 1;
+    NORMAL = 2;
+    WARNING = 3;
+    MINOR = 4;
+    MAJOR = 5;
+    CRITICAL = 6;
+}
+
+enum AlarmType {
+    PROBLEM_WITH_CLEAR = 0;
+    CLEAR = 1;
+    PROBLEM_WITHOUT_CLEAR = 2;
+}
+
+message EventParameter {
+    string name = 1;
+    string value = 2;
+}
+
+message DatabaseEvent {
+    string uei = 1;
+    uint64 id = 2;
+    repeated EventParameter parameters = 3;
+}
+
+message InMemoryEvent {
+    string uei = 1;
+    string source = 2;
+    Severity severity = 3;
+    uint64 node_id = 4;
+    repeated EventParameter parameters = 5;
+}
+
+message IPInterface {
+    string ip_address = 1;
+    SNMPInterface snmp_interface = 2;
+    repeated MetaData meta_data = 3;
+}
+
+message SNMPInterface {
+    string if_descr = 1;
+    string if_name = 2;
+    uint64 if_index = 3;
+}
+
+message MetaData {
+    string context = 1;
+    string key = 2;
+    string value = 3;
+}
+
+message Geolocation {
+    string address1 = 1;
+    string address2 = 2;
+    string city = 3;
+    string state = 4;
+    string zip = 5;
+    string country = 6;
+    double longitude = 7;
+    double latitude = 8;
+}
+
+message NodeAssetRecord {
+    string vendor = 1;
+    string model_number = 2;
+    string description = 3;
+    string asset_number = 4;
+    string operating_system = 5;
+    string region = 6;
+    string division = 7;
+    string department = 8;
+    string building = 9;
+    string floor = 10;
+    Geolocation geolocation = 11;
+}
+
+message Node {
+    uint64 id = 1;
+    string foreign_source = 2;
+    string foreign_id = 3;
+    string label = 4;
+    string location = 5;
+    NodeAssetRecord asset_record = 6;
+    repeated IPInterface ip_interfaces = 7;
+    repeated SNMPInterface snmp_interfaces = 8;
+    repeated MetaData meta_data = 9;
+}
+
+message Alarm {
+    string reduction_key = 1;
+    uint64 id = 2;
+    Node node = 3;
+    AlarmType type = 4;
+    string managed_object_instance = 5;
+    string managed_object_type = 6;
+    map<string, string> attributes = 7;
+    Severity severity = 8;
+    bool is_situation = 9;
+    repeated Alarm related_alarms = 10;
+    string log_message = 11;
+    string description = 12;
+    uint64 last_event_time = 13;
+    uint64 first_event_time = 14;
+    DatabaseEvent last_event = 15;
+}

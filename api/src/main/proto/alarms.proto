@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package oia;
+
+option go_package = ".;oia";
+option java_package = "org.opennms.integration.api.v1.proto";
+
+import "model.proto";
+
+message AlarmsList {
+    repeated Alarm alarms = 1;
+}
+
+message DeleteAlarm {
+    uint64 id = 1;
+    string reduction_key = 2;
+}
+
+service AlarmLifecycleListener {
+
+    // Periodically invoked with the complete list of alarms as stored in the database.
+    rpc HandleAlarmSnapshot (Empty) returns (stream AlarmsList) {}
+
+    // Invoked when an alarm is created or updated.
+    // Defined as server stream, so the client can get the new or updated alarm immediately.
+    rpc HandleNewOrUpdatedAlarm (Empty) returns (stream Alarm) {}
+
+    // Invoked when an alarm is deleted.
+    // Defined as server stream, so the client can get the deleted alarm immediately.
+    rpc HandleDeletedAlarm (Empty) returns (stream DeleteAlarm) {}
+
+}
