@@ -1,0 +1,36 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<features name="openmms-plugins-${pluginId}-features" xmlns="http://karaf.apache.org/xmlns/features/v1.4.0">
+
+    <feature name="opennms-plugins-${pluginId}" description="OpenNMS :: Plugins :: ${pluginName}" version="${symbol_dollar}{project.version}">
+        <feature dependency="true">aries-blueprint</feature>
+        <feature dependency="true">shell</feature>
+        <feature version="${symbol_dollar}{opennms.api.version}" dependency="true">opennms-integration-api</feature>
+        <feature version="${symbol_dollar}{okhttp.version}" dependency="true">okhttp</feature>
+        <feature version="${symbol_dollar}{guava.version}" dependency="true">guava</feature>
+        <feature version="${symbol_dollar}{jackson.version}" dependency="true">jackson</feature>
+        <bundle dependency="true">mvn:org.apache.commons/commons-jexl3/${symbol_dollar}{jexl.version}</bundle>
+        <bundle dependency="true">mvn:io.dropwizard.metrics/metrics-core/${metrics.version}</bundle>
+        <bundle dependency="true">mvn:javax.ws.rs/javax.ws.rs-api/2.1.1</bundle>
+        <bundle>mvn:${groupId}/${pluginId}-plugin/${symbol_dollar}{project.version}</bundle>
+    </feature>
+
+    <feature name="okhttp" description="okhttp" version="${symbol_dollar}{okhttp.version}">
+        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.okio/${symbol_dollar}{okio.bundle.version}</bundle>
+        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.okhttp/${symbol_dollar}{okhttp.bundle.version}</bundle>
+        <bundle dependency="true">wrap:mvn:com.squareup.okhttp3/logging-interceptor/${symbol_dollar}{okhttp.version}</bundle>
+    </feature>
+
+    <feature name="guava" description="guava" version="${symbol_dollar}{guava.version}">
+        <bundle dependency="true">mvn:com.google.guava/guava/${symbol_dollar}{guava.version}</bundle>
+        <bundle dependency="true">mvn:com.google.guava/failureaccess/1.0.1</bundle>
+    </feature>
+
+    <feature name="jackson" description="jackson" version="${symbol_dollar}{jackson.version}">
+        <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-databind/${symbol_dollar}{jackson.version}</bundle>
+        <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-annotations/${symbol_dollar}{jackson.version}</bundle>
+        <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-core/${symbol_dollar}{jackson.version}</bundle>
+    </feature>
+</features>

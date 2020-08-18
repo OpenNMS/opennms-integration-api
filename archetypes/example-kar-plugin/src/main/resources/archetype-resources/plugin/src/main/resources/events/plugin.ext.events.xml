@@ -1,0 +1,22 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<events xmlns="http://xmlns.opennms.org/xsd/eventconf">
+    <event>
+        <uei>uei.opennms.org/${pluginId}Plugin/sendEventSuccessful</uei>
+        <event-label>${pluginName}: Successfully sent event</event-label>
+        <descr>Successfully sent event via REST API for alarm with reduction key: %parm[reductionKey]%</descr>
+        <logmsg dest="logndisplay">${pluginName}: Successfully sent event for alarm: %parm[reductionKey]%</logmsg>
+        <severity>Normal</severity>
+        <alarm-data reduction-key="%uei%:%parm[reductionKey]%" alarm-type="2"
+                    clear-key="uei.opennms.org/${pluginId}Plugin/sendEventFailed:%parm[reductionKey]%"/>
+    </event>
+    <event>
+        <uei>uei.opennms.org/${pluginId}Plugin/sendEventFailed</uei>
+        <event-label>${pluginName}: Failed to forward event</event-label>
+        <descr>Failed to sent event via REST API for alarm with reduction key: %parm[reductionKey]%. Message is: %parm[message]%</descr>
+        <logmsg dest="logndisplay">${pluginName}: Failed to sent event for alarm: %parm[reductionKey]%</logmsg>
+        <severity>Critical</severity>
+        <alarm-data reduction-key="%uei%:%parm[reductionKey]%" alarm-type="1" />
+    </event>
+</events>

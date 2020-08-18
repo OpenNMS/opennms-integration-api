@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archetype-descriptor xsi:schemaLocation="https://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.1.0 http://maven.apache.org/xsd/archetype-descriptor-1.1.0.xsd" name="example-kar-plugin-archetype"
+    xmlns="https://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <requiredProperties>
+      <!--
+        This is the id of the plugin.
+      -->
+      <requiredProperty key="pluginId">
+        <validationRegex>^[a-z0-9\-]+$</validationRegex>
+      </requiredProperty>
+      <!--
+        This is the display name of the plugin.
+      -->
+      <requiredProperty key="pluginName" />
+      <!--
+          OIA Version
+      -->
+      <requiredProperty key="oiaVersion">
+        <defaultValue>${project.version}</defaultValue>
+        <validationRegex>^[a-zA-Z0-9\.\-]+$</validationRegex>
+      </requiredProperty>
+  </requiredProperties>
+
+  <fileSets>
+    <fileSet filtered="true" encoding="UTF-8">
+      <directory/>
+      <includes>
+        <include>README.md</include>
+        <include>.gitignore</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+  <modules>
+    <module id="assembly" dir="assembly" name="assembly">
+      <modules>
+        <module id="kar" dir="kar" name="kar" />
+      </modules>
+    </module>
+    <module id="plugin" dir="plugin" name="plugin">
+      <fileSets>
+        <fileSet filtered="true" packaged="true" encoding="UTF-8">
+          <directory>src/main/java</directory>
+          <includes>
+            <include>**/*.java</include>
+          </includes>
+        </fileSet>
+        <fileSet filtered="true" encoding="UTF-8">
+          <directory>src/main/resources</directory>
+          <includes>
+            <include>**/*.xml</include>
+          </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="true" encoding="UTF-8">
+          <directory>src/test/java</directory>
+          <includes>
+            <include>**/*.java</include>
+          </includes>
+        </fileSet>
+      </fileSets>
+    </module>
+    <module id="karaf-features" dir="karaf-features" name="karaf-features">
+      <fileSets>
+        <fileSet filtered="true" encoding="UTF-8">
+          <directory>src/main/resources</directory>
+          <includes>
+            <include>**/*.xml</include>
+          </includes>
+        </fileSet>
+      </fileSets>
+    </module>
+  </modules>
+</archetype-descriptor>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>${groupId}</groupId>
+        <artifactId>assembly</artifactId>
+        <version>${version}</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>${artifactId}</artifactId>
+    <name>OpenNMS :: Plugins :: ${pluginName} :: Assembly :: KAR</name>
+    <packaging>kar</packaging>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.karaf.tooling</groupId>
+                <artifactId>karaf-maven-plugin</artifactId>
+                <version>${karaf.version}</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>create-kar</id>
+                        <goals>
+                            <goal>kar</goal>
+                        </goals>
+                        <configuration>
+                            <featuresFile>mvn:${groupId}/karaf-features/${project.version}/xml</featuresFile>
+                            <finalName>opennms-${pluginId}-plugin</finalName>
+                            <ignoreDependencyFlag>true</ignoreDependencyFlag>
+                            <archive>
+                              <manifestEntries>
+                                <Karaf-Feature-Start>false</Karaf-Feature-Start>
+                              </manifestEntries>
+                            </archive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>${groupId}</groupId>
+            <artifactId>karaf-features</artifactId>
+            <version>${project.version}</version>
+            <type>xml</type>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>
