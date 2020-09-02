@@ -28,6 +28,6 @@ bundle:watch *
 
 Once installed, the plugin makes the following Karaf shell commands available:
 * opennms-${pluginId}:stats
-* opennms-${pluginId}:forward-topology
+* opennms-${pluginId}:push-topology
 
 You can also access the REST endpoint mounted by the plugin at `http://nms:8980/opennms/rest/${pluginId}/ping`
