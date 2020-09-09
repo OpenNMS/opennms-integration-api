@@ -12,6 +12,10 @@ See the interfaces defined in the `api` module for a complete list.
 
  * Event configuration
  * Syslog configuration (message to event mappings)
+ * SNMP data collection configuration
+ * Resource type definitions (data collection)
+ * Graph definitions (data collection)
+ * Thresholding configuration
 
 ### Consume
 
@@ -22,6 +26,7 @@ See the interfaces defined in the `api` module for a complete list.
  * DAOs
    * Node
    * SNMP Interface
+   * Topology (edges)
  * Coordination API
  * Events
 
@@ -36,7 +41,15 @@ See the interfaces defined in the `api` module for a complete list.
  * Provisiond detectors
  * Ticketers
  * Time Series Storage
+ * Graph API extensions (i.e. custom topology)
 
+## Building a new plugin
+
+We provide a Maven archetype to help bootstrap plugin creation.
+To create a new plugin project use:
+```
+mvn archetype:generate -B -DarchetypeGroupId=org.opennms.integration.api -DarchetypeArtifactId=example-kar-plugin -DarchetypeVersion=0.5.2-SNAPSHOT -DgroupId=com.company -DartifactId=myplugin -Dversion=1.0.0-SNAPSHOT -Dpackage=com.company.myplugin -DpluginId=myplugin -DpluginName="My Plugin"
+```
 
 ## Versioning
 
