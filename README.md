@@ -40,7 +40,7 @@ See the interfaces defined in the `api` module for a complete list.
  * Service collectors
  * Provisiond detectors
  * Ticketers
- * [Time Series Storage](src/main/java/org/opennms/integration/api/v1/timeseries/README.md)
+ * [Time Series Storage](api/src/main/java/org/opennms/integration/api/v1/timeseries/README.md)
  * Graph API extensions (i.e. custom topology)
 
 ## Building a new plugin
