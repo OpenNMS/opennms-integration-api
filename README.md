@@ -45,7 +45,7 @@ See the interfaces defined in the `api` module for a complete list.
 
 ## Building a new plugin
 
-We provide a [Maven archetype](archetypes/example-kar-plugin/src/main/resources/archetype-resources/README.md) to help bootstrap plugin creation.
+We provide a Maven archetype to help bootstrap plugin creation.
 To create a new plugin project use:
 ```
 mvn archetype:generate -B -DarchetypeGroupId=org.opennms.integration.api -DarchetypeArtifactId=example-kar-plugin -DarchetypeVersion=0.5.2-SNAPSHOT -DgroupId=com.company -DartifactId=myplugin -Dversion=1.0.0-SNAPSHOT -Dpackage=com.company.myplugin -DpluginId=myplugin -DpluginName="My Plugin"
