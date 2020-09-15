@@ -1,11 +1,11 @@
 # Time Series Storage Integration Layer
 The Time Series Storage Integration Layer (TSS) provides an easy way to connect time series databases to OpenNMS.
-See [the Admin Guide](https://docs.opennms.org/opennms/releases/26.1.0/guide-admin/guide-admin.html#ga-opennms-operation-timeseries) for an introduction to TSS and how to configure it.
+See the [Admin Guide](https://docs.opennms.org/opennms/releases/26.1.0/guide-admin/guide-admin.html#ga-opennms-operation-timeseries) for an introduction to TSS and how to configure it.
 
 The TSS uses plugins to connect OpenNMS with a time series database.
 Think of it as a driver for a time series database, using OSGi bundles.
 
-[Plugins] (https://docs.opennms.org/opennms/releases/26.1.0/guide-admin/guide-admin.html#ga-opennms-operation-timeseries) exist for some popular databases that can be used out of the box.
+[Plugins](https://docs.opennms.org/opennms/releases/26.1.0/guide-admin/guide-admin.html#ga-opennms-operation-timeseries) exist for some popular databases that can be used out of the box.
 To write your own plugin for the TSS, follow the steps below. 
 
 ## Write a TSS plugin: step-by-step guide
