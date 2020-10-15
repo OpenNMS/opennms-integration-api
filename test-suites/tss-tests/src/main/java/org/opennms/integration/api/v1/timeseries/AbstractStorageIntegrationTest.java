@@ -59,12 +59,14 @@ public abstract class AbstractStorageIntegrationTest {
     protected List<Metric> metrics;
     protected List<Sample> samplesOfFirstMetric;
     protected TimeSeriesStorage storage;
+    protected Instant referenceTime;
 
     @Before
     public void setUp() throws StorageException {
+        this.referenceTime = Instant.now().with(ChronoField.MICRO_OF_SECOND, 0);
         metrics = createMetrics();
         List<Sample> samples = metrics.stream()
-                .map(AbstractStorageIntegrationTest::createSamplesForMetric)
+                .map(this::createSamplesForMetric)
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
 
@@ -164,10 +166,10 @@ public abstract class AbstractStorageIntegrationTest {
         assertEquals(samplesOfFirstMetric, samples);
     }
 
-    private List<Sample> loadSamplesForMetric(final Metric metric) throws StorageException {
+    protected List<Sample> loadSamplesForMetric(final Metric metric) throws StorageException {
         TimeSeriesFetchRequest request = ImmutableTimeSeriesFetchRequest.builder()
-                .start(Instant.now().minusSeconds(300))
-                .end(Instant.now())
+                .start(this.referenceTime.minusSeconds(300))
+                .end(this.referenceTime)
                 .metric(metric)
                 .aggregation(Aggregation.NONE)
                 .step(Duration.ZERO)
@@ -176,17 +178,17 @@ public abstract class AbstractStorageIntegrationTest {
 
     }
 
-    private static List<Sample> createSamplesForMetric(final Metric metric) {
+    protected List<Sample> createSamplesForMetric(final Metric metric) {
         List<Sample> samples = new ArrayList<>();
         for(int i=1; i<=5; i++) {
-            samples.add(createSampleForMetric(metric, i));
+            samples.add(createSampleForMetric(metric, i, referenceTime.minusSeconds(60)));
         }
         return samples;
     }
 
-    private static Sample createSampleForMetric(final Metric metric, int index) {
+    protected static Sample createSampleForMetric(final Metric metric, int index, Instant referenceTime) {
         return ImmutableSample.builder()
-                .time(Instant.now().with(ChronoField.MICRO_OF_SECOND, 0).plus(index, ChronoUnit.MILLIS)) // Influxdb doesn't have microseconds
+                .time(referenceTime.plus(index, ChronoUnit.SECONDS)) // Influxdb doesn't have microseconds
                 .value(42.3)
                 .metric(metric)
                 .build();
