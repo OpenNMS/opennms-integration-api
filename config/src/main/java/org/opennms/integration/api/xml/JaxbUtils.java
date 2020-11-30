@@ -28,10 +28,12 @@
 
 package org.opennms.integration.api.xml;
 
+import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
@@ -56,6 +58,16 @@ class JaxbUtils {
             final Unmarshaller um = context.createUnmarshaller();
             return (V)um.unmarshal(reader);
         } catch(Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public static <V> V fromXml(InputStream xml, Class<V> clazz) {
+        try {
+            final JAXBContext context = JAXBContext.newInstance(clazz);
+            final Unmarshaller um = context.createUnmarshaller();
+            return (V) um.unmarshal(xml);
+        } catch (JAXBException ex) {
             throw new RuntimeException(ex);
         }
     }

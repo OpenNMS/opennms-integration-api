@@ -42,8 +42,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.opennms.integration.api.xml.ConfigUtils;
 
-import com.google.common.base.Strings;
-
 /**
  * Top-level element for the syslogd-configuration.xml configuration file.
  */
@@ -247,14 +245,14 @@ public class Configuration implements Serializable {
     }
 
     public Optional<TimeZone> getTimeZone(){
-        if(Strings.emptyToNull(this.timeZone) ==null){
+        if (this.timeZone == null || this.timeZone.trim().isEmpty()) {
             return Optional.empty();
         }
         return Optional.of(TimeZone.getTimeZone(ZoneId.of(timeZone)));
     }
 
-    public void setTimeZone(String timeZone){
-        if(Strings.emptyToNull(timeZone) == null ){
+    public void setTimeZone(String timeZone) {
+        if (timeZone == null || timeZone.trim().isEmpty()) {
             this.timeZone = null;
         }
         // test if zone is valid:
