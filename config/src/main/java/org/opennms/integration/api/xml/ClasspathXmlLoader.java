@@ -63,11 +63,7 @@ public class ClasspathXmlLoader<T> {
             try {
                 try (InputStream is = classLoader.getResourceAsStream(subFolder + File.separator +fileName)) {
                     if (is != null) {
-                        // Read the input stream line by line collecting it into a String
-                        String xml = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))
-                                .lines()
-                                .collect(Collectors.joining("\n"));
-                        final T object = JaxbUtils.fromXml(xml, objectClazz);
+                        final T object = JaxbUtils.fromXml(is, objectClazz);
                         allObjects.add(object);
                     }
                 }
