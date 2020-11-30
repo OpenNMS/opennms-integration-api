@@ -28,18 +28,19 @@
 
 package org.opennms.integration.api.xml;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.io.ByteSource;
 
 public class ClasspathXmlLoader<T> {
     private static final Logger LOG = LoggerFactory.getLogger(ClasspathXmlLoader.class);
@@ -62,13 +63,10 @@ public class ClasspathXmlLoader<T> {
             try {
                 try (InputStream is = classLoader.getResourceAsStream(subFolder + File.separator +fileName)) {
                     if (is != null) {
-                        final ByteSource byteSource = new ByteSource() {
-                            @Override
-                            public InputStream openStream() {
-                                return is;
-                            }
-                        };
-                        final String xml = byteSource.asCharSource(StandardCharsets.UTF_8).read();
+                        // Read the input stream line by line collecting it into a String
+                        String xml = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))
+                                .lines()
+                                .collect(Collectors.joining("\n"));
                         final T object = JaxbUtils.fromXml(xml, objectClazz);
                         allObjects.add(object);
                     }
