@@ -28,13 +28,14 @@
 
 package org.opennms.integration.api.sample.health;
 
+import java.util.Hashtable;
 import java.util.Objects;
 
 import org.opennms.integration.api.v1.health.Context;
 import org.opennms.integration.api.v1.health.HealthCheck;
 import org.opennms.integration.api.v1.health.Response;
-import org.opennms.integration.api.v1.health.immutables.ImmutableResponse;
 import org.opennms.integration.api.v1.health.Status;
+import org.opennms.integration.api.v1.health.immutables.ImmutableResponse;
 
 /**
  * Chain several health checks together and return success if and only if
@@ -42,31 +43,42 @@ import org.opennms.integration.api.v1.health.Status;
  */
 public class ChainedHealthCheck implements HealthCheck {
 
-    private final String description;
-    private final String name;
-    private final boolean isLocalCheck;
+    private Hashtable<String,String> hashtableTags = null;
     private final HealthCheck[] healthChecks;
 
-    public ChainedHealthCheck(String description, String name, boolean isLocalCheck, HealthCheck... healthChecks) {
-        this.description = Objects.requireNonNull(description);
-        this.name = Objects.requireNonNull(name);
-        this.isLocalCheck = Objects.requireNonNull(isLocalCheck);
+    public ChainedHealthCheck(String description, String name, HealthCheck... healthChecks) {
+        this.setTag("description", Objects.requireNonNull(description));
+        this.setTag("name", Objects.requireNonNull(name));
+        this.setTag("local", "false");
         this.healthChecks = healthChecks;
+    }
+
+    public ChainedHealthCheck(Hashtable<String,String> hashtable, HealthCheck... healthChecks) {
+        this.hashtableTags = (Hashtable<String, String>) hashtable.clone();
+        this.healthChecks = healthChecks;
+        Objects.requireNonNull(this.hashtableTags.get("description"));
+        Objects.requireNonNull(this.hashtableTags.get("name"));
+        Objects.requireNonNull(this.hashtableTags.get("local"));
     }
 
     @Override
     public String getDescription() {
-        return description;
+        return getTag("description");
     }
 
     @Override
-    public String getName() {
-        return name;
+    public String getTag(String key) {
+        return this.hashtableTags.get(key);
     }
 
     @Override
-    public boolean isLocalCheck() {
-        return isLocalCheck;
+    public void setTag(String key, String value) {
+        this.hashtableTags.put(key, value);
+    }
+
+    @Override
+    public void setTags(Hashtable<String, String> hashtable) {
+        this.hashtableTags = (Hashtable<String, String>) hashtable.clone();
     }
 
     @Override

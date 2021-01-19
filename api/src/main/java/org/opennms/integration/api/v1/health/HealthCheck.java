@@ -28,6 +28,8 @@
 
 package org.opennms.integration.api.v1.health;
 
+import java.util.Hashtable;
+
 import org.opennms.integration.api.v1.annotations.Exposable;
 
 /**
@@ -48,20 +50,24 @@ public interface HealthCheck {
     String getDescription();
 
     /**
-     * The name of the {@link HealthCheck}, e.g. "opennms-rest-api".
-     * This is used when ignoring certain health checks.
+     * A dictionary of tags for the {@link HealthCheck}.
+     * This is used to fetch a value.
      *
-     * @return The string, describing the name of the check.
+     * @return The string, the value for the specified key.
      */
-    String getName();
+    String getTag(String key);
 
     /**
-     * The external dependency check of the {@link HealthCheck}, e.g. "rely on external data".
-     * This is used when determining if the health check is self contained or requires an external component.
-     *
-     * @return The boolean, indicating if the check is local only or not.
+     * A dictionary of tags for the {@link HealthCheck}.
+     * This is used to set a value.
      */
-    boolean isLocalCheck();
+    void setTag(String key, String value);
+
+    /**
+     * A dictionary of tags for the {@link HealthCheck}.
+     * This is used to add a value.
+     */
+    void setTags(Hashtable<String, String> hashtable);
 
     /**
      * Implements the check itself, e.g. Connecting to a HTTP Endpoint.

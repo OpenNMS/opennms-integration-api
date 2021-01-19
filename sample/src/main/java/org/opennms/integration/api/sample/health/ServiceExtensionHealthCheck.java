@@ -30,6 +30,7 @@ package org.opennms.integration.api.sample.health;
 
 import java.net.InetAddress;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -60,6 +61,12 @@ public class ServiceExtensionHealthCheck implements HealthCheck {
     private final ServiceCollectorClient collectorClient;
     private final NodeDao nodeDao;
 
+    private Hashtable<String,String> hashtableTags = new Hashtable<String, String>() {{
+        put("description", "OIA :: Sample Project :: Service Extensions");
+        put("name", "oia-sampleproject-serviceextensions");
+        put("local", "false");
+    }};
+
     public ServiceExtensionHealthCheck(DetectorClient detectorClient, ServicePollerClient pollerClient,
                          ServiceCollectorClient collectorClient, NodeDao nodeDao) {
         this.detectorClient = Objects.requireNonNull(detectorClient);
@@ -70,17 +77,22 @@ public class ServiceExtensionHealthCheck implements HealthCheck {
 
     @Override
     public String getDescription() {
-        return "OIA :: Sample Project :: Service Extensions";
+        return getTag("description");
     }
 
     @Override
-    public String getName() {
-        return "oia-sampleproject-serviceextensions";
+    public String getTag(String key) {
+        return this.hashtableTags.get(key);
     }
 
     @Override
-    public boolean isLocalCheck() {
-        return false;
+    public void setTag(String key, String value) {
+        this.hashtableTags.put(key, value);
+    }
+
+    @Override
+    public void setTags(Hashtable<String, String> hashtable) {
+        this.hashtableTags = (Hashtable<String, String>) hashtable.clone();
     }
 
     @Override

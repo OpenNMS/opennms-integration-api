@@ -28,6 +28,7 @@
 
 package org.opennms.integration.api.sample.health;
 
+import java.util.Hashtable;
 import java.util.Objects;
 
 import org.opennms.integration.api.sample.AlarmTestContextManager;
@@ -54,6 +55,12 @@ public class AlarmLifecyleHealthCheck implements HealthCheck {
     private final AlarmTestContextManager alarmManager;
     private final EventForwarder eventForwarder;
 
+    private Hashtable<String,String> hashtableTags = new Hashtable<String, String>() {{
+        put("description", "OIA :: Sample Project :: Alarm Lifecycle");
+        put("name", "oia-sampleproject-alarmlifecycle");
+        put("local", "true");
+    }};
+
     public AlarmLifecyleHealthCheck(AlarmTestContextManager alarmManager, EventForwarder eventForwarder) {
         this.alarmManager = Objects.requireNonNull(alarmManager);
         this.eventForwarder = Objects.requireNonNull(eventForwarder);
@@ -61,17 +68,22 @@ public class AlarmLifecyleHealthCheck implements HealthCheck {
 
     @Override
     public String getDescription() {
-        return "OIA :: Sample Project :: Alarm Lifecycle";
+        return getTag("description");
     }
 
     @Override
-    public String getName() {
-        return "oia-sampleproject-alarmlifecycle";
+    public String getTag(String key) {
+        return this.hashtableTags.get(key);
     }
 
     @Override
-    public boolean isLocalCheck() {
-        return true;
+    public void setTag(String key, String value) {
+        this.hashtableTags.put(key, value);
+    }
+
+    @Override
+    public void setTags(Hashtable<String, String> hashtable) {
+        this.hashtableTags = (Hashtable<String, String>) hashtable.clone();
     }
 
     @Override

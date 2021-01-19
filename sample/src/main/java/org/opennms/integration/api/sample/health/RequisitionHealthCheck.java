@@ -28,6 +28,7 @@
 
 package org.opennms.integration.api.sample.health;
 
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
@@ -70,6 +71,12 @@ public class RequisitionHealthCheck implements HealthCheck {
     private final EventSubscriptionService eventSubscriptionService;
     private final RequisitionTestContextManager requisitionManager;
 
+    private Hashtable<String,String> hashtableTags = new Hashtable<String, String>() {{
+        put("description", "OIA :: Sample Project :: Requisition");
+        put("name", "oia-sampleproject-requisition");
+        put("local", "true");
+    }};
+
     public RequisitionHealthCheck(NodeDao nodeDao, EventForwarder eventForwarder,
                                   EventSubscriptionService eventSubscriptionService,
                                   RequisitionTestContextManager requisitionManager) {
@@ -81,17 +88,22 @@ public class RequisitionHealthCheck implements HealthCheck {
 
     @Override
     public String getDescription() {
-        return "OIA :: Sample Project :: Requisition";
+        return getTag("description");
     }
 
     @Override
-    public String getName() {
-        return "oia-sampleproject-requisition";
+    public String getTag(String key) {
+        return this.hashtableTags.get(key);
     }
 
     @Override
-    public boolean isLocalCheck() {
-        return true;
+    public void setTag(String key, String value) {
+        this.hashtableTags.put(key, value);
+    }
+
+    @Override
+    public void setTags(Hashtable<String, String> hashtable) {
+        this.hashtableTags = (Hashtable<String, String>) hashtable.clone();
     }
 
     @Override

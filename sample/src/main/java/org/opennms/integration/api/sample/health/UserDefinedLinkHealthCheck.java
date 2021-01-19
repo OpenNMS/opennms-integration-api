@@ -28,6 +28,7 @@
 
 package org.opennms.integration.api.sample.health;
 
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -48,6 +49,12 @@ public class UserDefinedLinkHealthCheck implements HealthCheck {
     private final NodeDao nodeDao;
     private final Random random = new Random();
 
+    private Hashtable<String,String> hashtableTags = new Hashtable<String, String>() {{
+        put("description", "OIA :: Sample Project :: User Defined Link");
+        put("name", "oia-sampleproject-userdefinedlink");
+        put("local", "true");
+    }};
+
     public UserDefinedLinkHealthCheck(UserDefinedLinkDao userDefinedLinkDao, NodeDao nodeDao) {
         this.userDefinedLinkDao = Objects.requireNonNull(userDefinedLinkDao);
         this.nodeDao = Objects.requireNonNull(nodeDao);
@@ -55,17 +62,22 @@ public class UserDefinedLinkHealthCheck implements HealthCheck {
 
     @Override
     public String getDescription() {
-        return "OIA :: Sample Project :: User Defined Link";
+        return getTag("description");
     }
 
     @Override
-    public String getName() {
-        return "oia-sampleproject-userdefinedlink";
+    public String getTag(String key) {
+        return this.hashtableTags.get(key);
     }
 
     @Override
-    public boolean isLocalCheck() {
-        return true;
+    public void setTag(String key, String value) {
+        this.hashtableTags.put(key, value);
+    }
+
+    @Override
+    public void setTags(Hashtable<String, String> hashtable) {
+        this.hashtableTags = (Hashtable<String, String>) hashtable.clone();
     }
 
     @Override
