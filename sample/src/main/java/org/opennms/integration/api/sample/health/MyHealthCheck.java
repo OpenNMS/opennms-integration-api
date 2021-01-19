@@ -35,7 +35,7 @@ import java.util.Hashtable;
  * to make the result easier to validate from an integration test perspective.
  */
 public class MyHealthCheck extends ChainedHealthCheck {
-    private static final Hashtable<String, String> hashtable = new Hashtable<String, String>() {{
+    private static Hashtable<String, String> hashtable = new Hashtable<String, String>() {{
         put("description", "OIA :: Sample Project :: Health Check");
         put("name", "oia-sampleproject-healthcheck");
         put("local", "false");

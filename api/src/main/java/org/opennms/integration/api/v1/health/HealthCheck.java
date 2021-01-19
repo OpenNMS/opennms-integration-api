@@ -65,7 +65,7 @@ public interface HealthCheck {
 
     /**
      * A dictionary of tags for the {@link HealthCheck}.
-     * This is used to add a value.
+     * This is used to clone and set the entire dictionary.
      */
     void setTags(Hashtable<String, String> hashtable);
 
