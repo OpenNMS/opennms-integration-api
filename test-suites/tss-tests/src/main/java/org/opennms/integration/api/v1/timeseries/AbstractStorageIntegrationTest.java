@@ -62,7 +62,7 @@ public abstract class AbstractStorageIntegrationTest {
     protected Instant referenceTime;
 
     @Before
-    public void setUp() throws StorageException {
+    public void setUp() throws Exception {
         this.referenceTime = Instant.now().with(ChronoField.MICRO_OF_SECOND, 0);
         metrics = createMetrics();
         List<Sample> samples = metrics.stream()
@@ -80,17 +80,17 @@ public abstract class AbstractStorageIntegrationTest {
      * Create the TimeSeriesStorage implementation. This method is called once per test method invocation
      * (called in setUp()). If the creation is expensive you might want to do it only once per test class.
      */
-    abstract protected TimeSeriesStorage createStorage();
+    abstract protected TimeSeriesStorage createStorage() throws Exception;
 
     /**
      * Default implementation does nothing. You might want to override and add a wait in case persisting is not
      * handled synchronously.
      */
-    protected void waitForPersistingChanges() {
+    protected void waitForPersistingChanges() throws Exception {
     }
 
     @Test
-    public void shouldLoadMultipleMetricsWithSameTag() throws StorageException {
+    public void shouldLoadMultipleMetricsWithSameTag() throws Exception {
         List<Metric> metricsRetrieved = storage.getMetrics(asList(
                 metrics.get(0).getFirstTagByKey("name"),
                 new ImmutableTag("_idx1", "(snmp:1,4)")));
@@ -99,7 +99,7 @@ public abstract class AbstractStorageIntegrationTest {
     }
 
     @Test
-    public void shouldLoadOneMetricsWithUniqueTag() throws StorageException {
+    public void shouldLoadOneMetricsWithUniqueTag() throws Exception {
         Metric metric = metrics.get(0);
         List<Metric> metricsRetrieved = storage.getMetrics(asList(
                 metric.getFirstTagByKey("name"),
@@ -114,7 +114,7 @@ public abstract class AbstractStorageIntegrationTest {
     }
 
     @Test
-    public void shouldLoadMetricsByWildcardTag() throws StorageException {
+    public void shouldLoadMetricsByWildcardTag() throws Exception {
         List<Metric> metricsRetrieved = storage.getMetrics(asList(
                 metrics.get(0).getFirstTagByKey("name"),
                 new ImmutableTag("_idx2w", "(snmp:1,*)")));
@@ -123,7 +123,7 @@ public abstract class AbstractStorageIntegrationTest {
     }
 
     @Test
-    public void shouldGetSamplesForMetric() throws StorageException {
+    public void shouldGetSamplesForMetric() throws Exception {
 
         // let's create a metric without meta tags (they are not relevant for a metric definition)
         ImmutableMetric.MetricBuilder builder = ImmutableMetric.builder();
@@ -141,7 +141,7 @@ public abstract class AbstractStorageIntegrationTest {
     }
 
     @Test
-    public void shouldDeleteMetrics() throws StorageException {
+    public void shouldDeleteMetrics() throws Exception {
         Metric lastMetric = metrics.get(metrics.size()-1);
 
         // make sure we have the metrics and the samples in the db:
@@ -166,7 +166,7 @@ public abstract class AbstractStorageIntegrationTest {
         assertEquals(samplesOfFirstMetric, samples);
     }
 
-    protected List<Sample> loadSamplesForMetric(final Metric metric) throws StorageException {
+    protected List<Sample> loadSamplesForMetric(final Metric metric) throws Exception {
         TimeSeriesFetchRequest request = ImmutableTimeSeriesFetchRequest.builder()
                 .start(this.referenceTime.minusSeconds(300))
                 .end(this.referenceTime)
