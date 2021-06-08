@@ -38,10 +38,12 @@ class MetricValidator {
 
     private final Set<Tag> intrinsicTags;
     private final Set<Tag> metaTags;
+    private final Set<Tag> externalTags;
 
-    public MetricValidator(final Set<Tag> intrinsicTags, final Set<Tag> metaTags) {
+    public MetricValidator(final Set<Tag> intrinsicTags, final Set<Tag> metaTags, final Set<Tag> externalTags) {
         this.intrinsicTags = intrinsicTags;
         this.metaTags = metaTags;
+        this.externalTags = externalTags;
     }
 
     public Set<Tag> getTagsByKey(final String key) {
@@ -56,6 +58,7 @@ class MetricValidator {
     private void requireNonNullTagSets() {
         Objects.requireNonNull(intrinsicTags);
         Objects.requireNonNull(metaTags);
+        Objects.requireNonNull(externalTags);
     }
 
     private void requireAtLeastOneIntrinsicTagToBePresent() {
