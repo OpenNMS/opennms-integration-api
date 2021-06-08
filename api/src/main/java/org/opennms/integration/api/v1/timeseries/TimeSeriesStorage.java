@@ -42,7 +42,10 @@ public interface TimeSeriesStorage {
     /** Stores a list of Samples in the timeseries database. */
     void store(List<Sample> samples) throws StorageException;
 
-    /** Returns all metrics which are stored in the time series database which pass all TagMatcher. */
+    /**
+     * Returns all metrics which are stored in the time series database which pass all TagMatcher.
+     * In order to "pass" a Metric must have at least one matching searchable tag for each TagMatcher.
+     */
     List<Metric> findMetrics(Collection<TagMatcher> tagMatchers) throws StorageException;
 
     /** Returns the data for the given metrics for the given time period. */
