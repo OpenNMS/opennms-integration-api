@@ -42,8 +42,8 @@ public interface TimeSeriesStorage {
     /** Stores a list of Samples in the timeseries database. */
     void store(List<Sample> samples) throws StorageException;
 
-    /** Returns all metrics which are stored in the time series database which contain all given tags (as intrinsic tags or meta tags). */
-    List<Metric> getMetrics(Collection<Tag> tags) throws StorageException;
+    /** Returns all metrics which are stored in the time series database which pass all TagMatcher. */
+    List<Metric> findMetrics(Collection<TagMatcher> tagMatchers) throws StorageException;
 
     /** Returns the data for the given metrics for the given time period. */
     List<Sample> getTimeseries(TimeSeriesFetchRequest request) throws StorageException;
