@@ -44,10 +44,10 @@ package org.opennms.integration.api.v1.timeseries;
  */
 public interface TagMatcher {
     enum Type {
-        equals,
-        notEquals,
-        equalsRegex,
-        notEqualsRegex
+        EQUALS,
+        NOT_EQUALS,
+        EQUALS_REGEX,
+        NOT_EQUALS_REGEX
     }
 
     Type getType();

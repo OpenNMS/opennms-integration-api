@@ -60,8 +60,11 @@ public class InMemoryStorage implements TimeSeriesStorage {
     }
 
     @Override
-    public List<Metric> findMetrics(Collection<TagMatcher> tagMatchers) throws StorageException {
+    public List<Metric> findMetrics(Collection<TagMatcher> tagMatchers) {
         Objects.requireNonNull(tagMatchers);
+        if(tagMatchers.isEmpty()) {
+            throw new IllegalArgumentException("We expect at least one TagMatcher but none was given.");
+        }
         return data.keySet()
                 .stream()
                 .filter(metric -> this.matches(tagMatchers, metric))
@@ -88,13 +91,13 @@ public class InMemoryStorage implements TimeSeriesStorage {
         }
 
         // Tags have always a non null value so we don't have to null check for them.
-        if(TagMatcher.Type.equals == matcher.getType()) {
+        if(TagMatcher.Type.EQUALS == matcher.getType()) {
             return tag.getValue().equals(matcher.getValue());
-        } else if (TagMatcher.Type.notEquals == matcher.getType()) {
+        } else if (TagMatcher.Type.NOT_EQUALS == matcher.getType()) {
             return !tag.getValue().equals(matcher.getValue());
-        } else if (TagMatcher.Type.equalsRegex == matcher.getType()) {
+        } else if (TagMatcher.Type.EQUALS_REGEX == matcher.getType()) {
             return tag.getValue().matches(matcher.getValue());
-        } else if (TagMatcher.Type.notEqualsRegex == matcher.getType()) {
+        } else if (TagMatcher.Type.NOT_EQUALS_REGEX == matcher.getType()) {
             return !tag.getValue().matches(matcher.getValue());
         } else {
             throw new IllegalArgumentException("Implement me for " + matcher.getType());
