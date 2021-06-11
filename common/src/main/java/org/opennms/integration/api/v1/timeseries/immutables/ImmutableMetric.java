@@ -180,16 +180,16 @@ public class ImmutableMetric implements Metric {
         }
 
         public MetricBuilder externalTags(Collection<Tag> tags) {
-            this.metaTags.addAll(tags);
+            this.externalTags.addAll(tags);
             return this;
         }
 
         public MetricBuilder externalTag(String key, String value) {
-            return this.metaTag(new ImmutableTag(key, value));
+            return this.externalTag(new ImmutableTag(key, value));
         }
 
         public MetricBuilder externalTag(String value) {
-            return this.metaTag(new ImmutableTag(value));
+            return this.externalTag(new ImmutableTag(value));
         }
 
         public ImmutableMetric build() {
