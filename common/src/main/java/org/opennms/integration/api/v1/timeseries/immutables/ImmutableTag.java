@@ -43,7 +43,7 @@ public class ImmutableTag implements Tag {
 
     public ImmutableTag(String key, String value) {
         this.key = key;
-        this.value = Objects.requireNonNull(value);
+        this.value = Objects.requireNonNull(value, key); // we use the key as NullpointerException message since it's cheap.
     }
 
     public ImmutableTag(String value) {
