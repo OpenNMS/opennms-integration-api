@@ -194,7 +194,7 @@ public abstract class AbstractStorageIntegrationTest {
                 .build();
     }
 
-    private static List<Metric> createMetrics() {
+    protected static List<Metric> createMetrics() {
         final String uuid = UUID.randomUUID().toString().replaceAll("-", "");
         List<Metric> metrics = new ArrayList<>();
         for(int i=1; i<5; i++) {
@@ -203,7 +203,7 @@ public abstract class AbstractStorageIntegrationTest {
         return metrics;
     }
 
-    private static Metric createMetric(final String uuid, final int nodeId) {
+    protected static Metric createMetric(final String uuid, final int nodeId) {
         String mtype = (nodeId % 2 == 0) ? Metric.Mtype.gauge.name() : Metric.Mtype.counter.name();
         return ImmutableMetric.builder()
                 .intrinsicTag("name", "n" + uuid) // make sure the name starts with a letter and not a number
