@@ -31,9 +31,11 @@ package org.opennms.integration.api.v1.timeseries;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 /**
@@ -58,18 +60,48 @@ public class InMemoryStorage implements TimeSeriesStorage {
     }
 
     @Override
-    public List<Metric> getMetrics(final Collection<Tag> tags) {
-        Objects.requireNonNull(tags);
-        return data.keySet().stream().filter(metric -> containsAll(metric, tags)).collect(Collectors.toList());
+    public List<Metric> findMetrics(Collection<TagMatcher> tagMatchers) {
+        Objects.requireNonNull(tagMatchers);
+        if(tagMatchers.isEmpty()) {
+            throw new IllegalArgumentException("We expect at least one TagMatcher but none was given.");
+        }
+        return data.keySet()
+                .stream()
+                .filter(metric -> this.matches(tagMatchers, metric))
+                .collect(Collectors.toList());
     }
 
-    private boolean containsAll(final Metric metric, final Collection<Tag> tags) {
-        for(Tag tag: tags) {
-            if(!metric.getIntrinsicTags().contains(tag) && !metric.getMetaTags().contains(tag)){
-                return false;
+    /** Each matcher must be matched by at least one tag. */
+    private boolean matches(final Collection<TagMatcher> matchers, final Metric metric) {
+        final Set<Tag> searchableTags = new HashSet<>(metric.getIntrinsicTags());
+        searchableTags.addAll(metric.getMetaTags());
+
+        for(TagMatcher matcher : matchers) {
+            if(searchableTags.stream().noneMatch(t -> this.matches(matcher, t))) {
+                return false; // this TagMatcher didn't find any matching tag => this Metric is not part of search result;
             }
         }
-        return true;
+        return true; // all matched
+    }
+
+    private boolean matches(final TagMatcher matcher, final Tag tag) {
+
+        if(!matcher.getKey().equals(tag.getKey())) {
+            return false; // not even the key matches => we are done.
+        }
+
+        // Tags have always a non null value so we don't have to null check for them.
+        if(TagMatcher.Type.EQUALS == matcher.getType()) {
+            return tag.getValue().equals(matcher.getValue());
+        } else if (TagMatcher.Type.NOT_EQUALS == matcher.getType()) {
+            return !tag.getValue().equals(matcher.getValue());
+        } else if (TagMatcher.Type.EQUALS_REGEX == matcher.getType()) {
+            return tag.getValue().matches(matcher.getValue());
+        } else if (TagMatcher.Type.NOT_EQUALS_REGEX == matcher.getType()) {
+            return !tag.getValue().matches(matcher.getValue());
+        } else {
+            throw new IllegalArgumentException("Implement me for " + matcher.getType());
+        }
     }
 
     @Override
