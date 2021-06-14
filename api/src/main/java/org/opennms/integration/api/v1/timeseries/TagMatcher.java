@@ -30,17 +30,20 @@ package org.opennms.integration.api.v1.timeseries;
 
 /**
  * A TagMatcher is used to search for Metrics.
+ *
  * A TagMatcher works in the following way:
- * The key defines to which Tags it can be applied. All Tags that have the same key as the TagMatcher are evaluated.
- * The value of a Tag is evaluated against the value of a TagMatcher.
- * The comparison is defined by the Type.
+ *   The key defines to which Tags it can be applied. All Tags that have the same key as the TagMatcher are evaluated.
+ *   The value of a Tag is evaluated against the value of a TagMatcher.
+ *   The comparison is defined by the Type.
+ *
+ * Regular expression must use the RE2 syntax: https://github.com/google/re2/wiki/Syntax
  *
  * Examples:
- * Tag(myKey, myValue) applied to TagMatcher(equals,    myOtherKey, myValue) is no match
- * Tag(myKey, myValue) applied to TagMatcher(notEquals, myOtherKey, myValue) is no match
- * Tag(myKey, myValue) applied to TagMatcher(equals,    myKey, myValue)      is a match
- * Tag(myKey, myValue) applied to TagMatcher(equals,    myKey, myOtherValue) is no match
- * Tag(myKey, myValue) applied to TagMatcher(notEquals, myKey, myOtherValue) is a match
+ *   Tag(myKey, myValue) applied to TagMatcher(EQUALS,    myOtherKey, myValue) is no match
+ *   Tag(myKey, myValue) applied to TagMatcher(NOT_EQUALS, myOtherKey, myValue) is no match
+ *   Tag(myKey, myValue) applied to TagMatcher(EQUALS,    myKey, myValue)      is a match
+ *   Tag(myKey, myValue) applied to TagMatcher(EQUALS,    myKey, myOtherValue) is no match
+ *   Tag(myKey, myValue) applied to TagMatcher(NOT_EQUALS, myKey, myOtherValue) is a match
  */
 public interface TagMatcher {
     enum Type {

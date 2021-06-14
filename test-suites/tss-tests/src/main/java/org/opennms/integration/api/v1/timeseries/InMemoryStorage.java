@@ -38,6 +38,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
+
+import com.google.re2j.Pattern;
+
 /**
  * Simulates a TimeSeriesStorage in memory (HashMap). The implementation is super simple and not very efficient.
  * For testing and evaluating purposes only, not for production.
@@ -96,9 +99,9 @@ public class InMemoryStorage implements TimeSeriesStorage {
         } else if (TagMatcher.Type.NOT_EQUALS == matcher.getType()) {
             return !tag.getValue().equals(matcher.getValue());
         } else if (TagMatcher.Type.EQUALS_REGEX == matcher.getType()) {
-            return tag.getValue().matches(matcher.getValue());
+            return Pattern.matches(matcher.getValue(), tag.getValue());
         } else if (TagMatcher.Type.NOT_EQUALS_REGEX == matcher.getType()) {
-            return !tag.getValue().matches(matcher.getValue());
+            return !Pattern.matches(matcher.getValue(), tag.getValue());
         } else {
             throw new IllegalArgumentException("Implement me for " + matcher.getType());
         }
