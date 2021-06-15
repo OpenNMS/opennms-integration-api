@@ -31,6 +31,7 @@ package org.opennms.integration.api.v1.timeseries;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import java.time.Duration;
@@ -38,6 +39,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
@@ -47,7 +49,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.opennms.integration.api.v1.timeseries.immutables.ImmutableMetric;
 import org.opennms.integration.api.v1.timeseries.immutables.ImmutableSample;
-import org.opennms.integration.api.v1.timeseries.immutables.ImmutableTag;
+import org.opennms.integration.api.v1.timeseries.immutables.ImmutableTagMatcher;
 import org.opennms.integration.api.v1.timeseries.immutables.ImmutableTimeSeriesFetchRequest;
 
 /**
@@ -91,19 +93,28 @@ public abstract class AbstractStorageIntegrationTest {
 
     @Test
     public void shouldLoadMultipleMetricsWithSameTag() throws Exception {
-        List<Metric> metricsRetrieved = storage.getMetrics(asList(
-                metrics.get(0).getFirstTagByKey("name"),
-                new ImmutableTag("_idx1", "(snmp:1,4)")));
+        List<Metric> metricsRetrieved = storage.findMetrics(singletonList(
+                new ImmutableTagMatcher(TagMatcher.Type.EQUALS, IntrinsicTagNames.name, metrics.get(0).getFirstTagByKey("name").getValue())));
         assertEquals(metrics.size(), metricsRetrieved.size());
         assertEquals(new HashSet<>(metrics), new HashSet<>(metricsRetrieved));
     }
 
     @Test
-    public void shouldLoadOneMetricsWithUniqueTag() throws Exception {
+    public void shouldFindOneMetricWithUniqueTag() throws Exception {
         Metric metric = metrics.get(0);
-        List<Metric> metricsRetrieved = storage.getMetrics(asList(
-                metric.getFirstTagByKey("name"),
-                metric.getFirstTagByKey("resourceId")));
+        TagMatcher nameMatcher = ImmutableTagMatcher.builder()
+                .type(TagMatcher.Type.EQUALS)
+                .key(IntrinsicTagNames.name)
+                .value(metric.getFirstTagByKey(IntrinsicTagNames.name).getValue())
+                .build();
+        TagMatcher resourceIdMatcher = ImmutableTagMatcher.builder()
+                .type(TagMatcher.Type.EQUALS)
+                .key(IntrinsicTagNames.resourceId)
+                .value(metric.getFirstTagByKey(IntrinsicTagNames.resourceId).getValue())
+                .build();
+        List<Metric> metricsRetrieved = storage.findMetrics(asList(
+                nameMatcher,
+                resourceIdMatcher));
         assertEquals(1, metricsRetrieved.size());
 
         Metric metricFromDb = metricsRetrieved.get(0);
@@ -114,12 +125,63 @@ public abstract class AbstractStorageIntegrationTest {
     }
 
     @Test
-    public void shouldLoadMetricsByWildcardTag() throws Exception {
-        List<Metric> metricsRetrieved = storage.getMetrics(asList(
-                metrics.get(0).getFirstTagByKey("name"),
-                new ImmutableTag("_idx2w", "(snmp:1,*)")));
-        assertEquals(metrics.size(), metricsRetrieved.size());
-        assertEquals(new HashSet<>(metrics), new HashSet<>(metricsRetrieved));
+    public void shouldFindOneMetricWithRegexMatching() throws Exception {
+        Metric metric = metrics.get(0);
+        String regex = metric.getFirstTagByKey(IntrinsicTagNames.name).getValue().substring(0, 5) + ".*";
+        TagMatcher nameMatcher = ImmutableTagMatcher.builder()
+                .type(TagMatcher.Type.EQUALS_REGEX)
+                .key(IntrinsicTagNames.name)
+                .value(regex)
+                .build();
+        regex = metric.getFirstTagByKey(IntrinsicTagNames.resourceId).getValue().substring(0, 10) + ".*";
+        TagMatcher resourceIdMatcher = ImmutableTagMatcher.builder()
+                .type(TagMatcher.Type.EQUALS_REGEX)
+                .key(IntrinsicTagNames.resourceId)
+                .value(regex)
+                .build();
+        List<Metric> metricsRetrieved = storage.findMetrics(asList(
+                nameMatcher,
+                resourceIdMatcher));
+        assertEquals(1, metricsRetrieved.size());
+
+        Metric metricFromDb = metricsRetrieved.get(0);
+        assertEquals(metric, metricFromDb);
+
+        // metrics are unique by its intrinsic tags => we still need to check if all meta tags were received as well
+        assertEquals(metric.getMetaTags(), metricFromDb.getMetaTags());
+    }
+
+    @Test
+    public void shouldFindWithNotEquals() throws Exception {
+        Metric metric = metrics.get(0);
+        TagMatcher resourceIdMatcher = ImmutableTagMatcher.builder()
+                .type(TagMatcher.Type.NOT_EQUALS)
+                .key(IntrinsicTagNames.resourceId)
+                .value(metric.getFirstTagByKey(IntrinsicTagNames.resourceId).getValue())
+                .build();
+        List<Metric> metricsRetrieved = storage.findMetrics(singletonList(
+                resourceIdMatcher));
+        assertEquals(metrics.size()-1, metricsRetrieved.size()); // we expect to find all metrics except the first one
+    }
+
+    @Test
+    public void shouldFindOneMetricWithRegexNotMatching() throws Exception {
+        Metric metric = metrics.get(0);
+        String regex = metric.getFirstTagByKey(IntrinsicTagNames.resourceId).getValue().substring(0, 10) + ".*";
+        TagMatcher resourceIdMatcher = ImmutableTagMatcher.builder()
+                .type(TagMatcher.Type.NOT_EQUALS_REGEX)
+                .key(IntrinsicTagNames.resourceId)
+                .value(regex)
+                .build();
+        List<Metric> metricsRetrieved = storage.findMetrics(singletonList(
+                resourceIdMatcher));
+        assertEquals(metrics.size()-1, metricsRetrieved.size()); // we expect to find all metrics except the first one
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenFindCalledWithoutTagMatcher() throws Exception {
+        assertThrows(NullPointerException.class, () -> storage.findMetrics(null));
+        assertThrows(IllegalArgumentException.class, () -> storage.findMetrics(new HashSet<>()));
     }
 
     @Test
@@ -143,9 +205,10 @@ public abstract class AbstractStorageIntegrationTest {
     @Test
     public void shouldDeleteMetrics() throws Exception {
         Metric lastMetric = metrics.get(metrics.size()-1);
+        List<Tag> listOfCommonTags = singletonList(this.metrics.get(0).getFirstTagByKey("name"));
 
         // make sure we have the metrics and the samples in the db:
-        List<Metric> metricsRetrieved = storage.getMetrics(singletonList(this.metrics.get(0).getFirstTagByKey("name")));
+        List<Metric> metricsRetrieved = findMetricsByTags(listOfCommonTags);
         assertEquals(new HashSet<>(metrics), new HashSet<>(metricsRetrieved));
         List<Sample> samples = loadSamplesForMetric(lastMetric);
         assertEquals(samplesOfFirstMetric.size(), samples.size());
@@ -154,16 +217,21 @@ public abstract class AbstractStorageIntegrationTest {
         storage.delete(lastMetric);
 
         // check again, first metric should be gone
-        metricsRetrieved = storage.getMetrics(lastMetric.getIntrinsicTags());
+        metricsRetrieved = findMetricsByTags(lastMetric.getIntrinsicTags());
         assertTrue(metricsRetrieved.isEmpty());
         samples = loadSamplesForMetric(lastMetric);
         assertEquals(0, samples.size());
 
         // check the rest of metrics, they should still be there
-        metricsRetrieved = storage.getMetrics(singletonList(this.metrics.get(0).getFirstTagByKey("name")));
+        metricsRetrieved = findMetricsByTags(listOfCommonTags);
         assertEquals(new HashSet<>(metrics.subList(0, metrics.size()-1)), new HashSet<>(metricsRetrieved));
         samples = loadSamplesForMetric(metrics.get(0));
         assertEquals(samplesOfFirstMetric, samples);
+    }
+
+    private List<Metric> findMetricsByTags(final Collection<Tag> tags) throws StorageException {
+        List<TagMatcher> matchers = tags.stream().map(t -> ImmutableTagMatcher.TagMatcherBuilder.of(t).build()).collect(Collectors.toList());
+        return storage.findMetrics(matchers);
     }
 
     protected List<Sample> loadSamplesForMetric(final Metric metric) throws Exception {
@@ -194,7 +262,7 @@ public abstract class AbstractStorageIntegrationTest {
                 .build();
     }
 
-    private static List<Metric> createMetrics() {
+    protected static List<Metric> createMetrics() {
         final String uuid = UUID.randomUUID().toString().replaceAll("-", "");
         List<Metric> metrics = new ArrayList<>();
         for(int i=1; i<5; i++) {
@@ -203,17 +271,12 @@ public abstract class AbstractStorageIntegrationTest {
         return metrics;
     }
 
-    private static Metric createMetric(final String uuid, final int nodeId) {
+    protected static Metric createMetric(final String uuid, final int nodeId) {
         String mtype = (nodeId % 2 == 0) ? Metric.Mtype.gauge.name() : Metric.Mtype.counter.name();
         return ImmutableMetric.builder()
                 .intrinsicTag("name", "n" + uuid) // make sure the name starts with a letter and not a number
                 .intrinsicTag("resourceId", String.format("snmp:%s:opennms-jvm:org_opennms_newts_name_ring_buffer_max_size_unit=unknown", nodeId))
                 .metaTag("mtype", mtype)
-                .metaTag("_idx0", "(snmp,4)")
-                .metaTag("_idx1", "(snmp:1,4)")
-                .metaTag("_idx2w", "(snmp:1,*)")
-                .metaTag("_idx2", "(snmp:1:opennms-jvm,4)")
-                .metaTag("_idx3", "(snmp:1:opennms-jvm:OpenNMS_Name_Notifd,4)")
                 .metaTag("host", "myHost" + nodeId)
                 .build();
     }

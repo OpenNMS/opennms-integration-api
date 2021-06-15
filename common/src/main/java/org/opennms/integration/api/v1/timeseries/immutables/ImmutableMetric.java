@@ -28,6 +28,7 @@
 
 package org.opennms.integration.api.v1.timeseries.immutables;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -48,15 +49,17 @@ public class ImmutableMetric implements Metric {
     private final String key;
     private final Set<Tag> intrinsicTags;
     private final Set<Tag> metaTags;
+    private final Set<Tag> externalTags;
 
     public ImmutableMetric(final Set<Tag> intrinsicTags) {
-        this(intrinsicTags, new HashSet<>());
+        this(intrinsicTags, new HashSet<>(), new HashSet<>());
     }
 
-    public ImmutableMetric(final Set<Tag> intrinsicTags, final Set<Tag> metaTags) {
-        new MetricValidator(intrinsicTags, metaTags).validate();
+    public ImmutableMetric(final Set<Tag> intrinsicTags, final Set<Tag> metaTags, final Set<Tag> externalTags) {
+        new MetricValidator(intrinsicTags, metaTags, externalTags).validate();
         this.intrinsicTags = ImmutableCollections.newSetOfImmutableType(intrinsicTags);
         this.metaTags = ImmutableCollections.newSetOfImmutableType(metaTags);
+        this.externalTags = ImmutableCollections.newSetOfImmutableType(externalTags);
 
         // create the key out of all tags => they form the composite key
         StringBuilder b = new StringBuilder();
@@ -67,14 +70,14 @@ public class ImmutableMetric implements Metric {
 
     @Override
     public Set<Tag> getTagsByKey(final String key) {
-        return Stream.concat(intrinsicTags.stream(), metaTags.stream())
+        return Stream.concat(Stream.concat(intrinsicTags.stream(), metaTags.stream()), externalTags.stream())
                 .filter(t -> Objects.equals(t.getKey(), key))
                 .collect(Collectors.toSet());
     }
 
     @Override
     public Tag getFirstTagByKey(final String key) {
-        List<Tag> tags = Stream.concat(intrinsicTags.stream(), metaTags.stream())
+        List<Tag> tags = Stream.concat(Stream.concat(intrinsicTags.stream(), metaTags.stream()), externalTags.stream())
                 .filter(t -> Objects.equals(t.getKey(), key))
                 .collect(Collectors.toList());
         return (tags.size() > 0) ? tags.get(0) : null;
@@ -93,6 +96,11 @@ public class ImmutableMetric implements Metric {
 
     @Override
     public Set<Tag> getMetaTags() {
+        return metaTags;
+    }
+
+    @Override
+    public Set<Tag> getExternalTags() {
         return metaTags;
     }
 
@@ -117,6 +125,7 @@ public class ImmutableMetric implements Metric {
                 .add("key='" + key + "'")
                 .add("tags=" + intrinsicTags)
                 .add("metaTags=" + metaTags)
+                .add("externalTags=" + externalTags)
                 .toString();
     }
 
@@ -127,9 +136,15 @@ public class ImmutableMetric implements Metric {
     public final static class MetricBuilder {
         private final Set<Tag> intrinsicTags = new HashSet<>();
         private final Set<Tag> metaTags = new HashSet<>();
+        private final Set<Tag> externalTags = new HashSet<>();
 
         public MetricBuilder intrinsicTag(Tag tag) {
             this.intrinsicTags.add(tag);
+            return this;
+        }
+
+        public MetricBuilder intrinsicTags(Collection<Tag> tags) {
+            this.intrinsicTags.addAll(tags);
             return this;
         }
 
@@ -146,6 +161,11 @@ public class ImmutableMetric implements Metric {
             return this;
         }
 
+        public MetricBuilder metaTags(Collection<Tag> tags) {
+            this.metaTags.addAll(tags);
+            return this;
+        }
+
         public MetricBuilder metaTag(String key, String value) {
             return this.metaTag(new ImmutableTag(key, value));
         }
@@ -154,8 +174,26 @@ public class ImmutableMetric implements Metric {
             return this.metaTag(new ImmutableTag(value));
         }
 
+        public MetricBuilder externalTag(Tag tag) {
+            this.metaTags.add(tag);
+            return this;
+        }
+
+        public MetricBuilder externalTags(Collection<Tag> tags) {
+            this.externalTags.addAll(tags);
+            return this;
+        }
+
+        public MetricBuilder externalTag(String key, String value) {
+            return this.externalTag(new ImmutableTag(key, value));
+        }
+
+        public MetricBuilder externalTag(String value) {
+            return this.externalTag(new ImmutableTag(value));
+        }
+
         public ImmutableMetric build() {
-            return new ImmutableMetric(this.intrinsicTags, this.metaTags);
+            return new ImmutableMetric(this.intrinsicTags, this.metaTags, this.externalTags);
         }
     }
 
