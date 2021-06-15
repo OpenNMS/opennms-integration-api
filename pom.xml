@@ -50,6 +50,7 @@
         <guava.version>26.0-jre</guava.version>
         <karaf.version>4.1.5</karaf.version>
         <log4j.version>2.13.3</log4j.version>
+        <re2j.version>1.6</re2j.version>
         <slf4j-api.version>1.7.25</slf4j-api.version>
     </properties>
 
@@ -64,6 +65,11 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.re2j</groupId>
+                <artifactId>re2j</artifactId>
+                <version>${re2j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.opennms.integration.api</groupId>
