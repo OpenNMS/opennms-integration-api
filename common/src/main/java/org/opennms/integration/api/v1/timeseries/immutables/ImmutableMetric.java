@@ -101,7 +101,7 @@ public class ImmutableMetric implements Metric {
 
     @Override
     public Set<Tag> getExternalTags() {
-        return metaTags;
+        return this.externalTags;
     }
 
     // the metric (timeseries) identity is directly tied to the metric key (if any) and tags values (but not their order).
@@ -175,7 +175,7 @@ public class ImmutableMetric implements Metric {
         }
 
         public MetricBuilder externalTag(Tag tag) {
-            this.metaTags.add(tag);
+            this.externalTags.add(tag);
             return this;
         }
 
