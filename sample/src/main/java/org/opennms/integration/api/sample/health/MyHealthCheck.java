@@ -28,15 +28,21 @@
 
 package org.opennms.integration.api.sample.health;
 
+import java.util.Hashtable;
+
 /**
  * This is used to aggregate the results of several health checks together in order
  * to make the result easier to validate from an integration test perspective.
  */
 public class MyHealthCheck extends ChainedHealthCheck {
-    private static final String DESCR = "OIA :: Sample Project :: Health Check";
+    private static Hashtable<String, String> hashtable = new Hashtable<String, String>() {{
+        put("description", "OIA :: Sample Project :: Health Check");
+        put("name", "oia-sampleproject-healthcheck");
+        put("local", "false");
+    }};
 
     public MyHealthCheck(AlarmLifecyleHealthCheck alHc, ServiceExtensionHealthCheck seHc,
                          RequisitionHealthCheck reHc, UserDefinedLinkHealthCheck udlHc) {
-        super(DESCR, alHc, seHc, reHc, udlHc);
+        super(hashtable, alHc, seHc, reHc, udlHc);
     }
 }

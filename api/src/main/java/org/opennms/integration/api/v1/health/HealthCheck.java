@@ -28,6 +28,8 @@
 
 package org.opennms.integration.api.v1.health;
 
+import java.util.Hashtable;
+
 import org.opennms.integration.api.v1.annotations.Exposable;
 
 /**
@@ -46,6 +48,26 @@ public interface HealthCheck {
      * @return The string, describing the check.
      */
     String getDescription();
+
+    /**
+     * A dictionary of tags for the {@link HealthCheck}.
+     * This is used to fetch a value.
+     *
+     * @return The string, the value for the specified key.
+     */
+    String getTag(String key);
+
+    /**
+     * A dictionary of tags for the {@link HealthCheck}.
+     * This is used to set a value.
+     */
+    void setTag(String key, String value);
+
+    /**
+     * A dictionary of tags for the {@link HealthCheck}.
+     * This is used to clone and set the entire dictionary.
+     */
+    void setTags(Hashtable<String, String> hashtable);
 
     /**
      * Implements the check itself, e.g. Connecting to a HTTP Endpoint.
