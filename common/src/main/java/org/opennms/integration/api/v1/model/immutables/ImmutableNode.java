@@ -29,7 +29,6 @@
 package org.opennms.integration.api.v1.model.immutables;
 
 import java.net.InetAddress;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -56,6 +55,7 @@ public final class ImmutableNode implements Node {
     private final List<IpInterface> ipInterfaces;
     private final List<SnmpInterface> snmpInterfaces;
     private final List<MetaData> metaData;
+    private final List<String> categories;
 
     private ImmutableNode(Builder builder) {
         id = builder.id;
@@ -70,6 +70,7 @@ public final class ImmutableNode implements Node {
                 .newList(builder.snmpInterfaces);
         metaData = ImmutableCollections.with(ImmutableMetaData::immutableCopy)
                 .newList(builder.metaData);
+        categories = ImmutableCollections.newListOfImmutableType(builder.categories);
     }
 
     public static Builder newBuilder() {
@@ -97,6 +98,7 @@ public final class ImmutableNode implements Node {
         private List<IpInterface> ipInterfaces;
         private List<SnmpInterface> snmpInterfaces;
         private List<MetaData> metaData;
+        private List<String> categories;
 
         private Builder() {
         }
@@ -111,6 +113,7 @@ public final class ImmutableNode implements Node {
             ipInterfaces = MutableCollections.copyListFromNullable(node.getIpInterfaces(), LinkedList::new);
             snmpInterfaces = MutableCollections.copyListFromNullable(node.getSnmpInterfaces(), LinkedList::new);
             metaData = MutableCollections.copyListFromNullable(node.getMetaData(), LinkedList::new);
+            categories = MutableCollections.copyListFromNullable(node.getCategories(), LinkedList::new);
         }
 
         public Builder setId(int id) {
@@ -182,6 +185,19 @@ public final class ImmutableNode implements Node {
             return this;
         }
 
+        public Builder setCategories(List<String> categories) {
+            this.categories = categories;
+            return this;
+        }
+
+        public Builder addCategory(String category) {
+            if (categories == null) {
+                categories = new LinkedList<>();
+            }
+            categories.add(category);
+            return this;
+        }
+
         public ImmutableNode build() {
             Objects.requireNonNull(id);
             return new ImmutableNode(this);
@@ -241,6 +257,11 @@ public final class ImmutableNode implements Node {
     }
 
     @Override
+    public List<String> getCategories() {
+        return categories;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -253,13 +274,14 @@ public final class ImmutableNode implements Node {
                 Objects.equals(assetRecord, that.assetRecord) &&
                 Objects.equals(ipInterfaces, that.ipInterfaces) &&
                 Objects.equals(snmpInterfaces, that.snmpInterfaces) &&
-                Objects.equals(metaData, that.metaData);
+                Objects.equals(metaData, that.metaData) &&
+                Objects.equals(categories, that.categories);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id, foreignSource, foreignId, label, location, assetRecord, ipInterfaces, snmpInterfaces,
-                metaData);
+                metaData, categories);
     }
 
     @Override
@@ -274,6 +296,7 @@ public final class ImmutableNode implements Node {
                 ", ipInterfaces=" + ipInterfaces +
                 ", snmpInterfaces=" + snmpInterfaces +
                 ", metaData=" + metaData +
+                ", categories=" + categories +
                 '}';
     }
 }

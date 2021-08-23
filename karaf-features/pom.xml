@@ -2,7 +2,7 @@
     <parent>
         <groupId>org.opennms.integration.api</groupId>
         <artifactId>api-project</artifactId>
-        <version>0.4.2-SNAPSHOT</version>
+        <version>0.6.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>karaf-features</artifactId>
@@ -67,7 +67,7 @@
                             <goal>verify</goal>
                         </goals>
                         <configuration>
-                            <javase>1.8</javase>
+                            <javase>11</javase>
                             <descriptors>
                                 <descriptor>mvn:org.apache.karaf.features/framework/${karaf.version}/xml/features</descriptor>
                                 <descriptor>mvn:org.apache.karaf.features/standard/${karaf.version}/xml/features</descriptor>
@@ -100,11 +100,6 @@
             <groupId>org.opennms.integration.api.sample</groupId>
             <artifactId>sample-project</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.xml.bind</groupId>
-            <artifactId>jakarta.xml.bind-api</artifactId>
-            <version>${jakarta.version}</version>
         </dependency>
 
         <!-- Framework distribution -->

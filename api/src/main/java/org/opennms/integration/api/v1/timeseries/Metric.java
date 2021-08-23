@@ -51,9 +51,25 @@ public interface Metric {
     /** Returns the first tag with the given key. Intrinsic tags are searched first. */
     Tag getFirstTagByKey(String key);
 
+    /**
+     * All intrinsic tags form the composite key of the metric.
+     * Change a value and you get a different metric.
+     */
     Set<Tag> getIntrinsicTags();
 
+    /**
+     * Additional meta data.
+     * Not part of the identity (key).
+     * Meta tags can be used for searches.
+     */
     Set<Tag> getMetaTags();
+
+    /**
+     * Additional meta data.
+     * Not part of the identity (key).
+     * Not searchable.
+     */
+    Set<Tag> getExternalTags();
 
     /** Returns all deterministically concatenated intrinsic tags. */
     String getKey();
@@ -68,11 +84,27 @@ public interface Metric {
         timestamp //  	value represents a unix timestamp. so basically a gauge or counter but we know we can also render the “age” at each point.}
     }
 
-    /** See: https://github.com/metrics20/spec/blob/master/spec.md#glossary */
+    /** See: https://github.com/metrics20/spec/blob/master/spec.md#glossary. */
     enum TagType {
-        /** All intrinsic tags form the composite key of the metric. Change a value and you get a different metric. */
+
+        /**
+         * All intrinsic tags form the composite key of the metric.
+         * Change a value and you get a different metric.
+         */
         intrinsic,
-        /** Additional meta data. Not part of the identity (key). Change a value and you get a different metric. */
-        meta
+
+        /**
+         * Additional meta data.
+         * Not part of the identity (key).
+         * Meta tags can be used for searches.
+         */
+
+        meta,
+        /**
+         * Additional meta data.
+         * Not part of the identity (key).
+         * Not searchable.
+         */
+        external
     }
 }

@@ -75,4 +75,6 @@ public interface Alarm {
 
     DatabaseEvent getLastEvent();
 
+    boolean isAcknowledged();
+
 }
