@@ -3,7 +3,7 @@
     <groupId>org.opennms.integration.api</groupId>
     <artifactId>api-project</artifactId>
     <packaging>pom</packaging>
-    <version>0.6.1-SNAPSHOT</version>
+    <version>0.7.0-SNAPSHOT</version>
     <name>OpenNMS Integration API :: Parent</name>
     <url>https://github.com/OpenNMS/opennms-integration-api</url>
     <description>Integration and extension API for OpenNMS</description>
@@ -44,11 +44,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-
         <hamcrest.version>1.3</hamcrest.version>
+        <jakarta.version>2.3.3</jakarta.version>
         <junit.version>4.13.1</junit.version>
         <guava.version>30.1.1-jre</guava.version>
-        <karaf.version>4.1.5</karaf.version>
+        <karaf.version>4.2.11</karaf.version>
         <log4j.version>2.13.3</log4j.version>
         <re2j.version>1.6</re2j.version>
         <slf4j-api.version>1.7.25</slf4j-api.version>
@@ -191,7 +191,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.1</version>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -199,9 +199,10 @@
                             <goal>jar</goal>
                         </goals>
                         <configuration>
-                            <additionalparam>${javadoc.opts}</additionalparam>
+   <!--                         <additionalparam>${javadoc.opts}</additionalparam>-->
                             <!-- Some of the JAX-B objects have javadoc that can't be parsed so we exclude them here -->
                             <excludePackageNames>org.opennms.integration.api.xml.schema.*</excludePackageNames>
+                            <source>8</source>
                         </configuration>
                     </execution>
                 </executions>
