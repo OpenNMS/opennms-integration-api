@@ -10,6 +10,39 @@
     <name>OpenNMS Integration API :: Sample</name>
     <packaging>bundle</packaging>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <id>attach-artifacts</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attach-artifact</goal>
+                        </goals>
+                        <configuration>
+                            <artifacts>
+                                <artifact>
+                                    <file>src/main/resources/blueprint-core.xml</file>
+                                    <type>xml</type>
+                                    <classifier>blueprint-core</classifier>
+                                </artifact>
+                                <artifact>
+                                    <file>src/main/resources/blueprint-minion.xml</file>
+                                    <type>xml</type>
+                                    <classifier>blueprint-minion</classifier>
+                                </artifact>
+                            </artifacts>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
         <dependency>
             <groupId>org.opennms.integration.api</groupId>

@@ -111,7 +111,7 @@ public class ServiceExtensionHealthCheck implements HealthCheck {
         try {
             CompletableFuture<CollectionSet> collectionSetFuture = collectorClient.collect()
                     .withCollectorClassName(SampleCollector.class.getCanonicalName())
-                    .withRequest(new SampleCollector.CollectionRequestImpl(node.get().getId()))
+                    .withRequest(new SampleCollector.CollectionRequestImpl(node.get().getId(), node.get().getIpInterfaces().get(0).getIpAddress()))
                     .execute();
             CollectionSet collectionResult = collectionSetFuture.get();
             if(collectionResult.getStatus().equals(CollectionSet.Status.SUCCEEDED)) {

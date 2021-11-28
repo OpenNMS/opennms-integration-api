@@ -64,41 +64,29 @@ public class SampleCollector implements ServiceCollector {
 
     @Override
     public CompletableFuture<CollectionSet> collect(CollectionRequest agent, Map<String, Object> parameters) {
-        CompletableFuture<CollectionSet> future = new CompletableFuture<>();
-        try {
-            if (agent.getAddress().equals(InetAddress.getLocalHost())) {
-                if (parameters.get(NODE_CRITERIA) instanceof String) {
-                    String nodeCriteria = (String) parameters.get(NODE_CRITERIA);
-                    //Assume nodeCriteria here is always nodeId
-                    nodeId = getNumeric(nodeCriteria);
-                }
-                CollectionSet collectionSet = buildCollectionSet();
-                future.complete(collectionSet);
-                LOG.info("Sample Collector collection Succeeded");
-            } else {
-                future.completeExceptionally(new IllegalArgumentException());
-            }
-        } catch (UnknownHostException e) {
-            future.completeExceptionally(e);
+        final CompletableFuture<CollectionSet> future = new CompletableFuture<>();
+        if (parameters.get(NODE_CRITERIA) instanceof String) {
+            String nodeCriteria = (String) parameters.get(NODE_CRITERIA);
+            //Assume nodeCriteria here is always nodeId
+            nodeId = getNumeric(nodeCriteria);
         }
+        future.complete(buildCollectionSet());
+        LOG.info("Sample Collector collection Succeeded");
         return future;
     }
 
     public static class CollectionRequestImpl implements CollectionRequest {
-
         private final int nodeId;
+        private final InetAddress address;
 
-        public CollectionRequestImpl(int nodeId) {
+        public CollectionRequestImpl(int nodeId, InetAddress address) {
             this.nodeId = nodeId;
+            this.address = address;
         }
 
         @Override
         public InetAddress getAddress() {
-            try {
-                return InetAddress.getLocalHost();
-            } catch (UnknownHostException e) {
-                return null;
-            }
+            return address;
         }
 
         @Override

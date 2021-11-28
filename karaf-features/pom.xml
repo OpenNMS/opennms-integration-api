@@ -79,6 +79,7 @@
                             </framework>
                             <features>
                                 <feature>opennms-integration-api</feature>
+                                <feature>sample-plugin-common</feature>
                             </features>
                         </configuration>
                     </execution>
