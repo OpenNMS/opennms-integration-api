@@ -30,6 +30,7 @@ package org.opennms.integration.api.sample;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import org.opennms.integration.api.v1.pollers.PollerRequest;
@@ -37,12 +38,19 @@ import org.opennms.integration.api.v1.pollers.PollerResult;
 import org.opennms.integration.api.v1.pollers.ServicePoller;
 import org.opennms.integration.api.v1.pollers.Status;
 import org.opennms.integration.api.v1.pollers.immutables.ImmutablePollerResult;
+import org.opennms.integration.api.v1.runtime.RuntimeInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SamplePoller implements ServicePoller {
 
     private static final Logger LOG = LoggerFactory.getLogger(SamplePoller.class);
+
+    private final RuntimeInfo runtimeInfo;
+
+    public SamplePoller(RuntimeInfo runtimeInfo) {
+        this.runtimeInfo = Objects.requireNonNull(runtimeInfo);
+    }
 
     @Override
     public CompletableFuture<PollerResult> poll(PollerRequest pollerRequest) {
@@ -52,6 +60,7 @@ public class SamplePoller implements ServicePoller {
                 LOG.info("{} service is Up", pollerRequest.getServiceName());
                 future.complete(ImmutablePollerResult.newBuilder()
                         .setStatus(Status.Up)
+                        .addProperty("location", Objects.hash(runtimeInfo.getSystemLocation()))
                         .build());
                 return future;
             }

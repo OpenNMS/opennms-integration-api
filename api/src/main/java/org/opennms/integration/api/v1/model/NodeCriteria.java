@@ -42,4 +42,13 @@ public interface NodeCriteria {
     String getForeignSource();
 
     String getForeignId();
+
+    /**
+     * Converts to the conventional representation that is used to refer to a node:
+     *     MINION:0ddba11
+     *     4
+     *     selfmonitor:nix
+     */
+    String toRef();
+
 }

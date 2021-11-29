@@ -49,5 +49,7 @@ public interface PollerRequestBuilder {
 
     PollerRequestBuilder withTimeToLive(Long ttlInMs);
 
+    PollerRequestBuilder withLocation(String location);
+
     CompletableFuture<PollerResult> execute();
 }

@@ -37,6 +37,14 @@
     </bean>
     <service interface="org.opennms.integration.api.v1.health.HealthCheck" ref="serviceExtensionHealthCheck"/>
 
+    <bean id="serviceExtensionOnMinionHealthCheck" class="org.opennms.integration.api.sample.health.ServiceExtensionOnMinionHealthCheck">
+        <argument ref="detectorClient"/>
+        <argument ref="pollerClient"/>
+        <argument ref="collectorClient"/>
+        <argument ref="nodeDao"/>
+    </bean>
+    <service interface="org.opennms.integration.api.v1.health.HealthCheck" ref="serviceExtensionOnMinionHealthCheck"/>
+
     <bean id="requisitionHealthCheck" class="org.opennms.integration.api.sample.health.RequisitionHealthCheck">
         <argument ref="nodeDao"/>
         <argument ref="eventForwarder"/>
@@ -105,11 +113,15 @@
     </service>
 
     <service interface="org.opennms.integration.api.v1.pollers.ServicePollerFactory">
-        <bean class="org.opennms.integration.api.sample.SamplePollerFactory"/>
+        <bean class="org.opennms.integration.api.sample.SamplePollerFactory">
+            <argument ref="runtimeInfo"/>
+        </bean>
     </service>
 
     <service interface="org.opennms.integration.api.v1.collectors.ServiceCollectorFactory">
-        <bean class="org.opennms.integration.api.sample.SampleCollectorFactory"/>
+        <bean class="org.opennms.integration.api.sample.SampleCollectorFactory">
+            <argument ref="runtimeInfo"/>
+        </bean>
     </service>
     
     <service interface="org.opennms.integration.api.v1.ticketing.TicketingPlugin">

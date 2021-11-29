@@ -29,6 +29,7 @@
 package org.opennms.integration.api.v1.model;
 
 import java.net.InetAddress;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 

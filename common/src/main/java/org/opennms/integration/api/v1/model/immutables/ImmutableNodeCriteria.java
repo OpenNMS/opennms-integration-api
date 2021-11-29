@@ -120,6 +120,15 @@ public final class ImmutableNodeCriteria implements NodeCriteria {
     }
 
     @Override
+    public String toRef() {
+        if (foreignSource != null) {
+            return foreignSource + ":" + foreignId;
+        } else {
+            return Integer.toString(id);
+        }
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

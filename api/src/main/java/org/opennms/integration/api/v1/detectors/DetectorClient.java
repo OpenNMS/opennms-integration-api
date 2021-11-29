@@ -41,4 +41,7 @@ import org.opennms.integration.api.v1.annotations.Consumable;
 public interface DetectorClient {
 
     CompletableFuture<Boolean> detect(String serviceName, String hostName, Map<String, String> detectorAttributes);
+
+    CompletableFuture<Boolean> detect(String serviceName, String hostName, String location, Map<String, String> detectorAttributes);
+
 }

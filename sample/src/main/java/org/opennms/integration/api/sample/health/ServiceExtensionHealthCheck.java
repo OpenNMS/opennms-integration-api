@@ -29,11 +29,16 @@
 package org.opennms.integration.api.sample.health;
 
 import java.net.InetAddress;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Random;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.opennms.integration.api.sample.SampleCollector;
 import org.opennms.integration.api.sample.SampleDetector;
@@ -75,11 +80,15 @@ public class ServiceExtensionHealthCheck implements HealthCheck {
 
     @Override
     public Response perform(Context context) {
-        // Sample Detector Health Check
+        return verifyExtensionsAtLocation(nodeDao.getDefaultLocationName());
+    }
+
+    protected Response verifyExtensionsAtLocation(String location) {
+        // Detection
         Map<String, String> attributes = new HashMap<>();
         attributes.put(SampleDetector.DEFAULT_USERNAME_PROPERTY, SampleDetector.DEFAULT_USERNAME_VALUE);
         attributes.put(SampleDetector.DEFAULT_PASSWORD_PROPERTY, SampleDetector.DEFAULT_PASSWORD_VALUE);
-        CompletableFuture<Boolean> future = detectorClient.detect(SampleDetector.SERVICE_NAME, SampleDetector.DEFAULT_HOST_NAME, attributes);
+        CompletableFuture<Boolean> future = detectorClient.detect(SampleDetector.SERVICE_NAME, SampleDetector.DEFAULT_HOST_NAME, location, attributes);
         try {
             if (!future.get()) {
                 return ImmutableResponse.newInstance(Status.Failure, "Sample Detector detection failed");
@@ -87,9 +96,11 @@ public class ServiceExtensionHealthCheck implements HealthCheck {
         } catch (Exception e) {
             return ImmutableResponse.newInstance(e);
         }
-        // Sample Poller Health Check
+
+        // Polling
         try {
             CompletableFuture<PollerResult> pollerStatus = pollerClient.poll()
+                    .withLocation(location)
                     .withAddress(InetAddress.getLocalHost())
                     .withPollerClassName(SamplePoller.class.getCanonicalName())
                     .withServiceName("Sample")
@@ -97,27 +108,33 @@ public class ServiceExtensionHealthCheck implements HealthCheck {
             if (!pollerStatus.get().getStatus().equals(org.opennms.integration.api.v1.pollers.Status.Up)) {
                 return ImmutableResponse.newInstance(Status.Failure, pollerStatus.get().getReason());
             }
+            // Verify that it ran in the expected location, our poller hashes the name of the location
+            int hashOfLocationName = pollerStatus.get().getProperties().get("location").intValue();
+            if (Objects.hash(location) != hashOfLocationName) {
+                return ImmutableResponse.newInstance(Status.Failure,
+                        String.format("Expected location hash %d, but got %d instead.", Objects.hash(location), hashOfLocationName));
+            }
         } catch (Exception e) {
             return ImmutableResponse.newInstance(e);
         }
 
-        // Sample Collector Health Check
-        final Optional<Node> node = getFirstNodeWithInterfaceAtDefaultLocation();
+        // Collection
+        final Optional<Node> node = getFirstNodeWithInterfaceAtLocation(location);
         // If there is node, can't verify collector as node resources are dependent on node being present.
         // return success as all previous checks succeeded.
         if(!node.isPresent()) {
             return ImmutableResponse.newInstance(Status.Success);
         }
         try {
+            double magicNumber = new Random().nextDouble();
             CompletableFuture<CollectionSet> collectionSetFuture = collectorClient.collect()
                     .withCollectorClassName(SampleCollector.class.getCanonicalName())
                     .withRequest(new SampleCollector.CollectionRequestImpl(node.get().getId(), node.get().getIpInterfaces().get(0).getIpAddress()))
+                    .withAttribute(SampleCollector.MAGIC_NUMBER_PARM, magicNumber)
                     .execute();
             CollectionSet collectionResult = collectionSetFuture.get();
             if(collectionResult.getStatus().equals(CollectionSet.Status.SUCCEEDED)) {
-                if(SampleCollector.validateCollectionSet(collectionResult)) {
-                    return ImmutableResponse.newInstance(Status.Success);
-                } else {
+                if(!SampleCollector.validateCollectionSet(collectionResult, node.get().getId(), magicNumber, location)) {
                     return ImmutableResponse.newInstance(Status.Failure, "Collection set didn't match");
                 }
             } else {
@@ -126,11 +143,17 @@ public class ServiceExtensionHealthCheck implements HealthCheck {
         } catch (Exception e) {
             return ImmutableResponse.newInstance(e);
         }
+
+        return ImmutableResponse.newInstance(Status.Success, "Extensions verified at location " + location);
     }
 
-    private Optional<Node> getFirstNodeWithInterfaceAtDefaultLocation() {
-        return nodeDao.getNodesInLocation(nodeDao.getDefaultLocationName()).stream()
+    private Optional<Node> getFirstNodeWithInterfaceAtLocation(String location) {
+        return nodeDao.getNodesInLocation(location).stream()
                 .filter(n -> !n.getIpInterfaces().isEmpty())
                 .findFirst();
+    }
+
+    protected NodeDao getNodeDao() {
+        return nodeDao;
     }
 }

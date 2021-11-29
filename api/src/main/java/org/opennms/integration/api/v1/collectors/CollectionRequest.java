@@ -37,5 +37,6 @@ public interface CollectionRequest {
 
     InetAddress getAddress();
 
-    String getNodeCriteria();
+    int getNodeId();
+
 }

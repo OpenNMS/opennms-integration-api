@@ -29,16 +29,28 @@
 package org.opennms.integration.api.sample;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.opennms.integration.api.v1.collectors.CollectionRequest;
 import org.opennms.integration.api.v1.collectors.ServiceCollectorFactory;
+import org.opennms.integration.api.v1.runtime.RuntimeInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SampleCollectorFactory implements ServiceCollectorFactory<SampleCollector> {
+    private static final Logger LOG = LoggerFactory.getLogger(SampleCollectorFactory.class);
+
+    private final RuntimeInfo runtimeInfo;
+
+    public SampleCollectorFactory(RuntimeInfo runtimeInfo) {
+        this.runtimeInfo = Objects.requireNonNull(runtimeInfo);
+    }
 
     @Override
     public SampleCollector createCollector() {
-        return new SampleCollector();
+        return new SampleCollector(runtimeInfo);
     }
 
     @Override
@@ -47,21 +59,32 @@ public class SampleCollectorFactory implements ServiceCollectorFactory<SampleCol
     }
 
     @Override
-    public Map<String, Object> getRuntimeAttributes(CollectionRequest collectionRequest) {
-        Map<String, Object> attributes = new HashMap<>();
-        attributes.put("nodeCriteria", collectionRequest.getNodeCriteria());
-        return attributes;
-    }
-
-    @Override
-    public Map<String, String> marshalParameters(Map<String, Object> parameters) {
+    public Map<String, Object> getRuntimeAttributes(CollectionRequest collectionRequest, Map<String, Object> parameters) {
         return new HashMap<>();
     }
 
     @Override
-    public Map<String, Object> unmarshalParameters(Map<String, String> parameters) {
-        return new HashMap<>();
+    public Map<String, String> marshalParameters(Map<String, Object> map) {
+        final Map<String,String> marshaledMap = new LinkedHashMap<>();
+        map.forEach((key, value) -> marshaledMap.put(key, value.toString()));
+        return marshaledMap;
     }
 
+    @Override
+    public Map<String, Object> unmarshalParameters(Map<String, String> map) {
+        final Map<String,Object> unmarshaledMap = new LinkedHashMap<>();
+        map.forEach((key, value) -> {
+            if (SampleCollector.MAGIC_NUMBER_PARM.equals(key)) {
+                try {
+                    unmarshaledMap.put(key, Double.parseDouble(value));
+                } catch (NumberFormatException ex) {
+                    LOG.error("Failed to unmarshal templates from JSON.", ex);
+                }
+            } else {
+                unmarshaledMap.put(key, value);
+            }
+        });
+        return unmarshaledMap;
+    }
 
 }

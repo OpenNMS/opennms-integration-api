@@ -45,4 +45,8 @@ public interface RuntimeInfo {
 
     Container getContainer();
 
+    String getSystemId();
+
+    String getSystemLocation();
+
 }

@@ -30,15 +30,23 @@ package org.opennms.integration.api.sample;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.opennms.integration.api.v1.pollers.PollerRequest;
 import org.opennms.integration.api.v1.pollers.ServicePollerFactory;
+import org.opennms.integration.api.v1.runtime.RuntimeInfo;
 
 public class SamplePollerFactory implements ServicePollerFactory<SamplePoller> {
 
+    private final RuntimeInfo runtimeInfo;
+
+    public SamplePollerFactory(RuntimeInfo runtimeInfo) {
+        this.runtimeInfo = Objects.requireNonNull(runtimeInfo);
+    }
+
     @Override
     public SamplePoller createPoller() {
-        return new SamplePoller();
+        return new SamplePoller(runtimeInfo);
     }
 
     @Override

@@ -55,10 +55,12 @@ public interface ServiceCollectorFactory<T extends ServiceCollector> {
     String getCollectorClassName();
 
     /**
-     * @param collectionRequest consists of service details required for the collector
-     * @return              runtime attributes that can be set at runtime by poller
+     * Retrieve additional attributes which should be added to the parameter map.
+     *
+     * This call is performed on the core, and gives the collector the opportunity to gather
+     * additional settings or facts needed to execute the collection.
      */
-    Map<String, Object> getRuntimeAttributes(CollectionRequest collectionRequest);
+    Map<String, Object> getRuntimeAttributes(CollectionRequest collectionRequest, Map<String, Object> parameters);
 
     /**
      * Marshal the parameter values to strings, which is necessary for

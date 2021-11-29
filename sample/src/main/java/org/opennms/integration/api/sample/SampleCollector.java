@@ -29,33 +29,41 @@
 package org.opennms.integration.api.sample;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import org.opennms.integration.api.v1.collectors.CollectionRequest;
 import org.opennms.integration.api.v1.collectors.CollectionSet;
 import org.opennms.integration.api.v1.collectors.ServiceCollector;
 import org.opennms.integration.api.v1.collectors.immutables.ImmutableNumericAttribute;
+import org.opennms.integration.api.v1.collectors.immutables.ImmutableStringAttribute;
 import org.opennms.integration.api.v1.collectors.resource.CollectionSetResource;
 import org.opennms.integration.api.v1.collectors.resource.IpInterfaceResource;
 import org.opennms.integration.api.v1.collectors.resource.NodeResource;
 import org.opennms.integration.api.v1.collectors.resource.NumericAttribute;
 import org.opennms.integration.api.v1.collectors.resource.Resource;
+import org.opennms.integration.api.v1.collectors.resource.StringAttribute;
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableCollectionSet;
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableCollectionSetResource;
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableIpInterfaceResource;
 import org.opennms.integration.api.v1.collectors.resource.immutables.ImmutableNodeResource;
+import org.opennms.integration.api.v1.runtime.RuntimeInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SampleCollector implements ServiceCollector {
 
-
     private static final Logger LOG = LoggerFactory.getLogger(SamplePoller.class);
     private static final String INSTANCE_NAME = "opennms";
-    private static final String NODE_CRITERIA = "nodeCriteria";
-    private static int nodeId = 0;
+    private static final String LOCATION_KEY = "location";
+    public static final String MAGIC_NUMBER_PARM = "magicNumber";
+
+    private final RuntimeInfo runtimeInfo;
+
+    public SampleCollector(RuntimeInfo runtimeInfo) {
+        this.runtimeInfo = Objects.requireNonNull(runtimeInfo);
+    }
 
     @Override
     public void initialize() {
@@ -65,14 +73,64 @@ public class SampleCollector implements ServiceCollector {
     @Override
     public CompletableFuture<CollectionSet> collect(CollectionRequest agent, Map<String, Object> parameters) {
         final CompletableFuture<CollectionSet> future = new CompletableFuture<>();
-        if (parameters.get(NODE_CRITERIA) instanceof String) {
-            String nodeCriteria = (String) parameters.get(NODE_CRITERIA);
-            //Assume nodeCriteria here is always nodeId
-            nodeId = getNumeric(nodeCriteria);
-        }
-        future.complete(buildCollectionSet());
+        double magicNumber = getKeyAsDouble(MAGIC_NUMBER_PARM, parameters, Double.NaN);
+        future.complete(buildCollectionSet(agent.getNodeId(), magicNumber));
         LOG.info("Sample Collector collection Succeeded");
         return future;
+    }
+
+    public static boolean validateCollectionSet(CollectionSet collectionSet, int nodeId, double magicNumber, String location) {
+        // Grab the first resource
+        final CollectionSetResource<IpInterfaceResource> resource = collectionSet.getCollectionSetResources().get(0);
+        if (!Objects.equals(Resource.Type.INTERFACE, resource.getResource().getResourceType())) {
+            return false;
+        }
+        final IpInterfaceResource ipInterfaceResource = resource.getResource();
+        if (!Objects.equals(INSTANCE_NAME, ipInterfaceResource.getInstance())) {
+            return false;
+        }
+        final NodeResource nodeResource = ipInterfaceResource.getNodeResource();
+        if (nodeId != nodeResource.getNodeId()) {
+            return false;
+        }
+        if (Math.abs(magicNumber - resource.getNumericAttributes().get(0).getValue()) > 0.00001d) {
+            return false;
+        }
+        // Verify that the string attribute is present and matches the expected location
+        // this tells us the collector was actually invoked on a Minion
+        return resource.getStringAttributes().stream()
+                .anyMatch(s -> LOCATION_KEY.equals(s.getName()) && location.equals(s.getValue()));
+    }
+
+    private CollectionSet buildCollectionSet(int nodeId, double magicNumber) {
+        // Build collection set with a IpInterface resource.
+        NodeResource nodeResource = ImmutableNodeResource.newBuilder()
+                .setNodeId(nodeId)
+                .build();
+        IpInterfaceResource ipInterfaceResource = ImmutableIpInterfaceResource.newInstance(nodeResource, INSTANCE_NAME);
+        // Add attribute
+        NumericAttribute numeric = ImmutableNumericAttribute.newBuilder()
+                .setGroup("group")
+                .setName("snmp")
+                .setValue(magicNumber)
+                .setType(NumericAttribute.Type.GAUGE)
+                .build();
+        StringAttribute string = ImmutableStringAttribute.newBuilder()
+                .setName(LOCATION_KEY)
+                .setGroup("group")
+                .setValue(runtimeInfo.getSystemLocation())
+                .build();
+        // Build collection set
+        CollectionSetResource<IpInterfaceResource> collectionSetResource =
+                ImmutableCollectionSetResource.newBuilder(IpInterfaceResource.class)
+                    .setResource(ipInterfaceResource)
+                    .addNumericAttribute(numeric)
+                    .addStringAttribute(string)
+                    .build();
+        return ImmutableCollectionSet.newBuilder()
+                .addCollectionSetResource(collectionSetResource)
+                .setTimestamp(System.currentTimeMillis())
+                .build();
     }
 
     public static class CollectionRequestImpl implements CollectionRequest {
@@ -90,56 +148,23 @@ public class SampleCollector implements ServiceCollector {
         }
 
         @Override
-        public String getNodeCriteria() {
-            return String.valueOf(nodeId);
+        public int getNodeId() {
+            return nodeId;
         }
     }
 
-    public static boolean validateCollectionSet(CollectionSet collectionSet) {
-        boolean valid = false;
-        CollectionSetResource resource = collectionSet.getCollectionSetResources().get(0);
-        if (resource.getResource().getResourceType().equals(Resource.Type.INTERFACE)) {
-            IpInterfaceResource ipInterfaceResource = (IpInterfaceResource) resource.getResource();
-            valid = ipInterfaceResource.getInstance().equals(INSTANCE_NAME);
-            NodeResource nodeResource = ipInterfaceResource.getNodeResource();
-            int result = nodeResource.getNodeId();
-            valid = valid && (result == nodeId);
+    private static double getKeyAsDouble(String key, Map<String, Object> map, double defaultValue) {
+        Object val = map.get(key);
+        if (val == null) {
+            return defaultValue;
         }
-        return valid;
-    }
-
-    public static CollectionSet buildCollectionSet() {
-        // Build collection set with a IpInterface resource.
-        NodeResource nodeResource = ImmutableNodeResource.newBuilder()
-                .setNodeId(nodeId)
-                .build();
-        IpInterfaceResource ipInterfaceResource = ImmutableIpInterfaceResource.newInstance(nodeResource, INSTANCE_NAME);
-        // Add attribute.
-        NumericAttribute attribute = ImmutableNumericAttribute.newBuilder()
-                .setGroup("group")
-                .setName("snmp")
-                .setValue(3.54)
-                .setType(NumericAttribute.Type.GAUGE)
-                .build();
-        //build collection set.
-        CollectionSetResource<IpInterfaceResource> collectionSetResource =
-                ImmutableCollectionSetResource.newBuilder(IpInterfaceResource.class)
-                .setResource(ipInterfaceResource)
-                .addNumericAttribute(attribute)
-                .build();
-        CollectionSet collectionSet = ImmutableCollectionSet.newBuilder()
-                .addCollectionSetResource(collectionSetResource)
-                .setTimestamp(System.currentTimeMillis())
-                .build();
-        return collectionSet;
-    }
-
-    private int getNumeric(String nodeCriteria) {
+        if (val instanceof Number) {
+            return ((Number)val).doubleValue();
+        }
         try {
-            return Integer.parseInt(nodeCriteria);
+            return Double.parseDouble(val.toString());
         } catch (NumberFormatException e) {
-            // invalid
-            return 0;
+            return defaultValue;
         }
     }
 }

@@ -11,11 +11,15 @@
     </service>
 
     <service interface="org.opennms.integration.api.v1.pollers.ServicePollerFactory">
-        <bean class="org.opennms.integration.api.sample.SamplePollerFactory"/>
+        <bean class="org.opennms.integration.api.sample.SamplePollerFactory">
+            <argument ref="runtimeInfo"/>
+        </bean>
     </service>
 
     <service interface="org.opennms.integration.api.v1.collectors.ServiceCollectorFactory">
-        <bean class="org.opennms.integration.api.sample.SampleCollectorFactory"/>
+        <bean class="org.opennms.integration.api.sample.SampleCollectorFactory">
+            <argument ref="runtimeInfo"/>
+        </bean>
     </service>
 
     <service interface="org.opennms.integration.api.v1.requisition.RequisitionProvider">
