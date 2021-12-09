@@ -30,7 +30,6 @@ package org.opennms.integration.api.v1.dao;
 
 import java.net.InetAddress;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import org.opennms.integration.api.v1.annotations.Consumable;
 
@@ -41,13 +40,6 @@ import org.opennms.integration.api.v1.annotations.Consumable;
  */
 @Consumable
 public interface InterfaceToNodeCache {
-
-    /**
-     * @param location location or null if Default
-     * @param ipAddr IP address to match
-     * @return node ids, primary interfaces will be first
-     */
-    Stream<Integer> getNodeIds(String location, InetAddress ipAddr);
 
     /**
      * @param location location or null if Default
