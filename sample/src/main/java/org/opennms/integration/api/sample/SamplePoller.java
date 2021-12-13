@@ -55,22 +55,10 @@ public class SamplePoller implements ServicePoller {
     @Override
     public CompletableFuture<PollerResult> poll(PollerRequest pollerRequest) {
         CompletableFuture<PollerResult> future = new CompletableFuture<>();
-        try {
-            if (pollerRequest.getAddress().equals(InetAddress.getLocalHost())) {
-                LOG.info("{} service is Up", pollerRequest.getServiceName());
-                future.complete(ImmutablePollerResult.newBuilder()
-                        .setStatus(Status.Up)
-                        .addProperty("location", Objects.hash(runtimeInfo.getSystemLocation()))
-                        .build());
-                return future;
-            }
-        } catch (UnknownHostException e) {
-            future.completeExceptionally(e);
-            return future;
-        }
+        LOG.info("{} service is Up", pollerRequest.getServiceName());
         future.complete(ImmutablePollerResult.newBuilder()
-                .setStatus(Status.Down)
-                .setReason("unknown address, sample works on localhost")
+                .setStatus(Status.Up)
+                .addProperty("location", Objects.hash(runtimeInfo.getSystemLocation()))
                 .build());
         return future;
     }
