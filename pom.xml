@@ -49,7 +49,7 @@
         <junit.version>4.13.1</junit.version>
         <guava.version>30.1.1-jre</guava.version>
         <karaf.version>4.3.2</karaf.version>
-        <log4j.version>2.13.3</log4j.version>
+        <log4j.version>2.17.0</log4j.version>
         <re2j.version>1.6</re2j.version>
         <slf4j-api.version>1.7.29</slf4j-api.version>
     </properties>
