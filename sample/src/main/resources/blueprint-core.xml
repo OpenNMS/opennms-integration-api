@@ -123,6 +123,10 @@
             <argument ref="runtimeInfo"/>
         </bean>
     </service>
+
+    <service interface="org.opennms.integration.api.v1.extension.OpenNMSExtensionFactory">
+        <bean class="org.opennms.integration.api.sample.SampleExtensionFactory"/>
+    </service>
     
     <service interface="org.opennms.integration.api.v1.ticketing.TicketingPlugin">
         <bean class="org.opennms.integration.api.sample.SampleTicketerPlugin"/>
