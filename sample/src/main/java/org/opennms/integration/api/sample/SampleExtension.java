@@ -28,17 +28,25 @@
 
 package org.opennms.integration.api.sample;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Collections;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.opennms.integration.api.v1.extension.OpenNMSExtension;
 
 public class SampleExtension implements OpenNMSExtension {
     private static final String ID = "sample-extension";
     private static final String MENU = "Sample Extension";
     private static final String ROUTE = "/sample_extension";
+    private static final String BASE_PATH="web";
 
     @Override
     public String getExtensionID() {
@@ -47,31 +55,37 @@ public class SampleExtension implements OpenNMSExtension {
 
     @Override
     public String getMenuEntry() {
-        return null;
+        return MENU;
     }
 
     @Override
     public String getMenuRoute() {
-        return null;
+        return ROUTE;
     }
 
     @Override
     public List<String> getResourceList() {
-        return Collections.EMPTY_LIST; //TODO: list the assets files
+        List<String> assetFiles = new ArrayList<>();
+        URL assetURL = getAssetURL(BASE_PATH);
+        File baseFolder = new File(assetURL.getPath());
+        Collection<File> files = FileUtils.listFiles(baseFolder, null, true);
+        final URI baseURI = baseFolder.toURI();
+        files.stream().forEach(f -> {
+            URI fileURI = f.toURI();
+            assetFiles.add(baseURI.relativize(fileURI).getPath());
+        });
+        return assetFiles;
     }
 
-
     @Override
-    public byte[] getResourceContent(String resourceName) {
-        //TODO: read contents
-        /*switch (resourceName) {
-            case "HTML":
-                return HTML.getBytes(StandardCharsets.UTF_8);
-            case "JS":
-                return JS.getBytes(StandardCharsets.UTF_8);
-            default:
-                return CSS.getBytes(StandardCharsets.UTF_8);
-        }*/
-        return new byte[0];
+    public byte[] getResourceContent(String resourceName) throws IOException, URISyntaxException {
+        String filePath = Paths.get(BASE_PATH, resourceName).toString();
+        URL url = getAssetURL(filePath);
+        return IOUtils.toByteArray(url.toURI());
+    }
+
+    private URL getAssetURL(String path) {
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        return loader.getResource(path);
     }
 }
