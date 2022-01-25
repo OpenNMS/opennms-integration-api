@@ -37,5 +37,5 @@ public interface OpenNMSExtension {
     String getMenuEntry();
     String getMenuRoute();
     List<String> getResourceList();
-    byte[] getResourceContent(String resourceName) throws IOException, URISyntaxException;
+    byte[] getResourceContent(String resourceName) throws IOException;
 }

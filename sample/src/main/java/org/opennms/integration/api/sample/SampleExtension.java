@@ -78,10 +78,10 @@ public class SampleExtension implements OpenNMSExtension {
     }
 
     @Override
-    public byte[] getResourceContent(String resourceName) throws IOException, URISyntaxException {
+    public byte[] getResourceContent(String resourceName) throws IOException {
         String filePath = Paths.get(BASE_PATH, resourceName).toString();
         URL url = getAssetURL(filePath);
-        return IOUtils.toByteArray(url.toURI());
+        return IOUtils.toByteArray(url.openStream());
     }
 
     private URL getAssetURL(String path) {
