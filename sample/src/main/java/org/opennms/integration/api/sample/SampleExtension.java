@@ -35,12 +35,15 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.opennms.integration.api.v1.extension.OpenNMSExtension;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 public class SampleExtension implements OpenNMSExtension {
     private static final String ID = "sample-extension";
@@ -66,7 +69,7 @@ public class SampleExtension implements OpenNMSExtension {
     @Override
     public List<String> getResourceList() {
         List<String> assetFiles = new ArrayList<>();
-        URL assetURL = getAssetURL(BASE_PATH);
+        URL assetURL = getAssetURL("");
         File baseFolder = new File(assetURL.getPath());
         Collection<File> files = FileUtils.listFiles(baseFolder, null, true);
         final URI baseURI = baseFolder.toURI();
@@ -78,14 +81,25 @@ public class SampleExtension implements OpenNMSExtension {
     }
 
     @Override
-    public byte[] getResourceContent(String resourceName) throws IOException {
-        String filePath = Paths.get(BASE_PATH, resourceName).toString();
-        URL url = getAssetURL(filePath);
+    public byte[] getBinaryContent(String resourceName) throws IOException {
+        URL url = getAssetURL(resourceName);
         return IOUtils.toByteArray(url.openStream());
     }
 
+    @Override
+    public String getTextContent(String resourceName) throws IOException {
+        return new String(getBinaryContent(resourceName));
+    }
+
+
     private URL getAssetURL(String path) {
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        return loader.getResource(path);
+        String fullPath = Paths.get(BASE_PATH, path).toString();
+        Bundle bundle = FrameworkUtil.getBundle(SampleExtension.class);
+        if(bundle != null) {
+            return bundle.getResource(fullPath);
+        } else {
+            ClassLoader loader = this.getClass().getClassLoader();
+            return loader.getResource(fullPath);
+        }
     }
 }
