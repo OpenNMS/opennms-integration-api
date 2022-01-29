@@ -38,6 +38,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -51,7 +52,7 @@ import org.osgi.framework.FrameworkUtil;
 
 public class OpenNMSExtensionTest {
     private OpenNMSExtension extension;
-    private final String [] assetsFiles = new String[] {"index.html", "assets/opennms.png", "assets/sample.css", "assets/sample.js"};
+    private final String [] assetsFiles = new String[] {"SampleComponent"};
 
     @Before
     public void setUP() {
@@ -60,15 +61,15 @@ public class OpenNMSExtensionTest {
 
     @Test
     public void testGetResourceList() {
-        List<String> resouceList = extension.getResourceList();
-        assertEquals(assetsFiles.length, resouceList.size());
-        Arrays.stream(assetsFiles).forEach(f-> assertTrue(resouceList.contains(f)));
-        assertNotNull(resouceList);
+        List<String> componentList = extension.listUIComponents();
+        assertEquals(assetsFiles.length, componentList.size());
+        Arrays.stream(assetsFiles).forEach(f-> assertTrue(componentList.contains(f)));
+        assertNotNull(componentList);
     }
 
     @Test
     public void testReadFiles() throws Exception {
-        byte [] htmlData = extension.getBinaryContent("index.html");
+        byte [] htmlData = extension.getBinaryContent("index.vue");
         assertNotNull(htmlData);
         assertTrue(htmlData.length > 0);
         String strData = new String(htmlData);
