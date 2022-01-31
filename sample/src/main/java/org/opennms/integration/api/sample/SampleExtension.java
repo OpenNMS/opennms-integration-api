@@ -28,28 +28,12 @@
 
 package org.opennms.integration.api.sample;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.opennms.integration.api.v1.extension.OpenNMSExtension;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkUtil;
 
 public class SampleExtension implements OpenNMSExtension {
     private static final String ID = "sample-extension";
     private static final String MENU = "Sample Extension";
     private static final String ROUTE = "/sample_extension";
-    private static final String BASE_PATH="web";
-
-    private Bundle bundle = FrameworkUtil.getBundle(SampleExtension.class);
 
     @Override
     public String getExtensionID() {
@@ -64,55 +48,5 @@ public class SampleExtension implements OpenNMSExtension {
     @Override
     public String getMenuRoute() {
         return ROUTE;
-    }
-
-    @Override
-    public List<String> listUIComponents() {
-        if(bundle == null) {
-            return getComponentsFromFile();
-        }
-        return getComponentsFromBundle();
-    }
-
-    @Override
-    public byte[] getBinaryContent(String resourceName) throws IOException {
-        URL url = getAssetURL(resourceName);
-        return IOUtils.toByteArray(url.openStream());
-    }
-
-    @Override
-    public String getTextContent(String resourceName) throws IOException {
-        return new String(getBinaryContent(resourceName));
-    }
-
-    private List<String> getComponentsFromBundle() {
-        List<String> components = new ArrayList<>();
-        List<String> entries = Collections.list(bundle.getEntryPaths(BASE_PATH+"/components"));
-        entries.forEach(etr -> {
-            String name = etr.endsWith("/") ? etr.substring(0, etr.length()-1) : etr;
-            components.add(name.substring("web/components".length() +1 ));
-        });
-        return components;
-    }
-
-    private List<String> getComponentsFromFile() {
-        List<String> components = new ArrayList<>();
-        URL componentsURL = getAssetURL("components");
-        File baseFolder = new File(componentsURL.getPath());
-        File [] componentFiles = baseFolder.listFiles((FileFilter) FileFilterUtils.directoryFileFilter());
-        for (File file : componentFiles) {
-            components.add(file.getName());
-        }
-        return components;
-    }
-
-    private URL getAssetURL(String path) {
-        String fullPath = Paths.get(BASE_PATH, path).toString();
-        if(bundle != null) {
-            return bundle.getResource(fullPath);
-        } else {
-            ClassLoader loader = this.getClass().getClassLoader();
-            return loader.getResource(fullPath);
-        }
     }
 }

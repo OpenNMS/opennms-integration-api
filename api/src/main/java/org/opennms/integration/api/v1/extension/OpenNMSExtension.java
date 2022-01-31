@@ -28,15 +28,8 @@
 
 package org.opennms.integration.api.v1.extension;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.List;
-
 public interface OpenNMSExtension {
     String getExtensionID();
     String getMenuEntry();
     String getMenuRoute();
-    List<String> listUIComponents();
-    byte[] getBinaryContent(String resourceName) throws IOException;
-    String getTextContent(String resourceName) throws IOException;
 }
