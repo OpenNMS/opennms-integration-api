@@ -31,22 +31,44 @@ package org.opennms.integration.api.sample;
 import org.opennms.integration.api.v1.extension.OpenNMSExtension;
 
 public class SampleExtension implements OpenNMSExtension {
-    private static final String ID = "sample-extension";
-    private static final String MENU = "Sample Extension";
-    private static final String ROUTE = "/sample_extension";
+    private String id;
+    private String menuEntry;
+    private String moduleFileName;
+    private String resourceRoot;
 
     @Override
     public String getExtensionID() {
-        return ID;
+        return id;
     }
 
     @Override
     public String getMenuEntry() {
-        return MENU;
+        return menuEntry;
     }
 
     @Override
-    public String getMenuRoute() {
-        return ROUTE;
+    public String getResourceRootPath() {
+        return resourceRoot;
+    }
+
+    @Override
+    public String getModuleFileName() {
+        return moduleFileName;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setMenuEntry(String menuEntry) {
+        this.menuEntry = menuEntry;
+    }
+
+    public void setModuleFileName(String moduleFileName) {
+        this.moduleFileName = moduleFileName;
+    }
+
+    public void setResourceRoot(String resourceRoot) {
+        this.resourceRoot = resourceRoot;
     }
 }

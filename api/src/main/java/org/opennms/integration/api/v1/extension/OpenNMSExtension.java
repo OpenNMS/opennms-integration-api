@@ -31,5 +31,6 @@ package org.opennms.integration.api.v1.extension;
 public interface OpenNMSExtension {
     String getExtensionID();
     String getMenuEntry();
-    String getMenuRoute();
+    String getResourceRootPath();
+    String getModuleFileName();
 }

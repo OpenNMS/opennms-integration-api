@@ -35,7 +35,12 @@ public class SampleExtensionFactory implements OpenNMSExtensionFactory<SampleExt
 
     @Override
     public SampleExtension createExtension() {
-        return new SampleExtension();
+        SampleExtension extension = new SampleExtension();
+        extension.setId("samplePluginOne");
+        extension.setMenuEntry("Plugin One");
+        extension.setResourceRoot("web-ui");
+        extension.setModuleFileName("RedPlugin.es.js");
+        return extension;
     }
 
     @Override
