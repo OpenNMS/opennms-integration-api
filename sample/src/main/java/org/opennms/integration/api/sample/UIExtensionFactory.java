@@ -26,8 +26,18 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.extension;
+package org.opennms.integration.api.sample;
 
-public interface OpenNMSExtensionFactory<T extends OpenNMSExtension> {
-    T createExtension();
+import org.opennms.integration.api.v1.extension.OpenNMSExtensionFactory;
+
+public class UIExtensionFactory implements OpenNMSExtensionFactory<SampleExtension> {
+    @Override
+    public SampleExtension createExtension() {
+        SampleExtension extension = new SampleExtension();
+        extension.setId("uiExtension");
+        extension.setMenuEntry("OpenNMS UI Extension");
+        extension.setResourceRoot("ui-ext");
+        extension.setModuleFileName("uiextension.es.js");
+        return extension;
+    }
 }

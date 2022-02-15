@@ -42,9 +42,4 @@ public class SampleExtensionFactory implements OpenNMSExtensionFactory<SampleExt
         extension.setModuleFileName("RedPlugin.es.js");
         return extension;
     }
-
-    @Override
-    public String getExtensionClassName() {
-        return SampleExtension.class.getCanonicalName();
-    }
 }

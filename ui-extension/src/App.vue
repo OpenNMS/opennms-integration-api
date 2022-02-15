@@ -6,7 +6,7 @@ import HelloWorld from './components/HelloWorld.vue'
 
 <template>
   <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="This is an example UI Extension component plugin can be installed at runtime with Karaf feature" />
+  <HelloWorld msg="This is an example UI Extension component plugin installed at runtime as a Karaf feature" />
 </template>
 
 <style scoped>

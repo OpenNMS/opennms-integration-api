@@ -124,8 +124,12 @@
         </bean>
     </service>
 
-    <service interface="org.opennms.integration.api.v1.extension.OpenNMSExtensionFactory">
+    <service id="sampleExtensionFactory" interface="org.opennms.integration.api.v1.extension.OpenNMSExtensionFactory">
         <bean class="org.opennms.integration.api.sample.SampleExtensionFactory"/>
+    </service>
+
+    <service id="uiExtensionFactory" interface="org.opennms.integration.api.v1.extension.OpenNMSExtensionFactory">
+        <bean class="org.opennms.integration.api.sample.UIExtensionFactory"/>
     </service>
     
     <service interface="org.opennms.integration.api.v1.ticketing.TicketingPlugin">
