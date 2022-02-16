@@ -14,13 +14,7 @@ const count = ref(0)
     <a href="https://github.com/OpenNMS/opennms-integration-api" target="_blank">OpenNMS Integration API</a>
   </p>
 
-  <p>See <code>README.md</code> for more development and testing instruction</p>
-
   <button type="button" @click="count++">count is: {{ count }}</button>
-  <p>
-    Edit
-    <code>components/HelloWorld.vue</code> to test hot module replacement.
-  </p>
 
   <table style="width: 60%">
     <tr>

@@ -11,13 +11,12 @@ const _defineComponent$1 = window["Vue"].defineComponent;
 const _toDisplayString = window["Vue"].toDisplayString;
 const _createElementVNode$1 = window["Vue"].createElementVNode;
 const _createTextVNode = window["Vue"].createTextVNode;
-const _createStaticVNode = window["Vue"].createStaticVNode;
 const _Fragment$1 = window["Vue"].Fragment;
 const _openBlock$1 = window["Vue"].openBlock;
 const _createElementBlock$1 = window["Vue"].createElementBlock;
 const _pushScopeId$1 = window["Vue"].pushScopeId;
 const _popScopeId$1 = window["Vue"].popScopeId;
-const _withScopeId$1 = (n) => (_pushScopeId$1("data-v-769a7fbc"), n = n(), _popScopeId$1(), n);
+const _withScopeId$1 = (n) => (_pushScopeId$1("data-v-00b50fea"), n = n(), _popScopeId$1(), n);
 const _hoisted_1$1 = /* @__PURE__ */ _withScopeId$1(() => /* @__PURE__ */ _createElementVNode$1("p", null, [
   /* @__PURE__ */ _createTextVNode(" For more information: "),
   /* @__PURE__ */ _createElementVNode$1("a", {
@@ -25,12 +24,20 @@ const _hoisted_1$1 = /* @__PURE__ */ _withScopeId$1(() => /* @__PURE__ */ _creat
     target: "_blank"
   }, "OpenNMS Integration API")
 ], -1));
-const _hoisted_2 = /* @__PURE__ */ _withScopeId$1(() => /* @__PURE__ */ _createElementVNode$1("p", null, [
-  /* @__PURE__ */ _createTextVNode("See "),
-  /* @__PURE__ */ _createElementVNode$1("code", null, "README.md"),
-  /* @__PURE__ */ _createTextVNode(" for more development and testing instruction")
+const _hoisted_2 = /* @__PURE__ */ _withScopeId$1(() => /* @__PURE__ */ _createElementVNode$1("table", { style: { "width": "60%" } }, [
+  /* @__PURE__ */ _createElementVNode$1("tr", null, [
+    /* @__PURE__ */ _createElementVNode$1("th", { style: { "width": "20%" } }, "Product"),
+    /* @__PURE__ */ _createElementVNode$1("th", { style: { "width": "40%" } }, "Description")
+  ]),
+  /* @__PURE__ */ _createElementVNode$1("tr", null, [
+    /* @__PURE__ */ _createElementVNode$1("td", null, "Horizon"),
+    /* @__PURE__ */ _createElementVNode$1("td", null, "Our free community-driven project includes the latest technology and features delivered through a rapid release cycle.")
+  ]),
+  /* @__PURE__ */ _createElementVNode$1("tr", null, [
+    /* @__PURE__ */ _createElementVNode$1("td", null, "Meridian"),
+    /* @__PURE__ */ _createElementVNode$1("td", null, "Meridian is a subscription-based, optimized and stable version of the OpenNMS platform.")
+  ])
 ], -1));
-const _hoisted_3 = /* @__PURE__ */ _createStaticVNode('<p data-v-769a7fbc> Edit <code data-v-769a7fbc>components/HelloWorld.vue</code> to test hot module replacement. </p><table style="width:60%;" data-v-769a7fbc><tr data-v-769a7fbc><th style="width:20%;" data-v-769a7fbc>Product</th><th style="width:40%;" data-v-769a7fbc>Description</th></tr><tr data-v-769a7fbc><td data-v-769a7fbc>Horizon</td><td data-v-769a7fbc>Our free community-driven project includes the latest technology and features delivered through a rapid release cycle.</td></tr><tr data-v-769a7fbc><td data-v-769a7fbc>Meridian</td><td data-v-769a7fbc>Meridian is a subscription-based, optimized and stable version of the OpenNMS platform.</td></tr></table>', 2);
 const ref = window["Vue"].ref;
 const _sfc_main$1 = /* @__PURE__ */ _defineComponent$1({
   props: {
@@ -42,17 +49,16 @@ const _sfc_main$1 = /* @__PURE__ */ _defineComponent$1({
       return _openBlock$1(), _createElementBlock$1(_Fragment$1, null, [
         _createElementVNode$1("h1", null, _toDisplayString(__props.msg), 1),
         _hoisted_1$1,
-        _hoisted_2,
         _createElementVNode$1("button", {
           type: "button",
           onClick: _cache[0] || (_cache[0] = ($event) => count.value++)
         }, "count is: " + _toDisplayString(count.value), 1),
-        _hoisted_3
+        _hoisted_2
       ], 64);
     };
   }
 });
-var HelloWorld = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-769a7fbc"]]);
+var HelloWorld = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-00b50fea"]]);
 var App_vue_vue_type_style_index_0_scoped_true_lang = "";
 const _defineComponent = window["Vue"].defineComponent;
 const _createElementVNode = window["Vue"].createElementVNode;
