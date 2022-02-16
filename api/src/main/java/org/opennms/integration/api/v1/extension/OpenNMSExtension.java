@@ -33,4 +33,7 @@ public interface OpenNMSExtension {
     String getMenuEntry();
     String getResourceRootPath();
     String getModuleFileName();
+    boolean isEnabled();
+    void setEnabled(boolean enabled);
+
 }

@@ -35,6 +35,7 @@ public class SampleExtension implements OpenNMSExtension {
     private String menuEntry;
     private String moduleFileName;
     private String resourceRoot;
+    private boolean enabled = true;
 
     @Override
     public String getExtensionID() {
@@ -56,6 +57,16 @@ public class SampleExtension implements OpenNMSExtension {
         return moduleFileName;
     }
 
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -71,4 +82,6 @@ public class SampleExtension implements OpenNMSExtension {
     public void setResourceRoot(String resourceRoot) {
         this.resourceRoot = resourceRoot;
     }
+
+
 }
