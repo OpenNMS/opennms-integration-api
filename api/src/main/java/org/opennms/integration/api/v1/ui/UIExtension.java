@@ -26,14 +26,44 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.v1.extension;
+package org.opennms.integration.api.v1.ui;
 
-public interface OpenNMSExtension {
+/**
+ * The interface to implement UI extension plugin to be installed as OSGI feature in OpenNMS
+ */
+public interface UIExtension {
+    /**
+     * @return the unique UI extension ID
+     */
     String getExtensionID();
+
+    /**
+     * @return the UI extension menu on the web page
+     */
     String getMenuEntry();
+
+    /**
+     * @return the root path of UI extension web assets inside the bundle
+     */
     String getResourceRootPath();
+
+    /**
+     * @return the single Vue3 module js file name
+     */
     String getModuleFileName();
+
+    /**
+     * @return if this extension is enabled or not
+     */
     boolean isEnabled();
+
+    /** Enable or disable the extension
+     * @param enabled
+     */
     void setEnabled(boolean enabled);
 
+    /**
+     * @return return the implementation class used to lookup OSGI bundle
+     */
+    Class<? extends UIExtension> getExtensionClass();
 }

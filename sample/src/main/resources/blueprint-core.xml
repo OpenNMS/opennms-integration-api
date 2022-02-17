@@ -124,12 +124,22 @@
         </bean>
     </service>
 
-    <service id="sampleExtensionFactory" interface="org.opennms.integration.api.v1.extension.OpenNMSExtensionFactory">
-        <bean class="org.opennms.integration.api.sample.SampleExtensionFactory"/>
+    <service id="sampleExtensionFactory" interface="org.opennms.integration.api.v1.ui.UIExtension">
+        <bean class="org.opennms.integration.api.sample.SampleUIExtension">
+            <property name="id" value="samplePluginOne"/>
+            <property name="menuEntry" value="Plugin One"/>
+            <property name="resourceRoot" value="web-ui"/>
+            <property name="moduleFileName" value="RedPlugin.es.js"/>
+        </bean>
     </service>
 
-    <service id="uiExtensionFactory" interface="org.opennms.integration.api.v1.extension.OpenNMSExtensionFactory">
-        <bean class="org.opennms.integration.api.sample.UIExtensionFactory"/>
+    <service id="uiExtensionFactory" interface="org.opennms.integration.api.v1.ui.UIExtension">
+        <bean class="org.opennms.integration.api.sample.SampleUIExtension">
+            <property name="id" value="uiExtension"/>
+            <property name="menuEntry" value="OpenNMS UI Extension"/>
+            <property name="resourceRoot" value="ui-ext"/>
+            <property name="moduleFileName" value="uiextension.es.js"/>
+        </bean>
     </service>
     
     <service interface="org.opennms.integration.api.v1.ticketing.TicketingPlugin">

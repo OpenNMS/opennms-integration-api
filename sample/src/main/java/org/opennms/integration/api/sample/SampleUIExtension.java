@@ -28,16 +28,65 @@
 
 package org.opennms.integration.api.sample;
 
-import org.opennms.integration.api.v1.extension.OpenNMSExtensionFactory;
+import org.opennms.integration.api.v1.ui.UIExtension;
 
-public class UIExtensionFactory implements OpenNMSExtensionFactory<SampleExtension> {
+public class SampleUIExtension implements UIExtension {
+    private String id;
+    private String menuEntry;
+    private String moduleFileName;
+    private String resourceRoot;
+    private boolean enabled = true;
+
     @Override
-    public SampleExtension createExtension() {
-        SampleExtension extension = new SampleExtension();
-        extension.setId("uiExtension");
-        extension.setMenuEntry("OpenNMS UI Extension");
-        extension.setResourceRoot("ui-ext");
-        extension.setModuleFileName("uiextension.es.js");
-        return extension;
+    public String getExtensionID() {
+        return id;
     }
+
+    @Override
+    public String getMenuEntry() {
+        return menuEntry;
+    }
+
+    @Override
+    public String getResourceRootPath() {
+        return resourceRoot;
+    }
+
+    @Override
+    public String getModuleFileName() {
+        return moduleFileName;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    @Override
+    public Class<? extends UIExtension> getExtensionClass() {
+        return this.getClass();
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setMenuEntry(String menuEntry) {
+        this.menuEntry = menuEntry;
+    }
+
+    public void setModuleFileName(String moduleFileName) {
+        this.moduleFileName = moduleFileName;
+    }
+
+    public void setResourceRoot(String resourceRoot) {
+        this.resourceRoot = resourceRoot;
+    }
+
+
 }
