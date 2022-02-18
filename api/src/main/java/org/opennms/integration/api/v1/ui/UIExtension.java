@@ -53,16 +53,6 @@ public interface UIExtension {
     String getModuleFileName();
 
     /**
-     * @return if this extension is enabled or not
-     */
-    boolean isEnabled();
-
-    /**
-     * @param enabled enable or disable the extension
-     */
-    void setEnabled(boolean enabled);
-
-    /**
      * @return return the implementation class used to lookup OSGI bundle
      */
     Class<? extends UIExtension> getExtensionClass();

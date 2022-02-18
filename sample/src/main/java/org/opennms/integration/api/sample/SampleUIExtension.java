@@ -35,7 +35,6 @@ public class SampleUIExtension implements UIExtension {
     private String menuEntry;
     private String moduleFileName;
     private String resourceRoot;
-    private boolean enabled = true;
 
     @Override
     public String getExtensionID() {
@@ -55,16 +54,6 @@ public class SampleUIExtension implements UIExtension {
     @Override
     public String getModuleFileName() {
         return moduleFileName;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
     }
 
     @Override
