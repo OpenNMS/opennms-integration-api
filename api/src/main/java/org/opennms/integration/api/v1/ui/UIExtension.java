@@ -57,8 +57,8 @@ public interface UIExtension {
      */
     boolean isEnabled();
 
-    /** Enable or disable the extension
-     * @param enabled
+    /**
+     * @param enabled enable or disable the extension
      */
     void setEnabled(boolean enabled);
 

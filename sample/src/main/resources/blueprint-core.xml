@@ -124,7 +124,7 @@
         </bean>
     </service>
 
-    <service id="sampleExtensionFactory" interface="org.opennms.integration.api.v1.ui.UIExtension">
+    <service id="sampleExtension" interface="org.opennms.integration.api.v1.ui.UIExtension">
         <bean class="org.opennms.integration.api.sample.SampleUIExtension">
             <property name="id" value="samplePluginOne"/>
             <property name="menuEntry" value="Plugin One"/>
@@ -133,7 +133,7 @@
         </bean>
     </service>
 
-    <service id="uiExtensionFactory" interface="org.opennms.integration.api.v1.ui.UIExtension">
+    <service id="uiExtension" interface="org.opennms.integration.api.v1.ui.UIExtension">
         <bean class="org.opennms.integration.api.sample.SampleUIExtension">
             <property name="id" value="uiExtension"/>
             <property name="menuEntry" value="OpenNMS UI Extension"/>
