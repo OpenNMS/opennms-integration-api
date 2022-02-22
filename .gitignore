@@ -27,3 +27,6 @@ bin/
 java/bin/
 *.swp
 *.iml
+.vscode
+node_modules
+*.lock
