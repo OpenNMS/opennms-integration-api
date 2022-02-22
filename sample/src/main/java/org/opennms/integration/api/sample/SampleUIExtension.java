@@ -37,7 +37,7 @@ public class SampleUIExtension implements UIExtension {
     private String resourceRoot;
 
     @Override
-    public String getExtensionID() {
+    public String getExtensionId() {
         return id;
     }
 

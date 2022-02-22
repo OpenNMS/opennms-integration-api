@@ -28,14 +28,17 @@
 
 package org.opennms.integration.api.v1.ui;
 
+import org.opennms.integration.api.v1.annotations.Exposable;
+
 /**
  * The interface to implement UI extension plugin to be installed as OSGI feature in OpenNMS
  */
+@Exposable
 public interface UIExtension {
     /**
      * @return the unique UI extension ID
      */
-    String getExtensionID();
+    String getExtensionId();
 
     /**
      * @return the UI extension menu on the web page
