@@ -40,8 +40,10 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -95,8 +97,7 @@ public abstract class AbstractStorageIntegrationTest {
     public void shouldLoadMultipleMetricsWithSameTag() throws Exception {
         List<Metric> metricsRetrieved = storage.findMetrics(singletonList(
                 new ImmutableTagMatcher(TagMatcher.Type.EQUALS, IntrinsicTagNames.name, metrics.get(0).getFirstTagByKey("name").getValue())));
-        assertEquals(metrics.size(), metricsRetrieved.size());
-        assertEquals(new HashSet<>(metrics), new HashSet<>(metricsRetrieved));
+        assertEqualsCollectionOfMetric(metrics, metricsRetrieved);
     }
 
     @Test
@@ -118,10 +119,7 @@ public abstract class AbstractStorageIntegrationTest {
         assertEquals(1, metricsRetrieved.size());
 
         Metric metricFromDb = metricsRetrieved.get(0);
-        assertEquals(metric, metricFromDb);
-
-        // metrics are unique by its intrinsic tags => we still need to check if all meta tags were received as well
-        assertEquals(metric.getMetaTags(), metricFromDb.getMetaTags());
+        assertEqualsMetric(metric, metricFromDb);
     }
 
     @Test
@@ -145,10 +143,7 @@ public abstract class AbstractStorageIntegrationTest {
         assertEquals(1, metricsRetrieved.size());
 
         Metric metricFromDb = metricsRetrieved.get(0);
-        assertEquals(metric, metricFromDb);
-
-        // metrics are unique by its intrinsic tags => we still need to check if all meta tags were received as well
-        assertEquals(metric.getMetaTags(), metricFromDb.getMetaTags());
+        assertEqualsMetric(metric, metricFromDb);
     }
 
     @Test
@@ -161,7 +156,8 @@ public abstract class AbstractStorageIntegrationTest {
                 .build();
         List<Metric> metricsRetrieved = storage.findMetrics(singletonList(
                 resourceIdMatcher));
-        assertEquals(metrics.size()-1, metricsRetrieved.size()); // we expect to find all metrics except the first one
+        // we expect to find all metrics except the first one:
+        assertEqualsCollectionOfMetric(metrics.subList(1,metrics.size()), metricsRetrieved);
     }
 
     @Test
@@ -175,7 +171,8 @@ public abstract class AbstractStorageIntegrationTest {
                 .build();
         List<Metric> metricsRetrieved = storage.findMetrics(singletonList(
                 resourceIdMatcher));
-        assertEquals(metrics.size()-1, metricsRetrieved.size()); // we expect to find all metrics except the first one
+        // we expect to find all metrics except the first one:
+        assertEqualsCollectionOfMetric(metrics.subList(1,metrics.size()), metricsRetrieved);
     }
 
     @Test
@@ -194,12 +191,7 @@ public abstract class AbstractStorageIntegrationTest {
 
         // query for the samples
         List<Sample> samples = loadSamplesForMetric(metric);
-        assertEquals(samplesOfFirstMetric, samples);
-
-        // check if the retrieved metric has all the meta tags that we stored.
-        for(int i = 0; i < samplesOfFirstMetric.size(); i++) {
-            assertEquals(samplesOfFirstMetric.get(i).getMetric().getMetaTags(), samples.get(i).getMetric().getMetaTags());
-        }
+        assertEqualsCollectionOfSamples(samplesOfFirstMetric, samples);
     }
 
     @Test
@@ -226,7 +218,7 @@ public abstract class AbstractStorageIntegrationTest {
         metricsRetrieved = findMetricsByTags(listOfCommonTags);
         assertEquals(new HashSet<>(metrics.subList(0, metrics.size()-1)), new HashSet<>(metricsRetrieved));
         samples = loadSamplesForMetric(metrics.get(0));
-        assertEquals(samplesOfFirstMetric, samples);
+        assertEqualsCollectionOfSamples(samplesOfFirstMetric, samples);
     }
 
     private List<Metric> findMetricsByTags(final Collection<Tag> tags) throws StorageException {
@@ -278,6 +270,46 @@ public abstract class AbstractStorageIntegrationTest {
                 .intrinsicTag("resourceId", String.format("snmp:%s:opennms-jvm:org_opennms_newts_name_ring_buffer_max_size_unit=unknown", nodeId))
                 .metaTag("mtype", mtype)
                 .metaTag("host", "myHost" + nodeId)
+                .externalTag("myExternalTag", UUID.randomUUID().toString())
                 .build();
+    }
+
+    private void assertEqualsMetric(Metric a, Metric b) {
+        assertEquals(a, b);
+        // metrics are unique by its intrinsic tags => we still need to check if all other tags match as well
+        assertEquals(a.getMetaTags(), b.getMetaTags());
+        assertEquals(a.getExternalTags(), b.getExternalTags());
+    }
+
+    private void assertEqualsCollectionOfMetric(Collection<Metric> a, Collection<Metric> b) {
+        Objects.requireNonNull(a);
+        Objects.requireNonNull(b);
+        assertEquals(a.size(), b.size());
+
+        List<Metric> aSorted = a.stream().sorted(Comparator.comparing(Metric::getKey)).collect(Collectors.toList());
+        List<Metric> bSorted = b.stream().sorted(Comparator.comparing(Metric::getKey)).collect(Collectors.toList());
+
+        for(int i = 0; i< aSorted.size(); i++) {
+            assertEqualsMetric(aSorted.get(i), bSorted.get(i));
+        }
+    }
+
+    private void assertEqualsCollectionOfSamples(Collection<Sample> a, Collection<Sample> b) {
+        Objects.requireNonNull(a);
+        Objects.requireNonNull(b);
+        assertEquals(a.size(), b.size());
+
+        Comparator<Sample> comp = Comparator.<Sample, String>comparing(s -> s.getMetric().getKey())
+                .thenComparing(Sample::getTime)
+                .thenComparing(Sample::getValue);
+
+        List<Sample> aSorted = a.stream().sorted(comp).collect(Collectors.toList());
+        List<Sample> bSorted = b.stream().sorted(comp).collect(Collectors.toList());
+
+        for(int i = 0; i < aSorted.size(); i++) {
+            assertEqualsMetric(aSorted.get(i).getMetric(), bSorted.get(i).getMetric());
+            assertEquals(aSorted.get(i).getTime(), bSorted.get(i).getTime());
+            assertEquals(aSorted.get(i).getValue(), bSorted.get(i).getValue());
+        }
     }
 }
