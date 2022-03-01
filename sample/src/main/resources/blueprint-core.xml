@@ -171,4 +171,7 @@
     </bean>
     <service ref="exampleGraphStatusProvider" interface="org.opennms.integration.api.v1.graph.status.StatusProvider" />
     <service ref="exampleGraphStatusProvider" interface="org.opennms.integration.api.v1.graph.status.LegacyStatusProvider" />
+    <service id="keyValueStore" interface="org.opennms.integration.api.v1.distributed.KeyValueStore">
+        <bean class="org.opennms.integration.api.sample.SampleKeyValueStore"/>
+    </service>
 </blueprint>
