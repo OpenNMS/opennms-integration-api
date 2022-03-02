@@ -161,4 +161,9 @@ public interface KeyValueStore<T> {
      */
     CompletableFuture<Void> truncateContextAsync(String context);
 
+    /**
+     * @return the implementation class
+     */
+    Class getStoreClass();
+
 }
