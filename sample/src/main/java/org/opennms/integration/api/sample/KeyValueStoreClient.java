@@ -28,20 +28,58 @@
 
 package org.opennms.integration.api.sample;
 
-import org.opennms.integration.api.v1.distributed.KeyValueStoreMapper;
+import java.util.concurrent.TimeUnit;
+
+import org.opennms.integration.api.v1.distributed.KeyValueStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class KeyValueStoreClient {
     private static final Logger LOG = LoggerFactory.getLogger(KeyValueStoreClient.class);
-    private final KeyValueStoreMapper storeMapper;
+    private final KeyValueStore<String> store;
+    private String value = "{\"company\": \"OpenNMS\", \"location\": \"Canada\"}";
 
-    public KeyValueStoreClient(KeyValueStoreMapper storeMapper) {
-        this.storeMapper = storeMapper;
-        listAllStores();
+    private String context1 = "OIA-Test-one";
+
+    public KeyValueStoreClient(KeyValueStore store) {
+        this.store = store;
+        LOG.debug("KeyValue store is {}", store.getName());
+        keyValueOperation();
     }
 
-    private void listAllStores() {
-        LOG.info("All available key-value stores {}", storeMapper.getStoreNames());
+    public void keyValueOperation() {
+        testPutWithoutTTL();
+        testPUtWithTTL();
     }
+
+    private void testPutWithoutTTL() {
+        long now = System.currentTimeMillis();
+        long tmp = store.put("k1", value, context1);
+        if(tmp < now) {
+            LOG.warn("Wrong timestamp when put the key value");
+        }
+        String result = store.get("k1", context1).orElse(null);
+        if(!value.equals(result)) {
+            LOG.warn("Wrong value retrieved from key-value store {}, {}", "k1",result);
+        }
+    }
+
+    private void testPUtWithTTL(){
+        store.put("k1", value, context1, 1);
+        String result = store.get("k1", context1).orElse(null);
+        if(!value.equals(result)) {
+            LOG.warn("Wrong value retrieved from key-value store {}, {}", "k1",result);
+        }
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        result = store.get("k1", context1).orElse(null);
+        if(result != null) {
+            LOG.warn("Value should be null {}, {}", "k1",result);
+        }
+    }
+
+
 }
