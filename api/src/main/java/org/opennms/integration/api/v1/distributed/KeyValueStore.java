@@ -33,6 +33,9 @@ import java.util.Optional;
 import java.util.OptionalLong;
 import java.util.concurrent.CompletableFuture;
 
+import org.opennms.integration.api.v1.annotations.Consumable;
+
+@Consumable
 public interface KeyValueStore<T> {
     /**
      * @param context a context used to differentiate between keys with the same name (forms a compound key)
@@ -157,5 +160,10 @@ public interface KeyValueStore<T> {
      * @param context a context used to differentiate between keys with the same name (forms a compound key)
      */
     CompletableFuture<Void> truncateContextAsync(String context);
+
+    /**
+     * @return the implementation class
+     */
+    Class getStoreClass();
 
 }

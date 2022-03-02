@@ -12,6 +12,7 @@
     <reference id="pollerClient" interface="org.opennms.integration.api.v1.pollers.ServicePollerClient" />
     <reference id="collectorClient" interface="org.opennms.integration.api.v1.collectors.ServiceCollectorClient" />
     <reference id="userDefinedLinkDao" interface="org.opennms.integration.api.v1.topology.UserDefinedLinkDao" />
+    <reference id="keyStoreWrapper" interface="org.opennms.integration.api.v1.distributed.KeyValueStoreMapper" />
 
     <bean id="alarmManager" class="org.opennms.integration.api.sample.AlarmTestContextManager"/>
     <bean id="requisitionManager" class="org.opennms.integration.api.sample.RequisitionTestContextManager"/>
@@ -171,7 +172,8 @@
     </bean>
     <service ref="exampleGraphStatusProvider" interface="org.opennms.integration.api.v1.graph.status.StatusProvider" />
     <service ref="exampleGraphStatusProvider" interface="org.opennms.integration.api.v1.graph.status.LegacyStatusProvider" />
-    <service id="keyValueStore" interface="org.opennms.integration.api.v1.distributed.KeyValueStore">
-        <bean class="org.opennms.integration.api.sample.SampleKeyValueStore"/>
-    </service>
+
+    <bean id="keyValueStoreClient" class="org.opennms.integration.api.sample.KeyValueStoreClient">
+        <argument ref="keyStoreWrapper" />
+    </bean>
 </blueprint>
