@@ -24,5 +24,10 @@
         <feature version="${project.version}">sample-plugin-common</feature>
         <bundle>blueprint:mvn:org.opennms.integration.api.sample/sample-project/${project.version}/xml/blueprint-minion</bundle>
     </feature>
+    
+    <feature name="sentinel-plugin-sample" description="Sample Plugin :: Sentinel" version="${project.version}">
+        <feature version="${project.version}">sample-plugin-common</feature>
+        <bundle>blueprint:mvn:org.opennms.integration.api.sample/sample-project/${project.version}/xml/blueprint-sentinel</bundle>
+    </feature>
 
 </features>

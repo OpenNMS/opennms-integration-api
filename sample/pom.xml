@@ -35,6 +35,11 @@
                                     <type>xml</type>
                                     <classifier>blueprint-minion</classifier>
                                 </artifact>
+                                <artifact>
+                                    <file>src/main/resources/blueprint-sentinel.xml</file>
+                                    <type>xml</type>
+                                    <classifier>blueprint-sentinel</classifier>
+                                </artifact>
                             </artifacts>
                         </configuration>
                     </execution>
