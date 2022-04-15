@@ -36,13 +36,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 
 import com.google.re2j.Pattern;
 
 /**
- * Simulates a TimeSeriesStorage in memory (HashMap). The implementation is super simple and not very efficient.
+ * Simulates a TimeSeriesStorage in memory (ConcurrentHashMap). The implementation is super simple and not very efficient.
  * For testing and evaluating purposes only, not for production.
  */
 public class InMemoryStorage implements TimeSeriesStorage {
@@ -50,7 +51,7 @@ public class InMemoryStorage implements TimeSeriesStorage {
     private final Map<Metric, Collection<Sample>> data;
 
     public InMemoryStorage () {
-        data = new HashMap<>();
+        data = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -132,5 +133,10 @@ public class InMemoryStorage implements TimeSeriesStorage {
     @Override
     public String toString() {
         return this.getClass().getName();
+    }
+
+    /** Exposes the internal data, for validation in tests. */
+    public Map<Metric, Collection<Sample>> getData() {
+        return data;
     }
 }
