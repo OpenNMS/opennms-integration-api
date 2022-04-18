@@ -130,17 +130,17 @@ public class ClasspathThresholdingConfigLoader extends ClasspathXmlLoader<Thresh
         }
 
         @Override
-        public Double getValue() {
+        public String getValue() {
             return basethresholddef.getValue();
         }
 
         @Override
-        public Double getRearm() {
+        public String getRearm() {
             return basethresholddef.getRearm();
         }
 
         @Override
-        public Integer getTrigger() {
+        public String getTrigger() {
             return basethresholddef.getTrigger();
         }
 
