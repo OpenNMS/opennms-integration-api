@@ -44,11 +44,11 @@ public interface Basethresholddef {
 
     String getDsType();
 
-    Double getValue();
+    String getValue();
 
-    Double getRearm();
+    String getRearm();
 
-    Integer getTrigger();
+    String getTrigger();
 
     Optional<String> getDsLabel();
 

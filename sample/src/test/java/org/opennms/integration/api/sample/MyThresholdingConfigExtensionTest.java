@@ -56,9 +56,9 @@ public class MyThresholdingConfigExtensionTest {
         assertThat(test1.getDescription().get(), equalTo("Test1"));
         assertThat(test1.getType(), equalTo(ThresholdType.HIGH));
         assertThat(test1.getDsType(), equalTo("if"));
-        assertThat(test1.getValue(), equalTo(100000.0));
-        assertThat(test1.getRearm(), equalTo(75000.0));
-        assertThat(test1.getTrigger(), equalTo(1));
+        assertThat(Double.parseDouble(test1.getValue()), equalTo(100000.0));
+        assertThat(Double.parseDouble(test1.getRearm()), equalTo(75000.0));
+        assertThat(Integer.parseInt(test1.getTrigger()), equalTo(1));
         assertThat(test1.getDsLabel().get(), equalTo("ifName"));
         assertThat(test1.getFilterOperator().getEnumName(), equalTo("or"));
         assertThat(test1.getExpression(), equalTo("ifInOctets + ifOutOctets"));
