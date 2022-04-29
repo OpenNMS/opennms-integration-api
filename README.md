@@ -48,8 +48,10 @@ See the interfaces defined in the `api` module for a complete list.
 We provide a Maven archetype to help bootstrap plugin creation.
 To create a new plugin project use:
 ```
-mvn archetype:generate -B -DarchetypeGroupId=org.opennms.integration.api -DarchetypeArtifactId=example-kar-plugin -DarchetypeVersion=0.5.2-SNAPSHOT -DgroupId=com.company -DartifactId=myplugin -Dversion=1.0.0-SNAPSHOT -Dpackage=com.company.myplugin -DpluginId=myplugin -DpluginName="My Plugin"
+mvn archetype:generate -B -DarchetypeGroupId=org.opennms.integration.api -DarchetypeArtifactId=example-kar-plugin -DarchetypeVersion=1.0.0-SNAPSHOT -DgroupId=com.company -DartifactId=myplugin -Dversion=0.1.0-SNAPSHOT -Dpackage=com.company.myplugin -DpluginId=myplugin -DpluginName="My Plugin"
 ```
+
+This will create a plugin called "My Plugin" with a version of 0.1.0-SNAPSHOT, using the 1.0.0-SNAPSHOT version of the OIA archetype.
 
 ## Versioning
 
