@@ -21,7 +21,7 @@ mvn clean install
 
 From the OpenNMS Karaf shell:
 ```
-feature:repo-add mvn:${groupId}/karaf-features/1.0.0-SNAPSHOT/xml
+feature:repo-add mvn:${groupId}/karaf-features/2.0.0-SNAPSHOT/xml
 feature:install opennms-plugins-${pluginId}
 ```
 
