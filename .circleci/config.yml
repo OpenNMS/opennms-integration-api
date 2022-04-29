@@ -10,7 +10,7 @@ orbs:
   branch-management: opennms/branch-management@2.3.0
 
 commands:
-  do-build:
+  cached-checkout:
     steps:
       # Restore source cache
       - restore_cache:
@@ -27,6 +27,8 @@ commands:
           paths:
             - ".git"
 
+  do-build:
+    steps:
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -55,6 +57,7 @@ jobs:
       MAVEN_OPTS: -Xmx1024m
 
     steps:
+      - cached-checkout
       - do-build
 
       - run:
@@ -88,7 +91,7 @@ jobs:
           fingerprints:
             - "82:76:19:fb:6a:71:a3:c5:cf:7c:99:aa:82:45:4a:96"
 
-      - checkout
+      - cached-checkout
       - branch-management/merge-branch:
           committer_email: "cicd-system@opennms.com"
           committer_name: "CI/CD System"
