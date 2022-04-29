@@ -89,7 +89,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "82:76:19:fb:6a:71:a3:c5:cf:7c:99:aa:82:45:4a:96"
+            - "27:c8:b4:c2:27:cf:78:ae:5f:1f:3a:ee:d7:bb:e8:ca"
 
       - cached-checkout
       - branch-management/merge-branch:
