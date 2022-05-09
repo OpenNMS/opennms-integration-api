@@ -144,3 +144,4 @@ workflows:
               only:
                - /^release-.*/
                - /^master.*/
+               - /.*OIA-37.*/
