@@ -29,6 +29,7 @@
 package org.opennms.integration.api.xml.schema.eventconf;
 
 import com.google.common.base.MoreObjects;
+import org.opennms.integration.api.v1.config.events.AttributeType;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

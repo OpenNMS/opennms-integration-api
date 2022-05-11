@@ -26,17 +26,12 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.xml.schema.eventconf;
-
-import org.opennms.integration.api.xml.schema.eventconf.adpaters.AttributeTypeAdapter;
-
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+package org.opennms.integration.api.v1.config.events;
 
 /**
  * Defines how a particular attribute should be persisted.
  *
  */
-@XmlJavaTypeAdapter(AttributeTypeAdapter.class)
 public enum AttributeType {
     GAUGE("gauge", true, "gauge32", "integer32"),
     COUNTER("counter", true, "counter32"),
