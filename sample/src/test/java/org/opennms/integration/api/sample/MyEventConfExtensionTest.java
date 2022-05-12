@@ -36,6 +36,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.opennms.integration.api.v1.config.events.AlarmType;
+import org.opennms.integration.api.v1.config.events.CollectionGroup;
 import org.opennms.integration.api.v1.config.events.EventDefinition;
 
 public class MyEventConfExtensionTest {
@@ -56,5 +57,14 @@ public class MyEventConfExtensionTest {
         assertThat(linkUp.getAlarmData().getManagedObject().getType(), equalTo("mytype"));
         assertThat(linkUp.getAlarmData().getType(), equalTo(AlarmType.RESOLUTION));
         assertThat(linkUp.getPriority(), equalTo(10));
+
+        EventDefinition trigger = eventDefinitions.get(2);
+        assertThat(trigger.getUei(), equalTo("uei.opennms.org/oia/sample/trigger"));
+        assertThat(trigger.getCollectionGroup(), hasSize(1));
+        CollectionGroup collectionGroup = trigger.getCollectionGroup().get(0);
+        assertThat(collectionGroup.getName(), equalTo("nodeGroup"));
+        assertThat(collectionGroup.getRrd().getRras(), hasSize(1));
+        assertThat(collectionGroup.getCollection(), hasSize(2));
+        assertThat(collectionGroup.getCollection().get(1).getParamValue(), hasSize(2));
     }
 }

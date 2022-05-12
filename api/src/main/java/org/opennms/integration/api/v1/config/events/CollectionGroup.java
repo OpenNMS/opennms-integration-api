@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2018 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2018 The OpenNMS Group, Inc.
+ * Copyright (C) 2022 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2022 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -28,41 +28,48 @@
 
 package org.opennms.integration.api.v1.config.events;
 
+import java.io.File;
 import java.util.List;
 
-import org.opennms.integration.api.v1.model.Severity;
-
 /**
- * An event definition.
+ * CollectionGroup to use for event performance data.
  *
  * @since 1.0.0
  */
-public interface EventDefinition {
+public interface CollectionGroup {
+    String getName();
 
-    /**
-     * Definitions are ordered by priority in ascending fashion.
-     *
-     * @return the priority for this definition
-     */
-    int getPriority();
+    String getResourceType();
 
-    String getUei();
+    String getInstance();
 
-    String getLabel();
+    Rrd getRrd();
 
-    Severity getSeverity();
+    List<Collection> getCollection();
 
-    String getDescription();
+    interface Rrd {
+        Integer getStep();
 
-    String getOperatorInstructions();
+        int getHeartBeat();
 
-    LogMessage getLogMessage();
+        List<String> getRras();
 
-    AlarmData getAlarmData();
+        File getBaseDir();
+    }
 
-    Mask getMask();
+    interface Collection {
+        String getName();
 
-    List<Parameter> getParameters();
+        String getRename();
 
-    List<CollectionGroup> getCollectionGroup();
+        AttributeType getType();
+
+        List<ParamValue> getParamValue();
+    }
+
+    interface ParamValue {
+        String getName();
+
+        Double getValue();
+    }
 }
