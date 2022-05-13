@@ -5,12 +5,12 @@
         <bundle>mvn:org.opennms.integration.api/api/${project.version}</bundle>
         <bundle>mvn:org.opennms.integration.api/common/${project.version}</bundle>
         <bundle>mvn:org.opennms.integration.api/config/${project.version}</bundle>
-        <bundle dependency="true">mvn:com.google.guava/guava/${guava.version}</bundle>
-        <bundle dependency="true">mvn:com.google.guava/failureaccess/1.0.1</bundle>
     </feature>
 
     <feature name="sample-plugin-common" description="Sample Plugin :: Common" version="${project.version}">
         <feature version="${project.version}" dependency="true">opennms-integration-api</feature>
+        <bundle dependency="true">mvn:com.google.guava/guava/${guava.version}</bundle>
+        <bundle dependency="true">mvn:com.google.guava/failureaccess/1.0.1</bundle>
         <bundle dependency="true">mvn:commons-io/commons-io/${commonsIoVersion}</bundle>
         <bundle>mvn:org.opennms.integration.api.sample/sample-project/${project.version}</bundle>
     </feature>
