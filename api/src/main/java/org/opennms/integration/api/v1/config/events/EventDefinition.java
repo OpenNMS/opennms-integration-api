@@ -64,5 +64,4 @@ public interface EventDefinition {
 
     List<Parameter> getParameters();
 
-    List<CollectionGroup> getCollectionGroup();
 }
