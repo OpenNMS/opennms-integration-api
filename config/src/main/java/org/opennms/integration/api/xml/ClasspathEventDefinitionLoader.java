@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2018-2022 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2022 The OpenNMS Group, Inc.
+ * Copyright (C) 2018 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2018 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -28,14 +28,11 @@
 
 package org.opennms.integration.api.xml;
 
-import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.opennms.integration.api.v1.config.events.AlarmData;
 import org.opennms.integration.api.v1.config.events.AlarmType;
-import org.opennms.integration.api.v1.config.events.AttributeType;
-import org.opennms.integration.api.v1.config.events.CollectionGroup;
 import org.opennms.integration.api.v1.config.events.EventDefinition;
 import org.opennms.integration.api.v1.config.events.LogMessage;
 import org.opennms.integration.api.v1.config.events.LogMsgDestType;
@@ -83,9 +80,6 @@ public class ClasspathEventDefinitionLoader extends ClasspathXmlLoader<Events> {
         final Mask mask = toMask(e.getMask());
         final List<Parameter> parameters = e.getParameters().stream()
                 .map(ClasspathEventDefinitionLoader::toParameter)
-                .collect(Collectors.toList());
-        final List<CollectionGroup> collectionGroups = e.getCollectionGroup().stream()
-                .map(ClasspathEventDefinitionLoader::toCollectionGroup)
                 .collect(Collectors.toList());
         final EventDefinition def = new EventDefinition() {
             @Override
@@ -136,11 +130,6 @@ public class ClasspathEventDefinitionLoader extends ClasspathXmlLoader<Events> {
             @Override
             public List<Parameter> getParameters() {
                 return parameters;
-            }
-
-            @Override
-            public List<CollectionGroup> getCollectionGroup() {
-                return collectionGroups;
             }
         };
         return def;
@@ -330,118 +319,5 @@ public class ClasspathEventDefinitionLoader extends ClasspathXmlLoader<Events> {
             }
         };
         return updateField;
-    }
-
-    private static CollectionGroup toCollectionGroup(org.opennms.integration.api.xml.schema.eventconf.CollectionGroup eCollectionGroup) {
-        if (eCollectionGroup == null) {
-            return null;
-        }
-        final List<CollectionGroup.Collection> collections = eCollectionGroup.getCollection().stream()
-                .map(ClasspathEventDefinitionLoader::toCollection)
-                .collect(Collectors.toList());
-        final CollectionGroup collectionGroup = new CollectionGroup() {
-            @Override
-            public String getName() {
-                return eCollectionGroup.getName();
-            }
-
-            @Override
-            public String getResourceType() {
-                return eCollectionGroup.getResourceType();
-            }
-
-            @Override
-            public String getInstance() {
-                return eCollectionGroup.getInstance();
-            }
-
-            @Override
-            public Rrd getRrd() {
-                return toRrd(eCollectionGroup.getRrd());
-            }
-
-            @Override
-            public List<Collection> getCollection() {
-                return collections;
-            }
-        };
-        return collectionGroup;
-    }
-
-    private static CollectionGroup.Rrd toRrd(org.opennms.integration.api.xml.schema.eventconf.CollectionGroup.Rrd eRrd) {
-        if (eRrd == null) {
-            return null;
-        }
-        final CollectionGroup.Rrd rrd = new CollectionGroup.Rrd(){
-            @Override
-            public Integer getStep() {
-                return eRrd.getStep();
-            }
-
-            @Override
-            public int getHeartBeat() {
-                return eRrd.getHeartBeat();
-            }
-
-            @Override
-            public List<String> getRras() {
-                return eRrd.getRras();
-            }
-
-            @Override
-            public File getBaseDir() {
-                return eRrd.getBaseDir();
-            }
-        };
-        return rrd;
-    }
-
-    private static CollectionGroup.Collection toCollection(org.opennms.integration.api.xml.schema.eventconf.CollectionGroup.Collection eCollection) {
-        if (eCollection == null) {
-            return null;
-        }
-        final List<CollectionGroup.ParamValue> paramValues = eCollection.getParamValue().stream()
-                .map(ClasspathEventDefinitionLoader::toParamValue)
-                .collect(Collectors.toList());
-        final CollectionGroup.Collection collection = new CollectionGroup.Collection(){
-            @Override
-            public String getName() {
-                return eCollection.getName();
-            }
-
-            @Override
-            public String getRename() {
-                return eCollection.getRename();
-            }
-
-            @Override
-            public AttributeType getType() {
-                return eCollection.getType();
-            }
-
-            @Override
-            public List<CollectionGroup.ParamValue> getParamValue() {
-                return paramValues;
-            }
-        };
-        return collection;
-    }
-
-    private static CollectionGroup.ParamValue toParamValue(org.opennms.integration.api.xml.schema.eventconf.CollectionGroup.ParamValue eParamValue) {
-        if (eParamValue == null) {
-            return null;
-        }
-        final CollectionGroup.ParamValue paramValue = new CollectionGroup.ParamValue(){
-            @Override
-            public String getName() {
-                return eParamValue.getName();
-            }
-
-            @Override
-            public Double getValue() {
-                return eParamValue.getValue();
-            }
-        };
-        return paramValue;
     }
 }

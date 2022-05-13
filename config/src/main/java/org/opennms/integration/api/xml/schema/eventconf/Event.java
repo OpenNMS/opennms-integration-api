@@ -91,9 +91,6 @@ public class Event implements Serializable {
     @XmlElement(name="logmsg", required=true)
     private Logmsg m_logmsg;
 
-    @XmlElement(name="collectionGroup", required=false)
-    private List<CollectionGroup> collectionGroup = new ArrayList<>();
-
     /**
      * The event severity
      */
@@ -237,14 +234,6 @@ public class Event implements Serializable {
 
     public void setLogmsg(final Logmsg logmsg) {
         m_logmsg = ConfigUtils.assertNotNull(logmsg, "logmsg");
-    }
-
-    public List<CollectionGroup> getCollectionGroup() {
-        return collectionGroup;
-    }
-
-    public void setCollectionGroup(List<CollectionGroup> collectionGroup) {
-        this.collectionGroup = collectionGroup;
     }
 
     public String getSeverity() {
