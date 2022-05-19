@@ -4,7 +4,7 @@
     <artifactId>api-project</artifactId>
     <packaging>pom</packaging>
     <!-- temp for testing -->
-    <version>0.8.4-SNAPSHOT</version>
+    <version>0.8.7-SNAPSHOT</version>
     <name>OpenNMS Integration API :: Parent</name>
     <url>https://github.com/OpenNMS/opennms-integration-api</url>
     <description>Integration and extension API for OpenNMS</description>
