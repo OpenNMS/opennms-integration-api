@@ -10,6 +10,16 @@
             <managed-object type="my-mo-type"/>
         </alarm-data>
         <parameter name="my-custom-parameter" value="my-constant-value" />
+        <collectionGroup name="nodeGroup" resourceType="nodeSnmp">
+            <rrd step="60" heartBeat="120">
+                <rra>RRA:AVERAGE:0.5:1:8928</rra>
+            </rrd>
+            <collection name="TIME" type="counter"/>
+            <collection name="STATUS" type="gauge">
+              <paramValue key="primary" value="1"/>
+              <paramValue key="secondary" value="2"/>
+            </collection>
+        </collectionGroup>
     </event>
     <event>
         <priority>20</priority>
