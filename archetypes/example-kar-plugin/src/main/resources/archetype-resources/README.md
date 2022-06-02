@@ -12,20 +12,29 @@ The generated plugin contains code examples to demonstrate how to create a:
 
 ## Developing
 
+
 Build and install the plugin into your local Maven repository using:
+
 ```
 mvn clean install
 ```
 
-> OpenNMS normally runs as root, so make sure the artifacts are installed in `/root/.m2` or try making `/root/.m2` symlink to your user's repository
+## Deploying through features file
 
 From the OpenNMS Karaf shell:
 ```
-feature:repo-add mvn:${groupId}/karaf-features/1.0.0-SNAPSHOT/xml
+feature:repo-add mvn:${groupId}/karaf-features/${version}/xml
 feature:install opennms-plugins-${pluginId}
 ```
 
-Update automatically:
+## Deploying through kar file
+
+```
+cp assembly/kar/target/opennms-${pluginId}-plugin.kar /opt/opennms/deploy/
+feature:install opennms-plugins-${pluginId}
+```
+
+## Update automatically:
 ```
 bundle:watch *
 ```
