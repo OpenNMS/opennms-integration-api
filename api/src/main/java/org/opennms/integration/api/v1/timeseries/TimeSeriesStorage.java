@@ -28,18 +28,21 @@
 
 package org.opennms.integration.api.v1.timeseries;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.opennms.integration.api.v1.annotations.Exposable;
 
 /***
- * Implement this interface to integrate a timeseries database into opennms.
+ * Implement this interface to integrate a time series database into opennms.
  */
 @Exposable
 public interface TimeSeriesStorage {
 
-    /** Stores a list of Samples in the timeseries database. */
+    /** Stores a list of Samples in the time series database. */
     void store(List<Sample> samples) throws StorageException;
 
     /**
@@ -51,8 +54,105 @@ public interface TimeSeriesStorage {
      */
     List<Metric> findMetrics(Collection<TagMatcher> tagMatchers) throws StorageException;
 
-    /** Returns the data for the given metrics for the given time period. */
+    /** Returns the data for the given metrics for the given time period.
+     *  Deprecated: use getTimeSeriesData() instead.
+     *  This method will only be called if getTimeSeriesData is not implemented yet.
+     */
+    @Deprecated
     List<Sample> getTimeseries(TimeSeriesFetchRequest request) throws StorageException;
+
+    /** Returns the data for the given metric for the given time period. */
+    default TimeSeriesData getTimeSeriesData(TimeSeriesFetchRequest request) throws StorageException {
+        List<Sample> samples = getTimeseries(request);
+        final Metric metric = samples.isEmpty() ? request.getMetric() : samples.get(0).getMetric();
+        final List<DataPoint> dataPoints = samples.stream()
+                .map(s -> new DataPointImpl(s.getTime(), s.getValue()))
+                .collect(Collectors.toList());
+        return new TimeSeriesDataimpl(metric, dataPoints);
+    }
+
+    // We have this class to be able to provide a default implementation for getTimeSeriesData which is the
+    // successor of the deprecated getTimeseries().
+    // will be removed once getTimeseries() is removed.
+    @Deprecated // use ImmutableDataPoint instead
+    class DataPointImpl implements DataPoint {
+
+        private final Instant time;
+        private final Double value;
+
+        public DataPointImpl(Instant time, Double value) {
+            this.time = Objects.requireNonNull(time);
+            this.value = Objects.requireNonNull(value);
+        }
+
+        public Instant getTime() {
+            return this.time;
+        }
+
+        public Double getValue() {
+            return this.value;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Sample)) return false;
+            Sample that = (Sample) o;
+            return Objects.equals(time, that.getTime()) &&
+                    Objects.equals(value, that.getValue());
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(time, value);
+        }
+    }
+
+    // We have this class to be able to provide a default implementation for getTimeSeriesData which is the
+    // successor of the deprecated getTimeseries().
+    // will be removed once getTimeseries() is removed.
+    @Deprecated // use ImmutableTimeSeriesData instead
+    class TimeSeriesDataimpl implements TimeSeriesData {
+
+        private final Metric metric;
+        private final List<DataPoint> dataPoints;
+
+        public TimeSeriesDataimpl(final Metric metric, final List<DataPoint> dataPoints) {
+            this.metric = Objects.requireNonNull(metric);
+            this.dataPoints = Objects.requireNonNull(dataPoints);
+        }
+
+        @Override
+        public Metric getMetric() {
+            return this.metric;
+        }
+
+        @Override
+        public List<DataPoint> getDataPoints() {
+            return this.dataPoints;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            TimeSeriesDataimpl that = (TimeSeriesDataimpl) o;
+            return Objects.equals(metric, that.metric) && Objects.equals(dataPoints, that.dataPoints);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(metric, dataPoints);
+        }
+
+        @Override
+        public String toString() {
+            return "TimeSeriesDataImpl{" +
+                    "metric=" + metric +
+                    ", dataPoints=" + dataPoints +
+                    '}';
+        }
+    }
 
     /**
      * Deletes the given metric. If the given metric doesn't exist, the method shouldn't throw an exception.

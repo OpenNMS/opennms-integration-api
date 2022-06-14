@@ -49,9 +49,11 @@ import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.opennms.integration.api.v1.timeseries.immutables.ImmutableDataPoint;
 import org.opennms.integration.api.v1.timeseries.immutables.ImmutableMetric;
 import org.opennms.integration.api.v1.timeseries.immutables.ImmutableSample;
 import org.opennms.integration.api.v1.timeseries.immutables.ImmutableTagMatcher;
+import org.opennms.integration.api.v1.timeseries.immutables.ImmutableTimeSeriesData;
 import org.opennms.integration.api.v1.timeseries.immutables.ImmutableTimeSeriesFetchRequest;
 
 /**
@@ -61,7 +63,7 @@ import org.opennms.integration.api.v1.timeseries.immutables.ImmutableTimeSeriesF
 public abstract class AbstractStorageIntegrationTest {
 
     protected List<Metric> metrics;
-    protected List<Sample> samplesOfFirstMetric;
+    protected TimeSeriesData timeSeriesDataOfFirstMetric;
     protected TimeSeriesStorage storage;
     protected Instant referenceTime;
 
@@ -76,7 +78,13 @@ public abstract class AbstractStorageIntegrationTest {
 
         this.storage = createStorage();
         storage.store(samples);
-        samplesOfFirstMetric = samples.stream().filter(s -> s.getMetric().equals(metrics.get(0))).collect(Collectors.toList());
+        List<DataPoint> dataPoints = samples.stream()
+                .filter(s -> s.getMetric().equals(metrics.get(0)))
+                .map(s -> new ImmutableDataPoint(s.getTime(), s.getValue())).collect(Collectors.toList());
+        timeSeriesDataOfFirstMetric = ImmutableTimeSeriesData.builder()
+                .metric(metrics.get(0))
+                .dataPoints(dataPoints)
+                .build();
         waitForPersistingChanges(); // make sure the samples are stored before we test
     }
 
@@ -190,8 +198,8 @@ public abstract class AbstractStorageIntegrationTest {
         Metric metric = builder.build();
 
         // query for the samples
-        List<Sample> samples = loadSamplesForMetric(metric);
-        assertEqualsCollectionOfSamples(samplesOfFirstMetric, samples);
+        final TimeSeriesData timeSeriesData = loadTimeSeriesDataForMetric(metric);
+        assertEqualsTimeSeriesData(timeSeriesDataOfFirstMetric, timeSeriesData);
     }
 
     @Test
@@ -199,11 +207,11 @@ public abstract class AbstractStorageIntegrationTest {
         Metric lastMetric = metrics.get(metrics.size()-1);
         List<Tag> listOfCommonTags = singletonList(this.metrics.get(0).getFirstTagByKey("name"));
 
-        // make sure we have the metrics and the samples in the db:
+        // make sure we have the metrics and the dataPoints in the db:
         List<Metric> metricsRetrieved = findMetricsByTags(listOfCommonTags);
         assertEquals(new HashSet<>(metrics), new HashSet<>(metricsRetrieved));
-        List<Sample> samples = loadSamplesForMetric(lastMetric);
-        assertEquals(samplesOfFirstMetric.size(), samples.size());
+        TimeSeriesData timeSeriesData = loadTimeSeriesDataForMetric(lastMetric);
+        assertEquals(timeSeriesDataOfFirstMetric.getDataPoints().size(), timeSeriesData.getDataPoints().size());
 
         // let's delete the last one
         storage.delete(lastMetric);
@@ -211,14 +219,14 @@ public abstract class AbstractStorageIntegrationTest {
         // check again, first metric should be gone
         metricsRetrieved = findMetricsByTags(lastMetric.getIntrinsicTags());
         assertTrue(metricsRetrieved.isEmpty());
-        samples = loadSamplesForMetric(lastMetric);
-        assertEquals(0, samples.size());
+        timeSeriesData = loadTimeSeriesDataForMetric(lastMetric);
+        assertEquals(0, timeSeriesData.getDataPoints().size());
 
         // check the rest of metrics, they should still be there
         metricsRetrieved = findMetricsByTags(listOfCommonTags);
         assertEquals(new HashSet<>(metrics.subList(0, metrics.size()-1)), new HashSet<>(metricsRetrieved));
-        samples = loadSamplesForMetric(metrics.get(0));
-        assertEqualsCollectionOfSamples(samplesOfFirstMetric, samples);
+        timeSeriesData = loadTimeSeriesDataForMetric(metrics.get(0));
+        assertEqualsTimeSeriesData(timeSeriesDataOfFirstMetric, timeSeriesData);
     }
 
     private List<Metric> findMetricsByTags(final Collection<Tag> tags) throws StorageException {
@@ -226,7 +234,7 @@ public abstract class AbstractStorageIntegrationTest {
         return storage.findMetrics(matchers);
     }
 
-    protected List<Sample> loadSamplesForMetric(final Metric metric) throws Exception {
+    protected TimeSeriesData loadTimeSeriesDataForMetric(final Metric metric) throws Exception {
         TimeSeriesFetchRequest request = ImmutableTimeSeriesFetchRequest.builder()
                 .start(this.referenceTime.minusSeconds(300))
                 .end(this.referenceTime)
@@ -234,7 +242,7 @@ public abstract class AbstractStorageIntegrationTest {
                 .aggregation(Aggregation.NONE)
                 .step(Duration.ZERO)
                 .build();
-        return storage.getTimeseries(request);
+        return storage.getTimeSeriesData(request);
 
     }
 
@@ -294,20 +302,23 @@ public abstract class AbstractStorageIntegrationTest {
         }
     }
 
-    private void assertEqualsCollectionOfSamples(Collection<Sample> a, Collection<Sample> b) {
-        Objects.requireNonNull(a);
-        Objects.requireNonNull(b);
+    private void assertEqualsTimeSeriesData(TimeSeriesData dataA, TimeSeriesData dataB) {
+        Objects.requireNonNull(dataA);
+        Objects.requireNonNull(dataB);
+
+        assertEquals(dataA.getMetric(), dataB.getMetric());
+        Collection<DataPoint> a = dataA.getDataPoints();
+        Collection<DataPoint> b = dataB.getDataPoints();
         assertEquals(a.size(), b.size());
 
-        Comparator<Sample> comp = Comparator.<Sample, String>comparing(s -> s.getMetric().getKey())
-                .thenComparing(Sample::getTime)
-                .thenComparing(Sample::getValue);
+        Comparator<DataPoint> comp = Comparator
+                .comparing(DataPoint::getTime)
+                .thenComparing(DataPoint::getValue);
 
-        List<Sample> aSorted = a.stream().sorted(comp).collect(Collectors.toList());
-        List<Sample> bSorted = b.stream().sorted(comp).collect(Collectors.toList());
+        List<DataPoint> aSorted = a.stream().sorted(comp).collect(Collectors.toList());
+        List<DataPoint> bSorted = b.stream().sorted(comp).collect(Collectors.toList());
 
         for(int i = 0; i < aSorted.size(); i++) {
-            assertEqualsMetric(aSorted.get(i).getMetric(), bSorted.get(i).getMetric());
             assertEquals(aSorted.get(i).getTime(), bSorted.get(i).getTime());
             assertEquals(aSorted.get(i).getValue(), bSorted.get(i).getValue());
         }
