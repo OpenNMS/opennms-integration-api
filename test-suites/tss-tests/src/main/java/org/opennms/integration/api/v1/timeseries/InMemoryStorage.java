@@ -29,16 +29,18 @@
 package org.opennms.integration.api.v1.timeseries;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
+
+import org.opennms.integration.api.v1.timeseries.immutables.ImmutableDataPoint;
+import org.opennms.integration.api.v1.timeseries.immutables.ImmutableTimeSeriesData;
 
 import com.google.re2j.Pattern;
 
@@ -109,19 +111,30 @@ public class InMemoryStorage implements TimeSeriesStorage {
     }
 
     @Override
-    public List<Sample> getTimeseries(TimeSeriesFetchRequest request) {
+    public List<Sample> getTimeseries(TimeSeriesFetchRequest request) throws StorageException {
+        throw new UnsupportedOperationException("use getTimeSeriesData(TimeSeriesFetchRequest request) instead.");
+    }
+
+    @Override
+    public TimeSeriesData getTimeSeriesData(TimeSeriesFetchRequest request) {
         Objects.requireNonNull(request);
         if(request.getAggregation() != Aggregation.NONE) {
             throw new IllegalArgumentException(String.format("Aggregation %s is not supported.", request.getAggregation()));
         }
-
-        if(!data.containsKey(request.getMetric())){
-            return Collections.emptyList();
-        }
-        return data.get(request.getMetric()).stream()
+        List<Sample> relevantSamples = Optional.ofNullable(data.get(request.getMetric()))
+                .stream()
+                .flatMap(Collection::stream)
                 .filter(sample -> sample.getTime().isAfter(request.getStart()))
                 .filter(sample -> sample.getTime().isBefore(request.getEnd()))
                 .collect(Collectors.toList());
+        final Metric metric = relevantSamples.isEmpty() ? request.getMetric() : relevantSamples.get(0).getMetric();
+        List<DataPoint> dataPoints = relevantSamples.stream()
+                .map(s -> new ImmutableDataPoint(s.getTime(), s.getValue()))
+                .collect(Collectors.toList());
+        return ImmutableTimeSeriesData.builder()
+                .metric(metric)
+                .dataPoints(dataPoints)
+                .build();
     }
 
     @Override
