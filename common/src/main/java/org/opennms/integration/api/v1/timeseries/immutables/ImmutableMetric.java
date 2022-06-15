@@ -28,6 +28,8 @@
 
 package org.opennms.integration.api.v1.timeseries.immutables;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -70,17 +72,30 @@ public class ImmutableMetric implements Metric {
 
     @Override
     public Set<Tag> getTagsByKey(final String key) {
-        return Stream.concat(Stream.concat(intrinsicTags.stream(), metaTags.stream()), externalTags.stream())
-                .filter(t -> Objects.equals(t.getKey(), key))
-                .collect(Collectors.toSet());
+        List<Set<Tag>> allTags = Arrays.asList(intrinsicTags, metaTags, externalTags);
+        Set<Tag> result = new HashSet<>();
+        for (Set<Tag> tags : allTags) {
+            var tmp = tags.stream()
+                    .filter(t -> Objects.equals(t.getKey(), key))
+                    .collect(Collectors.toSet());
+            if (tmp != null) {
+                result.addAll(tmp);
+            }
+        }
+        return result;
     }
 
     @Override
     public Tag getFirstTagByKey(final String key) {
-        List<Tag> tags = Stream.concat(Stream.concat(intrinsicTags.stream(), metaTags.stream()), externalTags.stream())
-                .filter(t -> Objects.equals(t.getKey(), key))
-                .collect(Collectors.toList());
-        return (tags.size() > 0) ? tags.get(0) : null;
+        List<Set<Tag>> allTags = Arrays.asList(intrinsicTags, metaTags, externalTags);
+        for (Set<Tag> tags : allTags) {
+            var tag = tags.stream()
+                    .filter(t -> Objects.equals(t.getKey(), key)).findFirst();
+            if (tag.isPresent()) {
+                return tag.get();
+            }
+        }
+        return null;
     }
 
     @Override
