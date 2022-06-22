@@ -6,9 +6,10 @@ import {viteExternalsPlugin} from 'vite-plugin-externals'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-      vue(),
+    vue(),
     viteExternalsPlugin({
-      vue: 'Vue'
+      vue: 'Vue',
+      pinia: 'Pinia'
     })
   ],
   build: {
@@ -19,14 +20,15 @@ export default defineConfig({
       fileName: (format) => `uiextension.${format}.js`
     },
     rollupOptions: {
-      // make sure to externalize deps that shouldn't be bundled
-      // into your library
-      external: ['vue'],
-      output: {
+        // make sure to externalize deps that shouldn't be bundled
+        // into your library
+        external: ['vue', 'pinia'],
+        output: {
         // Provide global variables to use in the UMD build
         // for externalized deps
         globals: {
-          vue: 'Vue'
+          vue: 'Vue',
+          pinia: 'Pinia'
         }
       }
     }
