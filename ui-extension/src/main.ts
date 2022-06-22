@@ -10,5 +10,5 @@ window['uiextension'] = App
 
 // used to run plugin by itself
 if (envMode === 'development') {
-	createApp(App).use(router).use(createPinia()).mount('#app')
+  createApp(App).use(router).use(createPinia()).mount('#app')
 }
