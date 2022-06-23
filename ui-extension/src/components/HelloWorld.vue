@@ -1,13 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-
-defineProps<{ msg: string }>()
-
 const count = ref(0)
 </script>
 
 <template>
-  <h1>{{ msg }}</h1>
+  <h1>This is an example UI Extension component plugin installed at runtime as a Karaf feature</h1>
 
   <p>
     For more information:
