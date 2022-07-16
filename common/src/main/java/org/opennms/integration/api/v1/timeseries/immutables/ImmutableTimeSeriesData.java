@@ -1,5 +1,6 @@
 package org.opennms.integration.api.v1.timeseries.immutables;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -9,7 +10,7 @@ import org.opennms.integration.api.v1.timeseries.DataPoint;
 import org.opennms.integration.api.v1.timeseries.Metric;
 import org.opennms.integration.api.v1.timeseries.TimeSeriesData;
 
-public class ImmutableTimeSeriesData implements TimeSeriesData {
+public class ImmutableTimeSeriesData implements TimeSeriesData, Serializable {
 
     private final Metric metric;
     private final List<DataPoint> dataPoints;

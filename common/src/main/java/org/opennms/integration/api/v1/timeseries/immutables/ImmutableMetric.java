@@ -28,7 +28,7 @@
 
 package org.opennms.integration.api.v1.timeseries.immutables;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -37,7 +37,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.opennms.integration.api.v1.timeseries.Metric;
 import org.opennms.integration.api.v1.timeseries.Tag;
@@ -46,7 +45,7 @@ import org.opennms.integration.api.v1.util.ImmutableCollections;
 /**
  * {@inheritDoc}
  */
-public class ImmutableMetric implements Metric {
+public class ImmutableMetric implements Metric, Serializable {
 
     private final String key;
     private final Set<Tag> intrinsicTags;

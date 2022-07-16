@@ -28,6 +28,7 @@
 
 package org.opennms.integration.api.v1.timeseries;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
@@ -75,7 +76,7 @@ public interface TimeSeriesStorage {
     // successor of the deprecated getTimeseries().
     // will be removed once getTimeseries() is removed.
     @Deprecated // use ImmutableDataPoint instead
-    class DataPointImpl implements DataPoint {
+    class DataPointImpl implements DataPoint, Serializable {
 
         private final Instant time;
         private final Double value;

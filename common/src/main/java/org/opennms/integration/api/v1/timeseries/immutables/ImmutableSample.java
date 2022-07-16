@@ -28,6 +28,7 @@
 
 package org.opennms.integration.api.v1.timeseries.immutables;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -38,7 +39,7 @@ import org.opennms.integration.api.v1.timeseries.Sample;
 /**
  * {@inheritDoc}
  */
-public class ImmutableSample implements Sample {
+public class ImmutableSample implements Sample, Serializable {
 
     private final Metric metric;
     private final Instant time;

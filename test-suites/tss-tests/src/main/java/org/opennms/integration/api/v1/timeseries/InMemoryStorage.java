@@ -50,7 +50,7 @@ import com.google.re2j.Pattern;
  */
 public class InMemoryStorage implements TimeSeriesStorage {
 
-    private final Map<Metric, Collection<Sample>> data;
+    private final Map<Metric, Collection<DataPoint>> data;
 
     public InMemoryStorage () {
         data = new ConcurrentHashMap<>();
@@ -60,8 +60,8 @@ public class InMemoryStorage implements TimeSeriesStorage {
     public void store(final List<Sample> samples) {
         Objects.requireNonNull(samples);
         for(Sample sample : samples) {
-            Collection<Sample> timeseries = data.computeIfAbsent(sample.getMetric(), k -> new ConcurrentLinkedQueue<>());
-            timeseries.add(sample);
+            Collection<DataPoint> timeseries = data.computeIfAbsent(sample.getMetric(), k -> new ConcurrentLinkedQueue<>());
+            timeseries.add(new ImmutableDataPoint(sample.getTime(), sample.getValue()));
         }
     }
 
@@ -118,19 +118,24 @@ public class InMemoryStorage implements TimeSeriesStorage {
     @Override
     public TimeSeriesData getTimeSeriesData(TimeSeriesFetchRequest request) {
         Objects.requireNonNull(request);
+
+
         if(request.getAggregation() != Aggregation.NONE) {
             throw new IllegalArgumentException(String.format("Aggregation %s is not supported.", request.getAggregation()));
         }
-        List<Sample> relevantSamples = Optional.ofNullable(data.get(request.getMetric()))
-                .stream()
+
+        // get the original metric instead of the one from the request since the one from the request might not have all tags
+        Metric metric = data.keySet().stream()
+                .filter(m -> m.getKey().equals(request.getMetric().getKey()))
+                .findFirst()
+                .orElse(request.getMetric());
+
+        List<DataPoint> dataPoints = Optional.ofNullable(data.get(request.getMetric())).stream()
                 .flatMap(Collection::stream)
                 .filter(sample -> sample.getTime().isAfter(request.getStart()))
                 .filter(sample -> sample.getTime().isBefore(request.getEnd()))
                 .collect(Collectors.toList());
-        final Metric metric = relevantSamples.isEmpty() ? request.getMetric() : relevantSamples.get(0).getMetric();
-        List<DataPoint> dataPoints = relevantSamples.stream()
-                .map(s -> new ImmutableDataPoint(s.getTime(), s.getValue()))
-                .collect(Collectors.toList());
+
         return ImmutableTimeSeriesData.builder()
                 .metric(metric)
                 .dataPoints(dataPoints)
@@ -149,7 +154,7 @@ public class InMemoryStorage implements TimeSeriesStorage {
     }
 
     /** Exposes the internal data, for validation in tests. */
-    public Map<Metric, Collection<Sample>> getData() {
+    public Map<Metric, Collection<DataPoint>> getData() {
         return data;
     }
 }
