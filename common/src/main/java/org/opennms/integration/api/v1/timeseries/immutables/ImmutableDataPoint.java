@@ -1,5 +1,6 @@
 package org.opennms.integration.api.v1.timeseries.immutables;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -7,7 +8,7 @@ import java.util.StringJoiner;
 import org.opennms.integration.api.v1.timeseries.DataPoint;
 import org.opennms.integration.api.v1.timeseries.Sample;
 
-public class ImmutableDataPoint implements DataPoint {
+public class ImmutableDataPoint implements DataPoint, Serializable {
 
     private final Instant time;
     private final Double value;

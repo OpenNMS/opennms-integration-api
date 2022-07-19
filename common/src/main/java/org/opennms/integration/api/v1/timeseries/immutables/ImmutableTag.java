@@ -28,6 +28,7 @@
 
 package org.opennms.integration.api.v1.timeseries.immutables;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
 
@@ -36,7 +37,7 @@ import org.opennms.integration.api.v1.timeseries.Tag;
 /**
  * {@inheritDoc}
  */
-public class ImmutableTag implements Tag {
+public class ImmutableTag implements Tag, Serializable {
 
     private final String key;
     private final String value;
