@@ -28,13 +28,14 @@
 
 package org.opennms.integration.api.v1.timeseries.immutables;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.StringJoiner;
 
 import org.opennms.integration.api.v1.timeseries.Tag;
 import org.opennms.integration.api.v1.timeseries.TagMatcher;
 
-public class ImmutableTagMatcher implements TagMatcher {
+public class ImmutableTagMatcher implements TagMatcher, Serializable {
     private final Type type;
     private final String key;
     private final String value;

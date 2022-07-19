@@ -28,6 +28,7 @@
 
 package org.opennms.integration.api.v1.timeseries.immutables;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Objects;
@@ -40,7 +41,7 @@ import org.opennms.integration.api.v1.timeseries.TimeSeriesFetchRequest;
 /**
  * {@inheritDoc}
  */
-public class ImmutableTimeSeriesFetchRequest implements TimeSeriesFetchRequest {
+public class ImmutableTimeSeriesFetchRequest implements TimeSeriesFetchRequest, Serializable {
     private final Metric metric;
     private final Instant start;
     private final Instant end;

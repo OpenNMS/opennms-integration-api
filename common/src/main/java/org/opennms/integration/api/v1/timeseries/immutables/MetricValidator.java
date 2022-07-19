@@ -28,13 +28,14 @@
 
 package org.opennms.integration.api.v1.timeseries.immutables;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.opennms.integration.api.v1.timeseries.Tag;
 
-class MetricValidator {
+class MetricValidator implements Serializable {
 
     private final Set<Tag> intrinsicTags;
     private final Set<Tag> metaTags;

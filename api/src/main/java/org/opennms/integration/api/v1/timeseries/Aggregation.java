@@ -28,10 +28,12 @@
 
 package org.opennms.integration.api.v1.timeseries;
 
+import java.io.Serializable;
+
 /**
  * Defines an aggregation for a timeseries: how are the time buckets aggregated?
  */
-public enum Aggregation {
+public enum Aggregation implements Serializable {
     /** Return the average value for each time step. */
     AVERAGE,
     /** Return the highest value for each time step. */
