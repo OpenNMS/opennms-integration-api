@@ -45,7 +45,7 @@ public interface Information {
     TicketerConfig getTicketerConfig();
     Map<String,String> getServices();
 
-    /** Uniquely identifies this OpenNMS instance.  */
+    /** Uniquely identifies this OpenNMS instance. */
     String getSystemId();
 
     /** Uniquely identifies a OpenNMS environment.
