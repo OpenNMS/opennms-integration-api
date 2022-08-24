@@ -30,6 +30,9 @@ package org.opennms.integration.api.v1.info;
 
 import java.time.ZoneId;
 
+import org.opennms.integration.api.v1.annotations.Model;
+
+@Model
 public interface DatetimeformatConfig {
     ZoneId getZoneId();
     String getDatetimeformat();

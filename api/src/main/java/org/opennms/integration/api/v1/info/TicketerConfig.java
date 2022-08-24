@@ -28,6 +28,9 @@
 
 package org.opennms.integration.api.v1.info;
 
+import org.opennms.integration.api.v1.annotations.Model;
+
+@Model
 public interface TicketerConfig {
     /**
      * The plugin currently in use. If enabled is false, this should be null.
