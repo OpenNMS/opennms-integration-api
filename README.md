@@ -1,4 +1,4 @@
-# OpenNMS Integration API [![CircleCI](https://circleci.com/gh/OpenNMS/opennms-integration-api.svg?style=svg)](https://circleci.com/gh/OpenNMS/opennms-integration-api)
+# OpenNMS Plugin API [![CircleCI](https://circleci.com/gh/OpenNMS/opennms-integration-api.svg?style=svg)](https://circleci.com/gh/OpenNMS/opennms-integration-api)
 
 This project aims to make it easier to write plugins and extensions to OpenNMS by introducing a stable interface against which these can be written.
 Versions of OpenNMS and Meridian will then implement at least one major version of the API.
@@ -51,7 +51,7 @@ To create a new plugin project use:
 mvn archetype:generate -B -DarchetypeGroupId=org.opennms.integration.api -DarchetypeArtifactId=example-kar-plugin -DarchetypeVersion=1.0.0-SNAPSHOT -DgroupId=com.company -DartifactId=myplugin -Dversion=0.1.0-SNAPSHOT -Dpackage=com.company.myplugin -DpluginId=myplugin -DpluginName="My Plugin"
 ```
 
-This will create a plugin called "My Plugin" with a version of 0.1.0-SNAPSHOT, using the 1.0.0-SNAPSHOT version of the OIA archetype.
+This will create a plugin called "My Plugin" with a version of 0.1.0-SNAPSHOT, using the 1.0.0-SNAPSHOT version of the OPA archetype.
 
 ## Versioning
 

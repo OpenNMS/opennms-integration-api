@@ -1,5 +1,5 @@
 # Sample Project
-This project provides samples to development different OpenNMS Integration API Extensions which can be deployed at 
+This project provides samples to development different OpenNMS Plugin API Extensions which can be deployed at 
 runtime  to OpenNMS platform as plugins. 
 
 ## UI Extension
