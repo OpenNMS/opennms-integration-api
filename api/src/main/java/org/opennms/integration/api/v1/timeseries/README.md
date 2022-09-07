@@ -1,5 +1,5 @@
-# Time Series Storage Integration Layer
-The Time Series Storage Integration Layer (TSS) provides an easy way to connect time series databases to OpenNMS.
+# Time Series Storage Plugin Layer
+The Time Series Storage Plugin Layer (TSS) provides an easy way to connect time series databases to OpenNMS.
 See the [Admin Guide](https://docs.opennms.org/opennms/releases/26.1.0/guide-admin/guide-admin.html#ga-opennms-operation-timeseries) for an introduction to TSS and how to configure it.
 
 The TSS uses plugins to connect OpenNMS with a time series database.
@@ -35,7 +35,7 @@ Once you are happy with your plugin and the tests are green it's time to test it
 First, create the plugin bundle and make it available in your local maven repo:
 `mvn install`.
 
-Then, enable the integration layer and install the plugin via Karaf.
+Then, enable the plugin layer and install the plugin via Karaf.
 See [here](https://docs.opennms.org/opennms/releases/26.1.0/guide-admin/guide-admin.html#ga-opennms-operation-timeseries) for the steps.
 
 That should be it.
