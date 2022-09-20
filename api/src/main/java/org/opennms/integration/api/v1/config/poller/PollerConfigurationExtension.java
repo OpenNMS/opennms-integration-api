@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * Root element of the poller configuration
  */
-public interface  PollerConfiguration {
+public interface PollerConfigurationExtension {
 
     /**
      * Package encapsulating addresses, services to be polled for these addresses, etc..
