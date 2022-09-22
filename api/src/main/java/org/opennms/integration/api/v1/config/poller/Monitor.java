@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * Monitor for a service
  */
-public interface Monitor{
+public interface Monitor {
     
     /**
      * Service name
@@ -42,7 +42,7 @@ public interface Monitor{
 
     /**
      * Fully-qualified Java class name used to monitor/poll the service. The class must implement the
-     * org.opennms.netmgt.poller.monitors.ServiceMonitor interface.
+     * org.opennms.integration.api.v1.pollers.ServicePoller interface.
      */
     String getClassName();
 

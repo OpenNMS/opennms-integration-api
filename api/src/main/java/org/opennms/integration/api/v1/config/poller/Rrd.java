@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * RRD parameters
  */
-public interface Rrd{
+public interface Rrd {
 
     /**
      * Step size for the RRD, in seconds.

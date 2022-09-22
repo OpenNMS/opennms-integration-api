@@ -28,6 +28,7 @@
 
 package org.opennms.integration.api.v1.config.poller;
 
+import java.time.Duration;
 import java.util.Optional;
 
 /**
@@ -37,7 +38,7 @@ import java.util.Optional;
  * certain amount of downtime at which the node is marked
  * 'deleted'.
  */
-public interface Downtime{
+public interface Downtime {
 
     /**
      * Determines if service is to be deleted when down
@@ -55,24 +56,30 @@ public interface Downtime{
     /**
      * Start of the interval.
      */
-    long getBegin();
+    Duration getBegin();
 
     /**
      * End of the interval.
      */
-    Optional<Long> getEnd();
+    default Optional<Duration> getEnd() {
+        return Optional.empty();
+    }
 
 
     /**
      * Deleting mode
      */
-    Optional<DeletingMode> getDelete();
+    default Optional<DeletingMode> getDelete() {
+        return Optional.empty();
+    }
 
     /**
      * Interval at which service is to be polled between the
      * specified start and end when service has been continuously
      * down.
      */
-    Optional<Long> getInterval();
+    default Optional<Long> getInterval() {
+        return Optional.empty();
+    }
 
 }

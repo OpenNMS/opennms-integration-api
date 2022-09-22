@@ -35,10 +35,12 @@ import java.util.Optional;
  * URL to hit is configurable via a parameter. Parameters are specific to the
  * service monitor.
  */
-public interface Parameter{
+public interface Parameter {
 
     String getKey();
 
-    Optional<String> getValue();
+    default Optional<String> getValue() {
+        return Optional.empty();
+    }
 
 }

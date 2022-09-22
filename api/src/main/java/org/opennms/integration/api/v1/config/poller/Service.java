@@ -28,13 +28,14 @@
 
 package org.opennms.integration.api.v1.config.poller;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 /**
  * Service to be polled for addresses in this package
  */
-public interface Service{
+public interface Service {
 
     boolean DEFAULT_USER_DEFINED = false;
     boolean DEFAULT_IS_ENABLED = true;
@@ -67,10 +68,14 @@ public interface Service{
     /**
      * Pattern to match service names mapped to this service config
      */
-    Optional<String> getPattern();
+    default Optional<String> getPattern() {
+        return Optional.empty();
+    }
 
     /**
      * Parameters to be used for polling this service
      */
-    List<Parameter> getParameters();
+    default  List<Parameter> getParameters() {
+        return Collections.emptyList();
+    }
 }

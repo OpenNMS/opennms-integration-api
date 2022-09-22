@@ -31,7 +31,7 @@ package org.opennms.integration.api.v1.config.poller;
 /**
  * Range of addresses
  */
-public interface Range {
+public interface AddressRange {
 
     /**
      * Starting address of the range.

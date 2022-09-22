@@ -34,20 +34,19 @@ import java.util.List;
  * Package encapsulating addresses, services to be polled
  *  for these addresses, etc..
  */
-public interface Package{
+public interface Package {
     
     /**
      * Name or identifier for this package.
      */
     String getName();
 
-    boolean getPerspectiveOnly();
-
     /**
      * A rule which addresses belonging to this package must pass. This
      * package is applied only to addresses that pass this filter.
+     * TODO: Filter format needs to be documented
      */
-    Filter getFilter() ;
+    String getFilter() ;
 
     /**
      * Addresses in this package
@@ -57,19 +56,12 @@ public interface Package{
     /**
      * Range of addresses in this package.
      */
-    List<Range> getIncludeRanges();
+    List<AddressRange> getIncludeRanges();
 
     /**
      * Range of addresses to be excluded from this package.
      */
-    List<Range> getExcludeRanges();
-
-    /**
-     * A file URL holding specific addresses to be polled. Each line in the URL file can be one of:
-     * &lt;IP&gt;&lt;space&gt;#&lt;comments&gt; or &lt;IP&gt; or #&lt;comments&gt;. Lines starting
-     * with a '#' are ignored and so are characters after a '&lt;space&gt;#' in a line
-     */
-    List<String> getIncludeUrls();
+    List<AddressRange> getExcludeRanges();
 
     /**
      * RRD parameters for response time data.
