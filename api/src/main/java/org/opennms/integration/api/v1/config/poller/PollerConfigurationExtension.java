@@ -30,9 +30,12 @@ package org.opennms.integration.api.v1.config.poller;
 
 import java.util.List;
 
+import org.opennms.integration.api.v1.annotations.Exposable;
+
 /**
  * Root element of the poller configuration
  */
+@Exposable
 public interface PollerConfigurationExtension {
 
     /**

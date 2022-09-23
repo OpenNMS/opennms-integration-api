@@ -30,11 +30,14 @@ package org.opennms.integration.api.v1.config.poller;
 
 import java.util.Optional;
 
+import org.opennms.integration.api.v1.annotations.Model;
+
 /**
  * Parameters to be used for polling this service. E.g.: for polling HTTP, the
  * URL to hit is configurable via a parameter. Parameters are specific to the
  * service monitor.
  */
+@Model
 public interface Parameter {
 
     String getKey();

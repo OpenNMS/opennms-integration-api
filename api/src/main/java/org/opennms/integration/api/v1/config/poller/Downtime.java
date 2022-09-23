@@ -31,6 +31,8 @@ package org.opennms.integration.api.v1.config.poller;
 import java.time.Duration;
 import java.util.Optional;
 
+import org.opennms.integration.api.v1.annotations.Model;
+
 /**
  * Downtime model. This determines the rates at which
  * addresses are to be polled when they remain down for extended periods.
@@ -38,6 +40,7 @@ import java.util.Optional;
  * certain amount of downtime at which the node is marked
  * 'deleted'.
  */
+@Model
 public interface Downtime {
 
     /**

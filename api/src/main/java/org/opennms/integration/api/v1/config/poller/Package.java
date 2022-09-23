@@ -30,10 +30,13 @@ package org.opennms.integration.api.v1.config.poller;
 
 import java.util.List;
 
+import org.opennms.integration.api.v1.annotations.Model;
+
 /**
  * Package encapsulating addresses, services to be polled
  *  for these addresses, etc..
  */
+@Model
 public interface Package {
     
     /**

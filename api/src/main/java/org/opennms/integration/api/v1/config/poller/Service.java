@@ -32,9 +32,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.opennms.integration.api.v1.annotations.Model;
+
 /**
  * Service to be polled for addresses in this package
  */
+@Model
 public interface Service {
 
     boolean DEFAULT_USER_DEFINED = false;

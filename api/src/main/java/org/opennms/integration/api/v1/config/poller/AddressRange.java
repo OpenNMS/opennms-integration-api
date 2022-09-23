@@ -28,9 +28,12 @@
 
 package org.opennms.integration.api.v1.config.poller;
 
+import org.opennms.integration.api.v1.annotations.Model;
+
 /**
  * Range of addresses
  */
+@Model
 public interface AddressRange {
 
     /**
