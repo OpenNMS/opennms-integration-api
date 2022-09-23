@@ -39,8 +39,6 @@ public interface Parameter {
 
     String getKey();
 
-    default Optional<String> getValue() {
-        return Optional.empty();
-    }
+    String getValue();
 
 }
