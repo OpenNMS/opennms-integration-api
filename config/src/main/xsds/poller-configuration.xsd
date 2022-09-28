@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://xmlns.opennms.org/xsd/config/poller"
+        xmlns="http://www.w3.org/2001/XMLSchema"
+        xmlns:this="http://xmlns.opennms.org/xsd/config/poller"
+        elementFormDefault="qualified">
+    <annotation>
+        <documentation>XML Schema for the poller configuration file.</documentation>
+    </annotation>
+
+    <element name="poller-configuration">
+
+        <annotation>
+            <documentation>Top-level element for the poller-configuration.xml configuration file.</documentation>
+        </annotation>
+
+        <complexType>
+            <sequence>
+
+                <element name="package" maxOccurs="unbounded" minOccurs="0" type="this:package">
+                    <annotation>
+                        <documentation>
+                            Package encapsulating addresses, services to be polled for these addresses, etc...
+                        </documentation>
+                    </annotation>
+                </element>
+
+                <element name="monitor" maxOccurs="unbounded" minOccurs="0" type="this:monitor">
+                    <annotation>
+                        <documentation>Service monitors</documentation>
+                    </annotation>
+                </element>
+
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="package">
+        <annotation>
+            <documentation>
+                Package encapsulating addresses, services to be polled for these addresses, etc..
+            </documentation>
+        </annotation>
+
+        <sequence>
+
+            <element name="filter" maxOccurs="1" minOccurs="0" type="this:filter">
+                <annotation>
+                    <documentation>
+                        A rule which addresses belonging to this package must pass. This package is applied only
+                        to addresses that pass this filter. When no filter is specified, then all addresses will be
+                        accepted.
+                    </documentation>
+                </annotation>
+            </element>
+
+            <element maxOccurs="unbounded" minOccurs="0" name="specific" type="string">
+                <annotation>
+                    <documentation>Addresses in this package</documentation>
+                </annotation>
+            </element>
+
+            <element name="include-range" maxOccurs="unbounded" minOccurs="0" type="this:range">
+                <annotation>
+                    <documentation>Range of addresses to be included in this package.</documentation>
+                </annotation>
+            </element>
+
+            <element name="exclude-range" maxOccurs="unbounded" minOccurs="0" type="this:range">
+                <annotation>
+                    <documentation>Range of addresses to be excluded from this package.</documentation>
+                </annotation>
+            </element>
+
+            <element name ="rrd" maxOccurs="1" minOccurs="1" type="this:rrd">
+                <annotation>
+                    <documentation>RRD parameters for response time data.</documentation>
+                </annotation>
+            </element>
+
+            <element name="service" maxOccurs="unbounded" minOccurs="1" type="this:service">
+                <annotation>
+                    <documentation>Services to be polled for addresses belonging to this package.</documentation>
+                </annotation>
+            </element>
+
+            <element maxOccurs="unbounded" minOccurs="0" name="outage-calendar" type="string">
+                <annotation>
+                    <documentation>
+                        Scheduled outages. If a service is found down during this period, it is not reported as
+                        down.
+                    </documentation>
+                </annotation>
+            </element>
+
+            <element name="downtime" maxOccurs="unbounded" minOccurs="1" type="this:downtime">
+                <annotation>
+                    <documentation>
+                        Downtime model. Determines the rate at which addresses are to be polled when they remain
+                        down for extended periods.
+                    </documentation>
+                </annotation>
+            </element>
+        </sequence>
+
+        <attribute name="name" type="string" use="required">
+            <annotation>
+                <documentation>Name or identifier for this package.</documentation>
+            </annotation>
+        </attribute>
+
+        <attribute name="perspective-only" type="boolean" use="optional">
+            <annotation>
+                <documentation>Flag representing whether this package is considered only for perspective polling or should be used for native polling, too.</documentation>
+            </annotation>
+        </attribute>
+    </complexType>
+
+
+    <complexType name="monitor">
+        <annotation>
+            <documentation>Monitor for a service</documentation>
+        </annotation>
+
+        <sequence>
+            <annotation>
+                <documentation>Parameters for polling this service</documentation>
+            </annotation>
+
+            <element name="parameter" maxOccurs="unbounded" minOccurs="0" type="this:parameter"/>
+        </sequence>
+
+        <attribute name="service" type="string" use="required">
+            <annotation>
+                <documentation>Service name</documentation>
+            </annotation>
+        </attribute>
+
+        <attribute name="class-name" type="string" use="required">
+            <annotation>
+                <documentation>
+                    Fully-qualified Java class name used to monitor/poll the service. The class must implement the
+                    org.opennms.netmgt.poller.monitors.ServiceMonitor interface.
+                </documentation>
+            </annotation>
+        </attribute>
+    </complexType>
+
+    <complexType name="filter">
+        <annotation>
+            <documentation>
+                A rule which addresses belonging to this package must pass. This package is applied only to addresses
+                that pass this filter.
+            </documentation>
+        </annotation>
+
+        <simpleContent>
+            <extension base="string"/>
+        </simpleContent>
+    </complexType>
+
+    <complexType name="range">
+        <annotation>
+            <documentation>Range of addresses</documentation>
+        </annotation>
+
+        <attribute name="begin" type="string" use="required">
+            <annotation>
+                <documentation>Starting address of the range.</documentation>
+            </annotation>
+        </attribute>
+
+        <attribute name="end" type="string" use="required">
+            <annotation>
+                <documentation>Ending address of the range.</documentation>
+            </annotation>
+        </attribute>
+    </complexType>
+
+    <complexType name="rrd">
+        <annotation>
+            <documentation>RRD parameters</documentation>
+        </annotation>
+
+        <sequence>
+            <element maxOccurs="unbounded" minOccurs="1" name="rra">
+                <annotation>
+                    <documentation>Round Robin Archive definitions</documentation>
+                </annotation>
+
+                <simpleType>
+                    <restriction base="string">
+                        <pattern value="RRA:(AVERAGE|MIN|MAX|LAST):.*"/>
+                    </restriction>
+                </simpleType>
+            </element>
+        </sequence>
+
+        <attribute name="step" type="int" use="required">
+            <annotation>
+                <documentation>Step size for the RRD, in seconds.</documentation>
+            </annotation>
+        </attribute>
+    </complexType>
+
+    <complexType name="service">
+        <annotation>
+            <documentation>Service to be polled for addresses in this package.</documentation>
+        </annotation>
+
+        <sequence>
+            <element name="pattern" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Pattern to match service names mapped to this service config.</documentation>
+                </annotation>
+            </element>
+            <sequence>
+                <annotation>
+                    <documentation>Parameters to be used for polling this service. </documentation>
+                </annotation>
+
+                <element name="parameter" maxOccurs="unbounded" minOccurs="0" type="this:parameter"/>
+            </sequence>
+        </sequence>
+
+        <attribute name="name" type="string" use="required">
+            <annotation>
+                <documentation>Service name</documentation>
+            </annotation>
+        </attribute>
+
+        <attribute name="interval" type="long" use="required">
+            <annotation>
+                <documentation>Interval at which the service is to be polled.</documentation>
+            </annotation>
+        </attribute>
+
+        <attribute name="user-defined" use="optional" default="false" type="boolean">
+            <annotation>
+                <documentation>
+                    Specifies if the service is user defined. Used specifically for UI purposes.
+                </documentation>
+            </annotation>
+        </attribute>
+
+        <attribute name="enabled" use="optional" default="true" type="boolean">
+            <annotation>
+                <documentation>
+                    Status of the service. The service is polled only if this is set to "true".
+                </documentation>
+            </annotation>
+        </attribute>
+    </complexType>
+
+    <complexType name="downtime">
+        <annotation>
+            <documentation>Downtime model. This determines the rates at which
+                addresses are to be polled when they remain down for extended periods.
+                Usually polling is done at lower rates when a node is down until a
+                certain amount of downtime at which the node is marked
+                'deleted'.
+            </documentation>
+        </annotation>
+
+        <attribute name="begin" type="long" use="required">
+            <annotation>
+                <documentation>Start of the interval.</documentation>
+            </annotation>
+        </attribute>
+
+        <attribute name="end" type="long" use="optional">
+            <annotation>
+                <documentation>End of the interval.</documentation>
+            </annotation>
+        </attribute>
+
+        <attribute name="delete" use="optional">
+            <annotation>
+                <documentation>
+                    Attribute that determines if service is to be deleted when down continuously since the start
+                    time. Use 'never' to never delete services, 'managed' to only delete the service if it is on an
+                    interface that is managed, or 'always' to delete even if the service is on an unmanaged
+                    interface. For backwards-compatibility, 'yes' and 'true' are treated as 'managed'; 'no' and
+                    'false' are treated as 'never'.
+                </documentation>
+            </annotation>
+
+            <simpleType>
+                <restriction base="string">
+                    <enumeration value="always"/>
+                    <enumeration value="managed"/>
+                    <enumeration value="never"/>
+                </restriction>
+            </simpleType>
+        </attribute>
+
+        <attribute name="interval" type="long" use="optional">
+            <annotation>
+                <documentation>
+                    Interval at which service is to be polled between the specified start and end when service has
+                    been continuously down.
+                </documentation>
+            </annotation>
+        </attribute>
+    </complexType>
+
+    <complexType name="parameter">
+        <annotation>
+            <documentation>
+                Parameters to be used for polling this service. E.g.: for polling HTTP, the URL to hit is configurable
+                via a parameter. Parameters are specific to the service monitor.
+            </documentation>
+        </annotation>
+
+        <attribute name="key" type="string" use="required"/>
+<!-- TODO: do we need optional here ↓? Or can we have "required"?-->
+        <attribute name="value" type="string" use="optional"/>
+
+    </complexType>
+
+</schema>

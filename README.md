@@ -16,6 +16,7 @@ See the interfaces defined in the `api` module for a complete list.
  * Resource type definitions (data collection)
  * Graph definitions (data collection)
  * Thresholding configuration
+ * Poller  configuration
 
 ### Consume
 
