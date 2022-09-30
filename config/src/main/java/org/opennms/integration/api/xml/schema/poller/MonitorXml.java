@@ -30,8 +30,8 @@ package org.opennms.integration.api.xml.schema.poller;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -43,114 +43,84 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Monitor for a service
  */
 
-@XmlRootElement(name="monitor")
+@XmlRootElement(name="monitor", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
 @XmlAccessorType(XmlAccessType.NONE)
 public class MonitorXml implements Serializable {
 
     /**
      * Service name
      */
-    @XmlAttribute(name="service")
-    private String m_service;
+    private String service;
 
     /**
      * Java class used to monitor/poll the service. The class must implement
      * the org.opennms.netmgt.poller.monitors.ServiceMonitor interface.
      */
-    @XmlAttribute(name="class-name")
-    private String m_className;
+    private String className;
 
     /**
      * Parameters to be used for polling this service. E.g.: for polling HTTP,
      * the URL to hit is configurable via a parameter. Parameters are specfic
      * to the service monitor.
      */
-    @XmlElement(name="parameter")
-    private List<ParameterXml> m_parameters = new ArrayList<>();
+    private List<ParameterXml> parameters = new ArrayList<>();
 
     /**
      * Service name
      */
+    @XmlAttribute(name="service")
     public String getService() {
-        return m_service;
+        return service;
     }
 
     public void setService(final String service) {
-        m_service = service;
+        this.service = service;
     }
 
     /**
      * Java class used to monitor/poll the service. The class must implement
      * the org.opennms.netmgt.poller.monitors.ServiceMonitor interface.
      */
+    @XmlAttribute(name="class-name")
     public String getClassName() {
-        return m_className;
+        return className;
     }
 
     public void setClassName(final String className) {
-        m_className = className;
+        this.className = className;
     }
 
+    @XmlElement(name="parameter", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
     public List<ParameterXml> getParameters() {
-        if (m_parameters == null) {
-            return Collections.emptyList();
-        } else {
-            return Collections.unmodifiableList(m_parameters);
-        }
+        return parameters;
     }
 
     public void setParameters(final List<ParameterXml> parameters) {
-        m_parameters = new ArrayList<>(parameters);
+        this.parameters = Objects.requireNonNullElseGet(parameters, ArrayList::new);
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((m_className == null) ? 0 : m_className.hashCode());
-        result = prime * result + ((m_parameters == null) ? 0 : m_parameters.hashCode());
-        result = prime * result + ((m_service == null) ? 0 : m_service.hashCode());
+        int result = service != null ? service.hashCode() : 0;
+        result = 31 * result + (className != null ? className.hashCode() : 0);
+        result = 31 * result + parameters.hashCode();
         return result;
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof MonitorXml)) {
-            return false;
-        }
-        final MonitorXml other = (MonitorXml) obj;
-        if (m_className == null) {
-            if (other.m_className != null) {
-                return false;
-            }
-        } else if (!m_className.equals(other.m_className)) {
-            return false;
-        }
-        if (m_parameters == null) {
-            if (other.m_parameters != null) {
-                return false;
-            }
-        } else if (!m_parameters.equals(other.m_parameters)) {
-            return false;
-        }
-        if (m_service == null) {
-            if (other.m_service != null) {
-                return false;
-            }
-        } else if (!m_service.equals(other.m_service)) {
-            return false;
-        }
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MonitorXml that = (MonitorXml) o;
+
+        if (!Objects.equals(service, that.service)) return false;
+        if (!Objects.equals(className, that.className)) return false;
+        return parameters.equals(that.parameters);
     }
 
     @Override
     public String toString() {
-        return "Monitor[service=" + m_service + ",className=" + m_className + ",parameters=" + m_parameters + "]";
+        return "Monitor[service=" + service + ",className=" + className + ",parameters=" + parameters + "]";
     }
 }

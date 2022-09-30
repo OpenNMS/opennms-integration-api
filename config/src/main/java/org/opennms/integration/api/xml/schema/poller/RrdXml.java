@@ -30,8 +30,8 @@ package org.opennms.integration.api.xml.schema.poller;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -43,85 +43,61 @@ import javax.xml.bind.annotation.XmlRootElement;
  * RRD parameters
  */
 
-@XmlRootElement(name="rrd")
+@XmlRootElement(name="rrd", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
 @XmlAccessorType(XmlAccessType.NONE)
 public class RrdXml implements Serializable {
 
     /**
      * Step size for the RRD, in seconds.
      */
-    @XmlAttribute(name="step")
-    private Integer m_step;
+    private Integer step;
 
     /**
      * Round Robin Archive definitions
      */
-    @XmlElement(name="rra")
-    private List<String> m_rras = new ArrayList<>();
+    private List<String> rras = new ArrayList<>();
 
     /**
      * Step size for the RRD, in seconds.
      */
+    @XmlAttribute(name="step")
     public Integer getStep() {
-        return m_step == null? 0 : m_step;
+        return step == null? 0 : step;
     }
 
     public void setStep(final Integer step) {
-        m_step = step;
+        this.step = step;
     }
 
+    @XmlElement(name="rra", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
     public List<String> getRras() {
-        if (m_rras == null) {
-            return Collections.emptyList();
-        } else {
-            return Collections.unmodifiableList(m_rras);
-        }
+        return rras;
     }
 
     public void setRras(final List<String> rras) {
-        m_rras = new ArrayList<String>(rras);
+        this.rras = Objects.requireNonNullElseGet(rras, ArrayList::new);
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((m_rras == null) ? 0 : m_rras.hashCode());
-        result = prime * result + ((m_step == null) ? 0 : m_step.hashCode());
+        int result = step != null ? step.hashCode() : 0;
+        result = 31 * result + rras.hashCode();
         return result;
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof RrdXml)) {
-            return false;
-        }
-        final RrdXml other = (RrdXml) obj;
-        if (m_rras == null) {
-            if (other.m_rras != null) {
-                return false;
-            }
-        } else if (!m_rras.equals(other.m_rras)) {
-            return false;
-        }
-        if (m_step == null) {
-            if (other.m_step != null) {
-                return false;
-            }
-        } else if (!m_step.equals(other.m_step)) {
-            return false;
-        }
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        RrdXml rrdXml = (RrdXml) o;
+
+        if (!Objects.equals(step, rrdXml.step)) return false;
+        return rras.equals(rrdXml.rras);
     }
 
     @Override
     public String toString() {
-        return "Rrd[step=" + m_step + ",rras=" + m_rras + "]";
+        return "Rrd[step=" + step + ",rras=" + rras + "]";
     }
 }

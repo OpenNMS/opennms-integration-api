@@ -30,6 +30,7 @@ package org.opennms.integration.api.xml.schema.poller;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -45,7 +46,7 @@ import com.google.common.collect.ImmutableList;
  * which the node is marked 'deleted'.
  */
 
-@XmlRootElement(name="downtime")
+@XmlRootElement(name="downtime", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
 @XmlAccessorType(XmlAccessType.NONE)
 public class DowntimeXml implements Serializable {
 
@@ -58,48 +59,47 @@ public class DowntimeXml implements Serializable {
     /**
      * Start of the interval.
      */
-    @XmlAttribute(name="begin")
-    private Long m_begin;
+    private Long begin;
 
     /**
      * End of the interval.
      */
-    @XmlAttribute(name="end")
-    private Long m_end;
+    private Long end;
 
     /**
      * Attribute that determines if service is to be deleted when down
      * continuously since the start time.
      */
-    private String m_delete;
+    private String delete;
 
     /**
      * Interval at which service is to be polled between the specified start
      * and end when service has been continuously down.
      */
-    @XmlAttribute(name="interval")
-    private Long m_interval;
+    private Long interval;
 
     /**
      * Start of the interval.
      */
+    @XmlAttribute(name="begin")
     public Long getBegin() {
-        return m_begin == null? 0 : m_begin;
+        return begin == null? 0 : begin;
     }
 
     public void setBegin(final Long begin) {
-        m_begin = begin;
+        this.begin = begin;
     }
 
     /**
      * End of the interval.
      */
+    @XmlAttribute(name="end")
     public Long getEnd() {
-        return m_end;
+        return end;
     }
 
     public void setEnd(final Long end) {
-        m_end = end;
+        this.end = end;
     }
 
 
@@ -109,85 +109,54 @@ public class DowntimeXml implements Serializable {
      */
     @XmlAttribute(name="delete")
     public String getDelete() {
-        return m_delete;
+        return delete;
     }
 
     public void setDelete(final String delete) {
-        if (delete == null || !s_deleteValues.contains(delete)) {
+        if (delete != null && !s_deleteValues.contains(delete)) {
             throw new IllegalArgumentException("Downtime delete attribute must be one of 'always', 'managed', or 'never', but was '" + delete + "'.");
         }
 
-        m_delete = delete;
+        this.delete = delete;
     }
 
     /**
      * Interval at which service is to be polled between the specified start
      * and end when service has been continuously down.
      */
+    @XmlAttribute(name="interval")
     public Long getInterval() {
-        return m_interval;
+        return interval;
     }
 
     public void setInterval(final Long interval) {
-        m_interval = interval;
+        this.interval = interval;
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((m_begin == null) ? 0 : m_begin.hashCode());
-        result = prime * result + ((m_delete == null) ? 0 : m_delete.hashCode());
-        result = prime * result + ((m_end == null) ? 0 : m_end.hashCode());
-        result = prime * result + ((m_interval == null) ? 0 : m_interval.hashCode());
+        int result = begin != null ? begin.hashCode() : 0;
+        result = 31 * result + (end != null ? end.hashCode() : 0);
+        result = 31 * result + (delete != null ? delete.hashCode() : 0);
+        result = 31 * result + (interval != null ? interval.hashCode() : 0);
         return result;
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof DowntimeXml)) {
-            return false;
-        }
-        final DowntimeXml other = (DowntimeXml) obj;
-        if (m_begin == null) {
-            if (other.m_begin != null) {
-                return false;
-            }
-        } else if (!m_begin.equals(other.m_begin)) {
-            return false;
-        }
-        if (m_delete == null) {
-            if (other.m_delete != null) {
-                return false;
-            }
-        } else if (!m_delete.equals(other.m_delete)) {
-            return false;
-        }
-        if (m_end == null) {
-            if (other.m_end != null) {
-                return false;
-            }
-        } else if (!m_end.equals(other.m_end)) {
-            return false;
-        }
-        if (m_interval == null) {
-            if (other.m_interval != null) {
-                return false;
-            }
-        } else if (!m_interval.equals(other.m_interval)) {
-            return false;
-        }
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DowntimeXml that = (DowntimeXml) o;
+
+        if (!Objects.equals(begin, that.begin)) return false;
+        if (!Objects.equals(end, that.end)) return false;
+        if (!Objects.equals(delete, that.delete)) return false;
+        return Objects.equals(interval, that.interval);
     }
 
     @Override
     public String toString() {
-        return "Downtime [begin=" + m_begin + ", end=" + m_end + ", delete=" + m_delete + ", interval=" + m_interval + "]";
+        return "Downtime [begin=" + begin + ", end=" + end + ", delete=" + delete + ", interval=" + interval + "]";
     }
 }

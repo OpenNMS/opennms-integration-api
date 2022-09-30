@@ -30,7 +30,6 @@ package org.opennms.integration.api.xml.schema.poller;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -44,61 +43,62 @@ import javax.xml.bind.annotation.XmlRootElement;
  *  configuration file.
  */
 
-@XmlRootElement(name="poller-configuration", namespace = "http://xmlns.opennms.org/xsd/config/poller")
+@XmlRootElement(name="poller-configuration", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
 @XmlAccessorType(XmlAccessType.NONE)
-public class PollerConfigurationXml implements Serializable {
+public final class PollerConfigurationXml implements Serializable {
 
     /**
      * Package encapsulating addresses, services to be polled for these
      * addresses, etc..
      */
-    @XmlElement(name="package")
-    private List<PackageXml> m_packages = new ArrayList<>();
+    private List<PackageXml> packages = new ArrayList<>();
 
     /**
      * Service monitors
      */
-    @XmlElement(name="monitor")
-    private List<MonitorXml> m_monitors = new ArrayList<>();
+    private List<MonitorXml> monitors = new ArrayList<>();
 
+    @XmlElement(name="package", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
     public List<PackageXml> getPackages() {
-        if (m_packages == null) {
-            return Collections.emptyList();
-        } else {
-            return Collections.unmodifiableList(m_packages);
-        }
+        return packages;
     }
 
+    public void setPackages(List<PackageXml> packages) {
+        this.packages = Objects.requireNonNullElseGet(packages, ArrayList::new);
+    }
+
+    @XmlElement(name="monitor", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
     public List<MonitorXml> getMonitors() {
-        if (m_monitors == null) {
-            return Collections.emptyList();
-        } else {
-            return Collections.unmodifiableList(m_monitors);
-        }
+        return monitors;
     }
 
-    public void setMonitors(final List<MonitorXml> monitors) {
-        m_monitors = new ArrayList<>(monitors);
+    public void setMonitors(List<MonitorXml> monitors) {
+        this.monitors = Objects.requireNonNullElseGet(monitors, ArrayList::new);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(m_packages, m_monitors);
+        int result = packages.hashCode();
+        result = 31 * result + monitors.hashCode();
+        return result;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final PollerConfigurationXml that = (PollerConfigurationXml) o;
-        return Objects.equals(m_packages, that.m_packages)
-                && Objects.equals(m_monitors, that.m_monitors);
+
+        PollerConfigurationXml that = (PollerConfigurationXml) o;
+
+        if (!Objects.equals(packages, that.packages)) return false;
+        return Objects.equals(monitors, that.monitors);
     }
+
     @Override
     public String toString() {
         return "PollerConfiguration[" +
-                ",packages=" + m_packages +
-                ",monitors=" + m_monitors +
+                ",packages=" + packages +
+                ",monitors=" + monitors +
                 "]";
     }
 

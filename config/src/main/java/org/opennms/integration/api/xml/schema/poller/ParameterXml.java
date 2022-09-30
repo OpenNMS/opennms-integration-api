@@ -29,6 +29,7 @@
 package org.opennms.integration.api.xml.schema.poller;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -42,78 +43,58 @@ import javax.xml.bind.annotation.XmlRootElement;
  * service monitor.
  */
 
-@XmlRootElement(name="parameter")
+@XmlRootElement(name="parameter", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
 @XmlAccessorType(XmlAccessType.NONE)
 public class ParameterXml implements Serializable {
 
     /**
      * Field m_key.
      */
-    @XmlAttribute(name="key")
-    private String m_key;
+    private String key;
 
     /**
      * Field m_value.
      */
-    @XmlAttribute(name="value")
-    private String m_value;
+    private String value;
 
+    @XmlAttribute(name="key")
     public String getKey() {
-        return m_key;
+        return key;
     }
 
     public void setKey(final String key) {
-        m_key = key;
+        this.key = key;
     }
 
+    @XmlAttribute(name="value")
     public String getValue() {
-        return m_value;
+        return value;
     }
 
     public void setValue(final String value) {
-        m_value = value;
+        this.value = value;
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((m_key == null) ? 0 : m_key.hashCode());
-        result = prime * result + ((m_value == null) ? 0 : m_value.hashCode());
+        int result = key != null ? key.hashCode() : 0;
+        result = 31 * result + (value != null ? value.hashCode() : 0);
         return result;
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof ParameterXml)) {
-            return false;
-        }
-        final ParameterXml other = (ParameterXml) obj;
-        if (m_key == null) {
-            if (other.m_key != null) {
-                return false;
-            }
-        } else if (!m_key.equals(other.m_key)) {
-            return false;
-        }
-        if (m_value == null) {
-            if (other.m_value != null) {
-                return false;
-            }
-        } else if (!m_value.equals(other.m_value)) {
-            return false;
-        }
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ParameterXml that = (ParameterXml) o;
+
+        if (!Objects.equals(key, that.key)) return false;
+        return Objects.equals(value, that.value);
     }
 
     @Override
     public String toString() {
-        return "Parameter [key=" + m_key + ", value=" + m_value + "]";
+        return "Parameter [key=" + key + ", value=" + value + "]";
     }
 }

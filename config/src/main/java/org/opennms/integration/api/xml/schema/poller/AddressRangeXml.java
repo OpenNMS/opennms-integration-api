@@ -29,6 +29,7 @@
 package org.opennms.integration.api.xml.schema.poller;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -40,78 +41,58 @@ import javax.xml.bind.annotation.XmlRootElement;
  *  package.
  */
 
-@XmlRootElement(name="range")
+@XmlRootElement(name="range", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
 @XmlAccessorType(XmlAccessType.NONE)
 public class AddressRangeXml implements Serializable {
 
     /**
      * Starting address of the range.
      */
-    @XmlAttribute(name="begin")
-    private String m_begin;
+    private String begin;
 
     /**
      * Ending address of the range.
      */
-    @XmlAttribute(name="end")
-    private String m_end;
+    private String end;
 
+    @XmlAttribute(name="begin")
     public String getBegin() {
-        return m_begin;
+        return begin;
     }
     
     public void setBegin(final String begin) {
-        m_begin = begin;
+        this.begin = begin;
     }
-    
+
+    @XmlAttribute(name="end")
     public String getEnd() {
-        return m_end;
+        return end;
     }
     
     public void setEnd(final String end) {
-        m_end = end;
+        this.end = end;
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((m_begin == null) ? 0 : m_begin.hashCode());
-        result = prime * result + ((m_end == null) ? 0 : m_end.hashCode());
+        int result = begin != null ? begin.hashCode() : 0;
+        result = 31 * result + (end != null ? end.hashCode() : 0);
         return result;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof AddressRangeXml)) {
-            return false;
-        }
-        AddressRangeXml other = (AddressRangeXml) obj;
-        if (m_begin == null) {
-            if (other.m_begin != null) {
-                return false;
-            }
-        } else if (!m_begin.equals(other.m_begin)) {
-            return false;
-        }
-        if (m_end == null) {
-            if (other.m_end != null) {
-                return false;
-            }
-        } else if (!m_end.equals(other.m_end)) {
-            return false;
-        }
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AddressRangeXml that = (AddressRangeXml) o;
+
+        if (!Objects.equals(begin, that.begin)) return false;
+        return Objects.equals(end, that.end);
     }
 
     @Override
     public String toString() {
-        return "IncludeRange[begin=" + m_begin + ",end=" + m_end + "]";
+        return "IncludeRange[begin=" + begin + ",end=" + end + "]";
     }
 }
