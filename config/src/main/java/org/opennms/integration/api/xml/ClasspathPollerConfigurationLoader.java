@@ -62,8 +62,7 @@ public class ClasspathPollerConfigurationLoader extends ClasspathXmlLoader<Polle
 
     public PollerConfigurationExtension getPollerConfiguration() {
 
-        final List<PollerConfigurationXml> configurations;
-        configurations = getObjects();
+        final List<PollerConfigurationXml> configurations = getObjects();
 
         return new PollerConfigurationExtension() {
 
