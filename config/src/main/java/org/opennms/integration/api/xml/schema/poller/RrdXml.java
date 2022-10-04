@@ -39,39 +39,41 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.google.common.base.MoreObjects;
+
 /**
  * RRD parameters
  */
 
-@XmlRootElement(name="rrd", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
+@XmlRootElement(name="rrd")
 @XmlAccessorType(XmlAccessType.NONE)
 public class RrdXml implements Serializable {
 
     /**
      * Step size for the RRD, in seconds.
      */
-    private Integer step;
+    @XmlAttribute(name="step")
+    private int step;
 
     /**
      * Round Robin Archive definitions
      */
+    @XmlElement(name="rra")
     private List<String> rras = new ArrayList<>();
 
     /**
      * Step size for the RRD, in seconds.
      */
-    @XmlAttribute(name="step")
-    public Integer getStep() {
-        return step == null? 0 : step;
+    public int getStep() {
+        return this.step;
     }
 
-    public void setStep(final Integer step) {
+    public void setStep(final int step) {
         this.step = step;
     }
 
-    @XmlElement(name="rra", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
     public List<String> getRras() {
-        return rras;
+        return this.rras;
     }
 
     public void setRras(final List<String> rras) {
@@ -79,25 +81,26 @@ public class RrdXml implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        int result = step != null ? step.hashCode() : 0;
-        result = 31 * result + rras.hashCode();
-        return result;
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RrdXml)) return false;
+
+        final RrdXml rrdXml = (RrdXml) o;
+        return Objects.equals(this.step, rrdXml.step) &&
+               Objects.equals(this.rras, rrdXml.rras);
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        RrdXml rrdXml = (RrdXml) o;
-
-        if (!Objects.equals(step, rrdXml.step)) return false;
-        return rras.equals(rrdXml.rras);
+    public int hashCode() {
+        return Objects.hash(this.step,
+                            this.rras);
     }
 
     @Override
     public String toString() {
-        return "Rrd[step=" + step + ",rras=" + rras + "]";
+        return MoreObjects.toStringHelper(this)
+                          .add("step", this.step)
+                          .add("rras", this.rras)
+                          .toString();
     }
 }

@@ -36,37 +36,39 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.google.common.base.MoreObjects;
+
 /**
  * Range of addresses to be included in this
  *  package.
  */
 
-@XmlRootElement(name="range", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
+@XmlRootElement(name="range")
 @XmlAccessorType(XmlAccessType.NONE)
 public class AddressRangeXml implements Serializable {
 
     /**
      * Starting address of the range.
      */
+    @XmlAttribute(name="begin")
     private String begin;
 
     /**
      * Ending address of the range.
      */
+    @XmlAttribute(name="end")
     private String end;
 
-    @XmlAttribute(name="begin")
     public String getBegin() {
-        return begin;
+        return this.begin;
     }
     
     public void setBegin(final String begin) {
         this.begin = begin;
     }
 
-    @XmlAttribute(name="end")
     public String getEnd() {
-        return end;
+        return this.end;
     }
     
     public void setEnd(final String end) {
@@ -74,25 +76,26 @@ public class AddressRangeXml implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        int result = begin != null ? begin.hashCode() : 0;
-        result = 31 * result + (end != null ? end.hashCode() : 0);
-        return result;
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AddressRangeXml)) return false;
+
+        final AddressRangeXml that = (AddressRangeXml) o;
+        return Objects.equals(this.begin, that.begin) &&
+               Objects.equals(this.end, that.end);
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        AddressRangeXml that = (AddressRangeXml) o;
-
-        if (!Objects.equals(begin, that.begin)) return false;
-        return Objects.equals(end, that.end);
+    public int hashCode() {
+        return Objects.hash(this.begin,
+                            this.end);
     }
 
     @Override
     public String toString() {
-        return "IncludeRange[begin=" + begin + ",end=" + end + "]";
+        return MoreObjects.toStringHelper(this)
+                          .add("begin", this.begin)
+                          .add("end", this.end)
+                          .toString();
     }
 }

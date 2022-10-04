@@ -39,52 +39,45 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.google.common.base.MoreObjects;
+
 /**
  * Service to be polled for addresses in this
  *  package.
  */
 
-@XmlRootElement(name="service", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
+@XmlRootElement(name="service")
 @XmlAccessorType(XmlAccessType.NONE)
 public class ServiceXml implements Serializable {
 
     /**
      * Service name
      */
+    @XmlAttribute(name="name")
     private String name;
 
     /**
      * Interval at which the service is to be polled
      */
-    private Long interval;
+    @XmlAttribute(name="interval")
+    private long interval;
 
-    /**
-     * Specifies if the service is user defined. Used specifically for UI
-     * purposes.
-     */
-    private String userDefined = "false";
-
-    /**
-     * Status of the service. The service is polled only if this is set to
-     * 'on'.
-     */
-    private String status = "on";
-
-    private String pattern = null;
+    @XmlElement(name="pattern")
+    private String pattern;
 
     /**
      * Parameters to be used for polling this service. E.g.: for polling HTTP,
      * the URL to hit is configurable via a parameter. Parameters are specific
      * to the service monitor.
      */
+    @XmlElement(name="parameter")
     private List<ParameterXml> parameters = new ArrayList<>();
 
     /**
      * Service name
      */
-    @XmlAttribute(name="name")
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(final String name) {
@@ -94,53 +87,24 @@ public class ServiceXml implements Serializable {
     /**
      * Interval at which the service is to be polled
      */
-    @XmlAttribute(name="interval")
-    public Long getInterval() {
-        return interval == null? 0 : interval;
+    public long getInterval() {
+        return this.interval;
     }
 
-    public void setInterval(final Long interval) {
+    public void setInterval(final long interval) {
         this.interval = interval;
     }
 
-    /**
-     * Specifies if the service is user defined. Used specifically for UI
-     * purposes.
-     */
-    @XmlAttribute(name="user-defined")
-    public String getUserDefined() {
-        return userDefined == null? "false" : userDefined;
-    }
-
-    public void setUserDefined(final String userDefined) {
-        this.userDefined = userDefined;
-    }
-
-    /**
-     * Status of the service. The service is polled only if this is set to
-     * 'on'.
-     */
-    @XmlAttribute(name="status")
-    public String getStatus() {
-        return status == null? "on" : status;
-    }
-
-    public void setStatus(final String status) {
-        this.status = status;
-    }
-
-    @XmlElement(name="pattern")
     public String getPattern() {
-        return pattern;
+        return this.pattern;
     }
 
     public void setPattern(final String pattern) {
         this.pattern = pattern;
     }
 
-    @XmlElement(name="parameter", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
     public List<ParameterXml> getParameters() {
-        return parameters;
+        return this.parameters;
     }
 
     public void setParameters(final List<ParameterXml> parameters) {
@@ -148,38 +112,31 @@ public class ServiceXml implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ServiceXml that = (ServiceXml) o;
-
-        if (!Objects.equals(name, that.name)) return false;
-        if (!Objects.equals(interval, that.interval)) return false;
-        if (!Objects.equals(userDefined, that.userDefined)) return false;
-        if (!Objects.equals(status, that.status)) return false;
-        if (!Objects.equals(pattern, that.pattern)) return false;
-        return Objects.equals(parameters, that.parameters);
+        if (!(o instanceof ServiceXml)) return false;
+        final ServiceXml that = (ServiceXml) o;
+        return Objects.equals(this.interval, that.interval) &&
+               Objects.equals(this.name, that.name) &&
+               Objects.equals(this.pattern, that.pattern) &&
+               Objects.equals(this.parameters, that.parameters);
     }
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (interval != null ? interval.hashCode() : 0);
-        result = 31 * result + (userDefined != null ? userDefined.hashCode() : 0);
-        result = 31 * result + (status != null ? status.hashCode() : 0);
-        result = 31 * result + (pattern != null ? pattern.hashCode() : 0);
-        result = 31 * result + (parameters != null ? parameters.hashCode() : 0);
-        return result;
+        return Objects.hash(this.name,
+                            this.interval,
+                            this.pattern,
+                            this.parameters);
     }
 
     @Override
     public String toString() {
-        return "Service[name=" + name +
-                ",interval=" + interval +
-                ",userDefined=" + userDefined +
-                ",status=" + status +
-                ",parameters=" + parameters +
-                "]";
+        return MoreObjects.toStringHelper(this)
+                          .add("name", this.name)
+                          .add("interval", this.interval)
+                          .add("pattern", this.pattern)
+                          .add("parameters", this.parameters)
+                          .toString();
     }
 }
