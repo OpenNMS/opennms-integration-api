@@ -233,22 +233,6 @@
                 <documentation>Interval at which the service is to be polled.</documentation>
             </annotation>
         </attribute>
-
-        <attribute name="user-defined" use="optional" default="false" type="boolean">
-            <annotation>
-                <documentation>
-                    Specifies if the service is user defined. Used specifically for UI purposes.
-                </documentation>
-            </annotation>
-        </attribute>
-
-        <attribute name="enabled" use="optional" default="true" type="boolean">
-            <annotation>
-                <documentation>
-                    Status of the service. The service is polled only if this is set to "true".
-                </documentation>
-            </annotation>
-        </attribute>
     </complexType>
 
     <complexType name="downtime">
@@ -312,8 +296,7 @@
         </annotation>
 
         <attribute name="key" type="string" use="required"/>
-<!-- TODO: do we need optional here ↓? Or can we have "required"?-->
-        <attribute name="value" type="string" use="optional"/>
+        <attribute name="value" type="string" use="required"/>
 
     </complexType>
 
