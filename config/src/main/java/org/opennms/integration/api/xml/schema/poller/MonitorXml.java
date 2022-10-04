@@ -39,23 +39,27 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.google.common.base.MoreObjects;
+
 /**
  * Monitor for a service
  */
 
-@XmlRootElement(name="monitor", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
+@XmlRootElement(name="monitor")
 @XmlAccessorType(XmlAccessType.NONE)
 public class MonitorXml implements Serializable {
 
     /**
      * Service name
      */
+    @XmlAttribute(name="service")
     private String service;
 
     /**
      * Java class used to monitor/poll the service. The class must implement
      * the org.opennms.netmgt.poller.monitors.ServiceMonitor interface.
      */
+    @XmlAttribute(name="class-name")
     private String className;
 
     /**
@@ -63,14 +67,14 @@ public class MonitorXml implements Serializable {
      * the URL to hit is configurable via a parameter. Parameters are specfic
      * to the service monitor.
      */
+    @XmlElement(name="parameter")
     private List<ParameterXml> parameters = new ArrayList<>();
 
     /**
      * Service name
      */
-    @XmlAttribute(name="service")
     public String getService() {
-        return service;
+        return this.service;
     }
 
     public void setService(final String service) {
@@ -81,18 +85,16 @@ public class MonitorXml implements Serializable {
      * Java class used to monitor/poll the service. The class must implement
      * the org.opennms.netmgt.poller.monitors.ServiceMonitor interface.
      */
-    @XmlAttribute(name="class-name")
     public String getClassName() {
-        return className;
+        return this.className;
     }
 
     public void setClassName(final String className) {
         this.className = className;
     }
 
-    @XmlElement(name="parameter", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
     public List<ParameterXml> getParameters() {
-        return parameters;
+        return this.parameters;
     }
 
     public void setParameters(final List<ParameterXml> parameters) {
@@ -100,27 +102,29 @@ public class MonitorXml implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        int result = service != null ? service.hashCode() : 0;
-        result = 31 * result + (className != null ? className.hashCode() : 0);
-        result = 31 * result + parameters.hashCode();
-        return result;
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MonitorXml)) return false;
+
+        final MonitorXml that = (MonitorXml) o;
+        return Objects.equals(this.service, that.service) &&
+               Objects.equals(this.className, that.className) &&
+               Objects.equals(this.parameters, that.parameters);
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        MonitorXml that = (MonitorXml) o;
-
-        if (!Objects.equals(service, that.service)) return false;
-        if (!Objects.equals(className, that.className)) return false;
-        return parameters.equals(that.parameters);
+    public int hashCode() {
+        return Objects.hash(this.service,
+                            this.className,
+                            this.parameters);
     }
 
     @Override
     public String toString() {
-        return "Monitor[service=" + service + ",className=" + className + ",parameters=" + parameters + "]";
+        return MoreObjects.toStringHelper(this)
+                          .add("service", this.service)
+                          .add("className", this.className)
+                          .add("parameters", this.parameters)
+                          .toString();
     }
 }

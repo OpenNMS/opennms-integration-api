@@ -38,12 +38,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.google.common.base.MoreObjects;
+
 /**
  * Top-level element for the poller-configuration.xml
  *  configuration file.
  */
 
-@XmlRootElement(name="poller-configuration", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
+@XmlRootElement(name="poller-configuration")
 @XmlAccessorType(XmlAccessType.NONE)
 public final class PollerConfigurationXml implements Serializable {
 
@@ -51,14 +53,15 @@ public final class PollerConfigurationXml implements Serializable {
      * Package encapsulating addresses, services to be polled for these
      * addresses, etc..
      */
+    @XmlElement(name="package")
     private List<PackageXml> packages = new ArrayList<>();
 
     /**
      * Service monitors
      */
+    @XmlElement(name="monitor")
     private List<MonitorXml> monitors = new ArrayList<>();
 
-    @XmlElement(name="package", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
     public List<PackageXml> getPackages() {
         return packages;
     }
@@ -67,7 +70,6 @@ public final class PollerConfigurationXml implements Serializable {
         this.packages = Objects.requireNonNullElseGet(packages, ArrayList::new);
     }
 
-    @XmlElement(name="monitor", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
     public List<MonitorXml> getMonitors() {
         return monitors;
     }
@@ -78,9 +80,8 @@ public final class PollerConfigurationXml implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = packages.hashCode();
-        result = 31 * result + monitors.hashCode();
-        return result;
+        return Objects.hash(this.packages,
+                            this.monitors);
     }
 
     @Override
@@ -88,18 +89,16 @@ public final class PollerConfigurationXml implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        PollerConfigurationXml that = (PollerConfigurationXml) o;
-
-        if (!Objects.equals(packages, that.packages)) return false;
-        return Objects.equals(monitors, that.monitors);
+        final PollerConfigurationXml that = (PollerConfigurationXml) o;
+        return Objects.equals(this.packages, that.packages)
+                && Objects.equals(this.monitors, that.monitors);
     }
 
     @Override
     public String toString() {
-        return "PollerConfiguration[" +
-                ",packages=" + packages +
-                ",monitors=" + monitors +
-                "]";
+        return MoreObjects.toStringHelper(this)
+                          .add("packages", this.packages)
+                          .add("monitors", this.monitors)
+                          .toString();
     }
-
 }

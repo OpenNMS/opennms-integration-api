@@ -44,64 +44,72 @@ import javax.xml.bind.annotation.XmlRootElement;
  *  for these addresses, etc..
  */
 
-@XmlRootElement(name="package", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
+@XmlRootElement(name="package")
 @XmlAccessorType(XmlAccessType.NONE)
 public class PackageXml implements Serializable {
 
     /**
      * Name or identifier for this package.
      */
+    @XmlAttribute(name="name")
     private String name;
 
     /**
      * A rule which addresses belonging to this package must pass. This
      * package is applied only to addresses that pass this filter.
      */
+    @XmlElement(name="filter")
     private String filter;
 
     /**
      * Addresses in this package
      */
+    @XmlElement(name="specific")
     private List<String> specifics = new ArrayList<>();
 
     /**
      * Range of addresses in this package.
      */
+    @XmlElement(name="include-range")
     private List<AddressRangeXml> includeRanges = new ArrayList<>();
 
     /**
      * Range of addresses to be excluded from this package.
      */
+    @XmlElement(name="exclude-range")
     private List<AddressRangeXml> excludeRanges = new ArrayList<>();
 
     /**
      * RRD parameters for response time data.
      */
+    @XmlElement(name="rrd")
     private RrdXml rrd;
 
     /**
      * Services to be polled for addresses belonging to this package.
      */
+    @XmlElement(name="service")
     private List<ServiceXml> services = new ArrayList<>();
 
     /**
      * Scheduled outages. If a service is found down during this period, it is
      * not reported as down.
      */
+    @XmlElement(name="outage-calendar")
     private List<String> outageCalendars = new ArrayList<>();
 
     /**
      * Downtime model. Determines the rate at which addresses are to be polled
      * when they remain down for extended periods.
      */
+    @XmlElement(name="downtime")
     private List<DowntimeXml> downtimes = new ArrayList<>();
 
     /**
      * Name or identifier for this package.
      */
-    @XmlAttribute(name="name")
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(final String name) {
@@ -112,36 +120,32 @@ public class PackageXml implements Serializable {
      * A rule which addresses belonging to this package must pass. This
      * package is applied only to addresses that pass this filter.
      */
-    @XmlElement(name="filter", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
     public String getFilter() {
-        return filter;
+        return this.filter;
     }
 
     public void setFilter(final String filter) {
         this.filter = filter;
     }
 
-    @XmlElement(name="specific", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
     public List<String> getSpecifics() {
-        return specifics;
+        return this.specifics;
     }
 
     public void setSpecifics(final List<String> specifics) {
         this.specifics = Objects.requireNonNullElseGet(specifics, ArrayList::new);
     }
 
-    @XmlElement(name="include-range", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
     public List<AddressRangeXml> getIncludeRanges() {
-        return includeRanges;
+        return this.includeRanges;
     }
 
     public void setIncludeRanges(final List<AddressRangeXml> includeRanges) {
         this.includeRanges = Objects.requireNonNullElseGet(includeRanges, ArrayList::new);
     }
 
-    @XmlElement(name="exclude-range", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
     public List<AddressRangeXml> getExcludeRanges() {
-        return excludeRanges;
+        return this.excludeRanges;
     }
 
     public void setExcludeRanges(final List<AddressRangeXml> excludeRanges) {
@@ -151,36 +155,32 @@ public class PackageXml implements Serializable {
     /**
      * RRD parameters for response time data.
      */
-    @XmlElement(name="rrd", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
     public RrdXml getRrd() {
-        return rrd;
+        return this.rrd;
     }
 
     public void setRrd(final RrdXml rrd) {
         this.rrd = rrd;
     }
 
-    @XmlElement(name="service", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
     public List<ServiceXml> getServices() {
-        return services;
+        return this.services;
     }
 
     public void setServices(final List<ServiceXml> services) {
         this.services = Objects.requireNonNullElseGet(services, ArrayList::new);
     }
 
-    @XmlElement(name="outage-calendar", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
     public List<String> getOutageCalendars() {
-        return outageCalendars;
+        return this.outageCalendars;
     }
 
     public void setOutageCalendars(final List<String> outageCalendars) {
         this.outageCalendars = Objects.requireNonNullElseGet(outageCalendars, ArrayList::new);
     }
 
-    @XmlElement(name="downtime", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
     public List<DowntimeXml> getDowntimes() {
-        return downtimes;
+        return this.downtimes;
     }
 
     public void setDowntimes(final List<DowntimeXml> downtimes) {
@@ -188,48 +188,32 @@ public class PackageXml implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (filter != null ? filter.hashCode() : 0);
-        result = 31 * result + specifics.hashCode();
-        result = 31 * result + includeRanges.hashCode();
-        result = 31 * result + excludeRanges.hashCode();
-        result = 31 * result + (rrd != null ? rrd.hashCode() : 0);
-        result = 31 * result + services.hashCode();
-        result = 31 * result + outageCalendars.hashCode();
-        result = 31 * result + downtimes.hashCode();
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof PackageXml)) return false;
 
-        PackageXml that = (PackageXml) o;
-
-        if (!Objects.equals(name, that.name)) return false;
-        if (!Objects.equals(filter, that.filter)) return false;
-        if (!Objects.equals(specifics, that.specifics)) return false;
-        if (!Objects.equals(includeRanges, that.includeRanges)) return false;
-        if (!Objects.equals(excludeRanges, that.excludeRanges)) return false;
-        if (!Objects.equals(rrd, that.rrd)) return false;
-        if (!Objects.equals(services, that.services)) return false;
-        if (!Objects.equals(outageCalendars, that.outageCalendars)) return false;
-        return Objects.equals(downtimes, that.downtimes);
+        final PackageXml that = (PackageXml) o;
+        return Objects.equals(this.name, that.name) &&
+               Objects.equals(this.filter, that.filter) &&
+               Objects.equals(this.specifics, that.specifics) &&
+               Objects.equals(this.includeRanges, that.includeRanges) &&
+               Objects.equals(this.excludeRanges, that.excludeRanges) &&
+               Objects.equals(this.rrd, that.rrd) &&
+               Objects.equals(this.services, that.services) &&
+               Objects.equals(this.outageCalendars, that.outageCalendars) &&
+               Objects.equals(this.downtimes, that.downtimes);
     }
 
     @Override
-    public String toString() {
-        return "Package[name=" + name +
-                ",filter=" + filter +
-                ",specifics=" + specifics +
-                ",includeRanges=" + includeRanges +
-                ",excludeRanges=" + excludeRanges +
-                ",rrd=" + rrd +
-                ",services=" + services +
-                ",outageCalendars=" + outageCalendars +
-                ",downtimes=" + downtimes +
-                "]";
+    public int hashCode() {
+        return Objects.hash(this.name,
+                            this.filter,
+                            this.specifics,
+                            this.includeRanges,
+                            this.excludeRanges,
+                            this.rrd,
+                            this.services,
+                            this.outageCalendars,
+                            this.downtimes);
     }
 }

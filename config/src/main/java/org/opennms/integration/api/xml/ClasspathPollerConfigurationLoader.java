@@ -50,6 +50,8 @@ import org.opennms.integration.api.xml.schema.poller.AddressRangeXml;
 import org.opennms.integration.api.xml.schema.poller.RrdXml;
 import org.opennms.integration.api.xml.schema.poller.ServiceXml;
 
+import com.google.common.base.MoreObjects;
+
 
 /**
  * Used to load XML poller configuration from the class-path.
@@ -80,6 +82,14 @@ public class ClasspathPollerConfigurationLoader extends ClasspathXmlLoader<Polle
                         .flatMap(c -> c.getMonitors().stream())
                         .map(ClasspathPollerConfigurationLoader::mapXml)
                         .collect(Collectors.toUnmodifiableList());
+            }
+
+            @Override
+            public String toString() {
+                return MoreObjects.toStringHelper("PollerConfigurationExtension")
+                        .add("packages", this.getPackages())
+                        .add("monitors", this.getMonitors())
+                        .toString();
             }
         };
     }
@@ -140,6 +150,21 @@ public class ClasspathPollerConfigurationLoader extends ClasspathXmlLoader<Polle
                         .map(ClasspathPollerConfigurationLoader::mapXml)
                         .collect(Collectors.toList());
             }
+
+            @Override
+            public String toString() {
+                return MoreObjects.toStringHelper("Package")
+                                  .add("name", this.getName())
+                                  .add("filter", this.getFilter())
+                                  .add("specific", this.getSpecifics())
+                                  .add("includeRange", this.getIncludeRanges())
+                                  .add("excludeRange", this.getExcludeRanges())
+                                  .add("rrd", this.getRrd())
+                                  .add("services", this.getServices())
+                                  .add("outageCalendars", this.getOutageCalendars())
+                                  .add("downtimes", this.getDowntimes())
+                        .toString();
+            }
         };
     }
 
@@ -157,7 +182,7 @@ public class ClasspathPollerConfigurationLoader extends ClasspathXmlLoader<Polle
 
             @Override
             public Optional<DeletingMode> getDelete() {
-                final String delete = downtime.getDelete();
+                final var delete = downtime.getDelete();
                 return Optional.ofNullable(delete)
                         .map(ClasspathPollerConfigurationLoader::mapXml);
             }
@@ -166,11 +191,25 @@ public class ClasspathPollerConfigurationLoader extends ClasspathXmlLoader<Polle
             public Optional<Long> getInterval() {
                 return Optional.ofNullable(downtime.getInterval());
             }
+
+            @Override
+            public String toString() {
+                return MoreObjects.toStringHelper("Downtime")
+                                  .add("begin", this.getBegin())
+                                  .add("end", this.getEnd())
+                                  .add("delete", this.getDelete())
+                                  .toString();
+            }
         };
     }
 
-    private static Downtime.DeletingMode mapXml(String s) {
-        return Downtime.DeletingMode.valueOf(s.toUpperCase());
+    private static Downtime.DeletingMode mapXml(DowntimeXml.Delete delete) {
+        switch (delete) {
+            case ALWAYS: return Downtime.DeletingMode.ALWAYS;
+            case MANAGED: return Downtime.DeletingMode.MANAGED;
+            case NEVER: return Downtime.DeletingMode.NEVER;
+            default: throw new IllegalArgumentException();
+        }
     }
 
     private static Service mapXml(final ServiceXml serviceXml) {
@@ -196,6 +235,16 @@ public class ClasspathPollerConfigurationLoader extends ClasspathXmlLoader<Polle
                         .map(ClasspathPollerConfigurationLoader::mapXml)
                         .collect(Collectors.toList());
             }
+
+            @Override
+            public String toString() {
+                return MoreObjects.toStringHelper("Service")
+                                  .add("name", this.getName())
+                                  .add("interval", this.getInterval())
+                                  .add("pattern", this.getPattern())
+                                  .add("parameters", this.getParameters())
+                                  .toString();
+            }
         };
     }
 
@@ -210,6 +259,14 @@ public class ClasspathPollerConfigurationLoader extends ClasspathXmlLoader<Polle
             public String getValue() {
                 return parameterXml.getValue();
             }
+
+            @Override
+            public String toString() {
+                return MoreObjects.toStringHelper("Parameter")
+                                  .add("key", this.getKey())
+                                  .add("value", this.getValue())
+                                  .toString();
+            }
         };
     }
 
@@ -223,6 +280,14 @@ public class ClasspathPollerConfigurationLoader extends ClasspathXmlLoader<Polle
             @Override
             public String getEnd() {
                 return addressRangeXml.getEnd();
+            }
+
+            @Override
+            public String toString() {
+                return MoreObjects.toStringHelper("AddressRange")
+                                  .add("begin", this.getBegin())
+                                  .add("end", this.getEnd())
+                                  .toString();
             }
         };
     }
@@ -245,6 +310,15 @@ public class ClasspathPollerConfigurationLoader extends ClasspathXmlLoader<Polle
                         .map(ClasspathPollerConfigurationLoader::mapXml)
                         .collect(Collectors.toList());
             }
+
+            @Override
+            public String toString() {
+                return MoreObjects.toStringHelper("Monitor")
+                                  .add("service", this.getService())
+                                  .add("className", this.getClassName())
+                                  .add("parameters", this.getParameters())
+                                  .toString();
+            }
         };
     }
 
@@ -258,6 +332,14 @@ public class ClasspathPollerConfigurationLoader extends ClasspathXmlLoader<Polle
             @Override
             public List<String> getRras() {
                 return rrd.getRras();
+            }
+
+            @Override
+            public String toString() {
+                return MoreObjects.toStringHelper("RRD")
+                                  .add("step", this.getStep())
+                                  .add("rras", this.getRras())
+                                  .toString();
             }
         };
     }

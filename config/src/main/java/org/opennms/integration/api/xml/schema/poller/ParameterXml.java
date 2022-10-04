@@ -43,32 +43,32 @@ import javax.xml.bind.annotation.XmlRootElement;
  * service monitor.
  */
 
-@XmlRootElement(name="parameter", namespace = "http://xmlns.opennms.org/xsd/config/poller/api")
+@XmlRootElement(name="parameter")
 @XmlAccessorType(XmlAccessType.NONE)
 public class ParameterXml implements Serializable {
 
     /**
      * Field m_key.
      */
+    @XmlAttribute(name="key")
     private String key;
 
     /**
      * Field m_value.
      */
+    @XmlAttribute(name="value")
     private String value;
 
-    @XmlAttribute(name="key")
     public String getKey() {
-        return key;
+        return this.key;
     }
 
     public void setKey(final String key) {
         this.key = key;
     }
 
-    @XmlAttribute(name="value")
     public String getValue() {
-        return value;
+        return this.value;
     }
 
     public void setValue(final String value) {
@@ -76,25 +76,18 @@ public class ParameterXml implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        int result = key != null ? key.hashCode() : 0;
-        result = 31 * result + (value != null ? value.hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof ParameterXml)) return false;
 
-        ParameterXml that = (ParameterXml) o;
-
-        if (!Objects.equals(key, that.key)) return false;
-        return Objects.equals(value, that.value);
+        final ParameterXml that = (ParameterXml) o;
+        return Objects.equals(this.key, that.key) &&
+               Objects.equals(this.value, that.value);
     }
 
     @Override
-    public String toString() {
-        return "Parameter [key=" + key + ", value=" + value + "]";
+    public int hashCode() {
+        return Objects.hash(this.key,
+                            this.value);
     }
 }
