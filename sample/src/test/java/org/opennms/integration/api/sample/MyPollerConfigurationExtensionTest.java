@@ -97,8 +97,6 @@ public class MyPollerConfigurationExtensionTest {
         assertEquals(Downtime.DeletingMode.MANAGED, package2.getDowntimes().get(3).getDelete().get());
         assertEquals(Optional.empty(), package2.getDowntimes().get(3).getEnd());
         assertEquals(Optional.empty(), package2.getDowntimes().get(3).getInterval());
-
-
         assertEquals(3, monitors.size());
         assertEquals("ICMP", monitors.get(0).getService());
         assertEquals("org.opennms.netmgt.poller.monitors.DnsMonitor", monitors.get(1).getClassName());
