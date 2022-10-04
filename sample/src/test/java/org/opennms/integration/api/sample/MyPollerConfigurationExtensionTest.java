@@ -57,9 +57,6 @@ public class MyPollerConfigurationExtensionTest {
         final Package package1 = packages.get(0);
         final Package package2 = packages.get(1);
         final Package package3 = packages.get(2);
-
-
-
         assertEquals("example1", package1.getName());
         assertEquals("example2", package2.getName());
         assertEquals("passive-service-example3", package3.getName());
