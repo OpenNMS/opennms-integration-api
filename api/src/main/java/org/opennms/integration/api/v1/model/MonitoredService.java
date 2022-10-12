@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2019 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2019 The OpenNMS Group, Inc.
+ * Copyright (C) 2022 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2022 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -28,30 +28,14 @@
 
 package org.opennms.integration.api.v1.model;
 
-import java.net.InetAddress;
 import java.util.List;
-import java.util.Optional;
 
 import org.opennms.integration.api.v1.annotations.Model;
 
-/**
- * An IP interface.
- *
- * @see "The provided model implementation can be found in the class ImmutableIpInterface"
- * @author jwhite
- * @since 1.0.0
- */
 @Model
-public interface IpInterface {
+public interface MonitoredService {
 
-    InetAddress getIpAddress();
-
-    Optional<SnmpInterface> getSnmpInterface();
+    String getName();
 
     List<MetaData> getMetaData();
-
-    Optional<MonitoredService> getMonitoredService(final String name);
-
-    List<MonitoredService> getMonitoredServices();
-
 }
