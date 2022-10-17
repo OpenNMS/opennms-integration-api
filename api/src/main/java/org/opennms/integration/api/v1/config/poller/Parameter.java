@@ -28,8 +28,6 @@
 
 package org.opennms.integration.api.v1.config.poller;
 
-import java.util.Optional;
-
 import org.opennms.integration.api.v1.annotations.Model;
 
 /**

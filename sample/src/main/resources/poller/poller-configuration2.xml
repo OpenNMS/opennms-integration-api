@@ -8,7 +8,7 @@
             <rra>RRA:AVERAGE:0.5:288:366</rra>
             <rra>RRA:MAX:0.5:288:366</rra>
         </rrd>
-        <service name="DNS" interval="300000" user-defined="false" enabled="true">
+        <service name="DNS" interval="300000">
             <parameter key="retry" value="2"/>
             <parameter key="timeout" value="5000"/>
             <parameter key="port" value="53"/>
@@ -18,7 +18,7 @@
             <parameter key="rrd-base-name" value="dns"/>
             <parameter key="ds-name" value="dns"/>
         </service>
-        <service name="SMTP" interval="300000" user-defined="false" enabled="true">
+        <service name="SMTP" interval="300000">
             <pattern><![CDATA[^abc.*def$]]></pattern>
             <parameter key="retry" value="1"/>
             <parameter key="timeout" value="3000"/>
@@ -44,7 +44,7 @@
             <rra>RRA:MIN:0.5:288:366</rra>
             <rra>RRA:MAX:0.5:288:366</rra>
         </rrd>
-        <service name="NON-IP" interval="30000" user-defined="false" enabled="true"/>
+        <service name="NON-IP" interval="30000"/>
         <downtime interval="15000" begin="0" end="300000"/>        <!-- 15s, 0, 5m -->
         <downtime interval="30000" begin="300000" end="43200000"/>    <!-- 30s, 5m, 12h -->
         <downtime interval="300000" begin="43200000" end="432000000"/>    <!-- 5m, 12h, 5d -->
@@ -55,7 +55,6 @@
     <monitor service="NON-IP" class-name="org.opennms.netmgt.poller.monitors.PassiveServiceMonitor">
         <parameter key="param1" value="value1" />
         <parameter key="param2" value="value2" />
-        <parameter key="param3"/>
     </monitor>
 
 </poller-configuration>

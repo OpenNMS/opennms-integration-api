@@ -97,11 +97,9 @@ public class MyPollerConfigurationExtensionTest {
         assertEquals(3, monitors.size());
         assertEquals("ICMP", monitors.get(0).getService());
         assertEquals("org.opennms.netmgt.poller.monitors.DnsMonitor", monitors.get(1).getClassName());
-        assertEquals(3, monitors.get(2).getParameters().size());
+        assertEquals(2, monitors.get(2).getParameters().size());
         assertEquals("param1", monitors.get(2).getParameters().get(0).getKey());
         assertEquals("value2", monitors.get(2).getParameters().get(1).getValue());
-        assertNull( monitors.get(2).getParameters().get(2).getValue());
-
     }
 
 }
