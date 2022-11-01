@@ -28,7 +28,8 @@
 
 package org.opennms.integration.api.v1.model.immutables;
 
-import java.util.ArrayList;
+import java.net.InetAddress;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -47,6 +48,9 @@ import org.opennms.integration.api.v1.util.ImmutableCollections;
 public final class ImmutableInMemoryEvent implements InMemoryEvent {
     private final String uei;
     private final String source;
+    private final InetAddress iface;
+    private final String service;
+    private final Date time;
     private final Severity severity;
     private final Integer nodeId;
     private final List<EventParameter> parameters;
@@ -58,6 +62,9 @@ public final class ImmutableInMemoryEvent implements InMemoryEvent {
         nodeId = builder.nodeId;
         parameters = ImmutableCollections.with(ImmutableEventParameter::immutableCopy)
                 .newList(builder.parameters);
+        iface = builder.iface;
+        service = builder.service;
+        time = builder.time;
     }
 
     public static Builder newBuilder() {
@@ -78,6 +85,9 @@ public final class ImmutableInMemoryEvent implements InMemoryEvent {
     public static final class Builder {
         private String uei;
         private String source;
+        private InetAddress iface;
+        private String service;
+        private Date time;
         private Severity severity;
         private Integer nodeId;
         private List<EventParameter> parameters;
@@ -91,6 +101,9 @@ public final class ImmutableInMemoryEvent implements InMemoryEvent {
             severity = inMemoryEvent.getSeverity();
             nodeId = inMemoryEvent.getNodeId();
             parameters = MutableCollections.copyListFromNullable(inMemoryEvent.getParameters(), LinkedList::new);
+            iface = inMemoryEvent.getInterface();
+            service = inMemoryEvent.getService();
+            time = inMemoryEvent.getTime();
         }
 
         public Builder setUei(String uei) {
@@ -100,6 +113,21 @@ public final class ImmutableInMemoryEvent implements InMemoryEvent {
 
         public Builder setSource(String source) {
             this.source = Objects.requireNonNull(source);
+            return this;
+        }
+
+        public Builder setInterface(InetAddress iface) {
+            this.iface = iface;
+            return this;
+        }
+
+        public Builder setService(String service) {
+            this.service = service;
+            return this;
+        }
+
+        public Builder setTime(Date time) {
+            this.time = time;
             return this;
         }
 
@@ -144,6 +172,20 @@ public final class ImmutableInMemoryEvent implements InMemoryEvent {
     }
 
     @Override
+    public InetAddress getInterface() {
+        return iface;
+    }
+
+    public Date getTime() {
+        return time;
+    }
+
+    @Override
+    public String getService() {
+        return service;
+    }
+
+    @Override
     public Severity getSeverity() {
         return severity;
     }
@@ -180,6 +222,9 @@ public final class ImmutableInMemoryEvent implements InMemoryEvent {
         ImmutableInMemoryEvent that = (ImmutableInMemoryEvent) o;
         return Objects.equals(uei, that.uei) &&
                 Objects.equals(source, that.source) &&
+                Objects.equals(iface, that.iface) &&
+                Objects.equals(service, that.service) &&
+                Objects.equals(time, that.time) &&
                 severity == that.severity &&
                 Objects.equals(nodeId, that.nodeId) &&
                 Objects.equals(parameters, that.parameters);
@@ -187,7 +232,7 @@ public final class ImmutableInMemoryEvent implements InMemoryEvent {
 
     @Override
     public int hashCode() {
-        return Objects.hash(uei, source, severity, nodeId, parameters);
+        return Objects.hash(uei, source, iface, service, time, severity, nodeId, parameters);
     }
 
     @Override
@@ -195,6 +240,9 @@ public final class ImmutableInMemoryEvent implements InMemoryEvent {
         return "ImmutableInMemoryEvent{" +
                 "uei='" + uei + '\'' +
                 ", source='" + source + '\'' +
+                ", interface='" + iface + '\'' +
+                ", service='" + service + '\'' +
+                ", time='" + time + '\'' +
                 ", severity=" + severity +
                 ", nodeId=" + nodeId +
                 ", parameters=" + parameters +

@@ -28,6 +28,8 @@
 
 package org.opennms.integration.api.v1.model;
 
+import java.net.InetAddress;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,6 +48,12 @@ public interface InMemoryEvent {
     String getUei();
 
     String getSource();
+
+    InetAddress getInterface();
+
+    String getService();
+
+    Date getTime();
 
     Severity getSeverity();
 
