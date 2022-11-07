@@ -36,6 +36,7 @@ import java.util.Optional;
 
 import org.opennms.integration.api.v1.model.IpInterface;
 import org.opennms.integration.api.v1.model.MetaData;
+import org.opennms.integration.api.v1.model.MonitoredService;
 import org.opennms.integration.api.v1.model.SnmpInterface;
 import org.opennms.integration.api.v1.util.ImmutableCollections;
 import org.opennms.integration.api.v1.util.MutableCollections;
@@ -47,25 +48,29 @@ public final class ImmutableIpInterface implements IpInterface {
     private final InetAddress ipAddress;
     private final Optional<SnmpInterface> snmpInterface;
     private final List<MetaData> metaData;
+    private final List<MonitoredService> monitoredServices;
 
-    private ImmutableIpInterface(InetAddress ipAddress, SnmpInterface snmpInterface, List<MetaData> metaData) {
+    private ImmutableIpInterface(InetAddress ipAddress, SnmpInterface snmpInterface, List<MetaData> metaData, List<MonitoredService> monitoredServices) {
         this.ipAddress = ipAddress;
         this.snmpInterface = Optional.ofNullable(snmpInterface);
         this.metaData = ImmutableCollections.with(ImmutableMetaData::immutableCopy)
                 .newList(metaData);
+        this.monitoredServices = ImmutableCollections.with(ImmutableMonitoredService::immutableCopy)
+                .newList(monitoredServices);
     }
 
-    public static ImmutableIpInterface newInstance(InetAddress ipAddress, SnmpInterface snmpInterface, List<MetaData> metaData) {
+    public static ImmutableIpInterface newInstance(InetAddress ipAddress, SnmpInterface snmpInterface, List<MetaData> metaData, List<MonitoredService> monitoredServices) {
         return new ImmutableIpInterface(Objects.requireNonNull(ipAddress),
                 snmpInterface,
-                metaData);
+                metaData,
+                monitoredServices);
     }
 
     public static IpInterface immutableCopy(IpInterface ipInterface) {
         if (ipInterface == null || ipInterface instanceof ImmutableIpInterface) {
             return ipInterface;
         }
-        return newInstance(ipInterface.getIpAddress(), ipInterface.getSnmpInterface().orElse(null), ipInterface.getMetaData());
+        return newInstance(ipInterface.getIpAddress(), ipInterface.getSnmpInterface().orElse(null), ipInterface.getMetaData(), ipInterface.getMonitoredServices());
     }
 
     public static Builder newBuilder() {
@@ -81,12 +86,15 @@ public final class ImmutableIpInterface implements IpInterface {
         private SnmpInterface snmpInterface;
         private List<MetaData> metaData;
 
+        private List<MonitoredService> monitoredServices;
+
         private Builder() {
         }
 
         private Builder(IpInterface ipInterface) {
             ipAddress = ipInterface.getIpAddress();
             metaData = MutableCollections.copyListFromNullable(ipInterface.getMetaData(), LinkedList::new);
+            monitoredServices = MutableCollections.copyListFromNullable(ipInterface.getMonitoredServices(), LinkedList::new);
         }
 
         public Builder setIpAddress(InetAddress ipAddress) {
@@ -112,8 +120,21 @@ public final class ImmutableIpInterface implements IpInterface {
             return this;
         }
 
+        public Builder setMonitoredServices(List<MonitoredService> monitoredServices) {
+            this.monitoredServices = monitoredServices;
+            return this;
+        }
+
+        public Builder addMonitoredService(MonitoredService monitoredService) {
+            if (this.monitoredServices == null) {
+                this.monitoredServices = new LinkedList<>();
+            }
+            this.monitoredServices.add(monitoredService);
+            return this;
+        }
+
         public ImmutableIpInterface build() {
-            return ImmutableIpInterface.newInstance(ipAddress, snmpInterface, metaData);
+            return ImmutableIpInterface.newInstance(ipAddress, snmpInterface, metaData, monitoredServices);
         }
     }
 
@@ -133,18 +154,31 @@ public final class ImmutableIpInterface implements IpInterface {
     }
 
     @Override
+    public List<MonitoredService> getMonitoredServices() {
+        return this.monitoredServices;
+    }
+
+    @Override
+    public Optional<MonitoredService> getMonitoredService(final String name) {
+        return monitoredServices.stream()
+                           .filter(service -> Objects.equals(service.getName(), name))
+                           .findFirst();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ImmutableIpInterface that = (ImmutableIpInterface) o;
         return Objects.equals(ipAddress, that.ipAddress) &&
                 Objects.equals(snmpInterface, that.snmpInterface) &&
-                Objects.equals(metaData, that.metaData);
+                Objects.equals(metaData, that.metaData) &&
+                Objects.equals(monitoredServices, that.monitoredServices);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ipAddress, snmpInterface, metaData);
+        return Objects.hash(ipAddress, snmpInterface, metaData, monitoredServices);
     }
 
     @Override
@@ -152,7 +186,8 @@ public final class ImmutableIpInterface implements IpInterface {
         return "ImmutableIpInterface{" +
                 "ipAddress=" + ipAddress +
                 ", snmpInterface=" + snmpInterface +
-                ", metaData=" + metaData +
+               ", metaData=" + metaData +
+               ", monitoredService=" + monitoredServices +
                 '}';
     }
 }
