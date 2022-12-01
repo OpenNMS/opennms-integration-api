@@ -38,4 +38,6 @@ public interface SecureCredentialsVault {
     Credentials getCredentials(String alias);
     void setCredentials(String alias, Credentials credentials);
 
+    void deleteCredentials(String alias);
+
 }
