@@ -136,6 +136,8 @@ workflows:
               only:
                - /^release-.*/
       - deploy:
+          context: 
+            - "OSSRH Principal"
           requires:
             - build
             - merge
