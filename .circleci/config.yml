@@ -137,7 +137,7 @@ workflows:
                - /^release-.*/
       - deploy:
           context:
-            - "SonarCloud"      
+            - "OSSRH Principal"      
           requires:
             - build
             - merge
