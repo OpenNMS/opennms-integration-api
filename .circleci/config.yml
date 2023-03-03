@@ -136,6 +136,8 @@ workflows:
               only:
                - /^release-.*/
       - deploy:
+          context:
+            - "SonarCloud"      
           requires:
             - build
             - merge
