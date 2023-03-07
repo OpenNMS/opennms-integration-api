@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<collector-configuration xmlns="http://xmlns.opennms.org/xsd/config/collector/api">
+    <package name="example1">
+        <filter>IPADDR IPLIKE 2.*.*.*</filter>
+        <include-range begin="2.1.1.1" end="2.254.254.254"/>
+        <service name="ICMP" interval="300000">
+            <parameter key="retry" value="2"/>
+            <parameter key="timeout" value="3000"/>
+            <parameter key="rrd-repository" value="/share/rrd/response"/>
+            <parameter key="rrd-base-name" value="icmp"/>
+            <parameter key="ds-name" value="icmp"/>
+        </service>
+    </package>
+
+    <collector service="Example1" class-name="org.opennms.netmgt.collectd.collectors.ExampleCollector"/>
+</collector-configuration>

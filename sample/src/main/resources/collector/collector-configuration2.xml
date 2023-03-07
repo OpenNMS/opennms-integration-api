@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<collector-configuration xmlns="http://xmlns.opennms.org/xsd/config/collector/api">
+    <package name="example2">
+        <filter>IPADDR != '0.0.0.0'</filter>
+        <include-range begin="1.1.1.1" end="2.2.2.2"/>
+        <include-range begin="2.2.2.2" end="254.254.254.254"/>
+        <service name="Example2" interval="300000">
+            <parameter key="retry" value="2"/>
+            <parameter key="timeout" value="5000"/>
+            <parameter key="port" value="53"/>
+            <parameter key="lookup" value="localhost"/>
+            <parameter key="fatal-response-codes" value="2,3,5"/><!-- ServFail, NXDomain, Refused -->
+            <parameter key="rrd-repository" value="/share/rrd/response"/>
+            <parameter key="rrd-base-name" value="dns"/>
+            <parameter key="ds-name" value="dns"/>
+        </service>
+        <service name="Example3" interval="300000">
+            <pattern><![CDATA[^abc.*def$]]></pattern>
+            <parameter key="retry" value="1"/>
+            <parameter key="timeout" value="3000"/>
+            <parameter key="port" value="25"/>
+            <parameter key="rrd-repository" value="/share/rrd/response"/>
+            <parameter key="rrd-base-name" value="smtp"/>
+            <parameter key="ds-name" value="smtp"/>
+        </service>
+    </package>
+
+    <collector service="Example2" class-name="org.opennms.netmgt.collectd.collectors.Example"/>
+    <collector service="Example3" class-name="org.opennms.netmgt.collectd.collectors.Example">
+        <parameter key="param1" value="value1" />
+        <parameter key="param2" value="value2" />
+    </collector>
+</collector-configuration>
