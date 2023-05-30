@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2018 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2018 The OpenNMS Group, Inc.
+ * Copyright (C) 2018-2023 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2023 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -34,6 +34,7 @@ import java.util.Map;
 
 import org.opennms.integration.api.v1.annotations.Model;
 import org.opennms.integration.api.v1.config.events.AlarmType;
+import org.opennms.integration.api.v1.ticketing.Ticket.State;
 
 /**
  * An alarm.
@@ -76,5 +77,17 @@ public interface Alarm {
     DatabaseEvent getLastEvent();
 
     boolean isAcknowledged();
+
+    /**
+     * @since 1.5.0
+     * @return the ticket ID associated with this alarm
+     */
+    String getTicketId();
+
+    /**
+     * @since 1.5.0
+     * @return the state of the ticket associated with this alarm
+     */
+    State getTicketState();
 
 }
