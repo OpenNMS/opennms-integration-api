@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2019 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2019 The OpenNMS Group, Inc.
+ * Copyright (C) 2019-2023 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2023 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -40,6 +40,7 @@ import org.opennms.integration.api.v1.model.Alarm;
 import org.opennms.integration.api.v1.model.DatabaseEvent;
 import org.opennms.integration.api.v1.model.Node;
 import org.opennms.integration.api.v1.model.Severity;
+import org.opennms.integration.api.v1.ticketing.Ticket.State;
 import org.opennms.integration.api.v1.util.ImmutableCollections;
 import org.opennms.integration.api.v1.util.MutableCollections;
 
@@ -62,6 +63,8 @@ public final class ImmutableAlarm implements Alarm {
     private final Date firstEventTime;
     private final DatabaseEvent lastEvent;
     private final boolean acknowledged;
+    private final String ticketId;
+    private final State ticketState;
 
     private ImmutableAlarm(Builder builder) {
         reductionKey = builder.reductionKey;
@@ -79,6 +82,8 @@ public final class ImmutableAlarm implements Alarm {
         firstEventTime = builder.firstEventTime;
         lastEvent = builder.lastEvent;
         acknowledged = builder.acknowledged;
+        ticketId = builder.ticketId;
+        ticketState = builder.ticketState;
     }
 
     public static Builder newBuilder() {
@@ -112,6 +117,8 @@ public final class ImmutableAlarm implements Alarm {
         private Date firstEventTime;
         private DatabaseEvent lastEvent;
         private boolean acknowledged;
+        private String ticketId;
+        private State ticketState;
 
         private Builder() {
         }
@@ -132,6 +139,8 @@ public final class ImmutableAlarm implements Alarm {
             firstEventTime = alarm.getFirstEventTime();
             lastEvent = alarm.getLastEvent();
             acknowledged = alarm.isAcknowledged();
+            ticketId = alarm.getTicketId();
+            ticketState = alarm.getTicketState();
         }
 
         public Builder setReductionKey(String reductionKey) {
@@ -225,6 +234,16 @@ public final class ImmutableAlarm implements Alarm {
             return this;
         }
 
+        public Builder setTicketId(final String id) {
+            this.ticketId = id;
+            return this;
+        }
+
+        public Builder setTicketState(final State state) {
+            this.ticketState = state;
+            return this;
+        }
+
         public ImmutableAlarm build() {
             return new ImmutableAlarm(this);
         }
@@ -311,6 +330,16 @@ public final class ImmutableAlarm implements Alarm {
     }
 
     @Override
+    public String getTicketId() {
+        return ticketId;
+    }
+
+    @Override
+    public State getTicketState() {
+        return ticketState;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -329,14 +358,16 @@ public final class ImmutableAlarm implements Alarm {
                 Objects.equals(lastEventTime, that.lastEventTime) &&
                 Objects.equals(firstEventTime, that.firstEventTime) &&
                 Objects.equals(lastEvent, that.lastEvent) &&
-                Objects.equals(acknowledged, that.acknowledged);
+                Objects.equals(acknowledged, that.acknowledged) &&
+                Objects.equals(ticketId, that.ticketId) &&
+                Objects.equals(ticketState, that.ticketState);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(reductionKey, id, node, managedObjectInstance, managedObjectType, type, severity,
                 attributes, relatedAlarms, logMessage, description, lastEventTime, firstEventTime,
-                lastEvent, acknowledged);
+                lastEvent, acknowledged, ticketId, ticketState);
     }
 
     @Override
@@ -357,6 +388,9 @@ public final class ImmutableAlarm implements Alarm {
                 ", firstEventTime=" + firstEventTime +
                 ", lastEvent=" + lastEvent +
                 ", acknowledged=" + acknowledged +
+                ", ticketId=" + ticketId +
+                ", ticketState=" + ticketState +
                 '}';
     }
+
 }
