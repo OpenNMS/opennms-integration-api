@@ -9,6 +9,11 @@
     <name>OpenNMS Integration API :: Karaf Features</name>
     <packaging>pom</packaging>
 
+    <properties>
+        <!-- override to latest stable for newest validation code -->
+        <karaf.version>4.4.3</karaf.version>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -49,6 +54,11 @@
                                     <file>${project.build.outputDirectory}/features.xml</file>
                                     <type>xml</type>
                                 </artifact>
+                                <artifact>
+                                    <file>${project.build.outputDirectory}/sample.xml</file>
+                                    <classifier>sample</classifier>
+                                    <type>xml</type>
+                                </artifact>
                             </artifacts>
                         </configuration>
                     </execution>
@@ -72,6 +82,7 @@
                                 <descriptor>mvn:org.apache.karaf.features/framework/${karaf.version}/xml/features</descriptor>
                                 <descriptor>mvn:org.apache.karaf.features/standard/${karaf.version}/xml/features</descriptor>
                                 <descriptor>file:${project.build.directory}/classes/features.xml</descriptor>
+                                <descriptor>file:${project.build.directory}/classes/sample.xml</descriptor>
                             </descriptors>
                             <distribution>org.apache.karaf.features:framework</distribution>
                             <framework>
@@ -79,7 +90,9 @@
                             </framework>
                             <features>
                                 <feature>opennms-integration-api</feature>
-                                <feature>sample-plugin-common</feature>
+                                <feature>opennms-plugin-sample</feature>
+                                <feature>minion-plugin-sample</feature>
+                                <feature>sentinel-plugin-sample</feature>
                             </features>
                         </configuration>
                     </execution>
