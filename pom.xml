@@ -33,6 +33,7 @@
         <module>api</module>
         <module>archetypes</module>
         <module>common</module>
+        <module>utils</module>
         <module>karaf-features</module>
         <module>sample</module>
         <module>test-api</module>
