@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2019 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2019 The OpenNMS Group, Inc.
+ * Copyright (C) 2019-2023 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2023 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -30,6 +30,9 @@ package org.opennms.integration.api.v1.model;
 
 /**
  * The set of protocols supported by OpenNMS topology.
+ * 
+ * NOTE: If you modify this file, you <strong>must</strong> also update the <code>opennms-kafka-producer.proto</code> in ALEC,
+ * as well as anything relying on this enum in Enlinkd and Topology in OpenNMS proper.
  */
 public enum TopologyProtocol {
     /**
@@ -38,16 +41,21 @@ public enum TopologyProtocol {
     ALL,
 
     BRIDGE,
-
     CDP,
-
     ISIS,
-
     LLDP,
-
     NODES,
-
     OSPF,
+    USERDEFINED,
 
-    USERDEFINED
+    /**
+     * @since 1.6
+     */
+    OSPFAREA,
+
+    /**
+     * @since 1.6
+     */
+    NETWORKROUTER;
 }
+
