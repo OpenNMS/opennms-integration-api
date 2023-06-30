@@ -32,7 +32,8 @@ package org.opennms.integration.api.v1.model;
  * The set of protocols supported by OpenNMS topology.
  * 
  * NOTE: If you modify this file, you <strong>must</strong> also update the <code>opennms-kafka-producer.proto</code> in ALEC,
- * as well as anything relying on this enum in Enlinkd and Topology in OpenNMS proper.
+ * as well as anything relying on this enum in Enlinkd and Topology in OpenNMS proper
+ * (including the copy of <code>opennms-kafka-producer.proto</code> in features/kafka/producer).
  */
 public enum TopologyProtocol {
     /**
