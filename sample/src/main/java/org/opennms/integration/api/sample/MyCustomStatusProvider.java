@@ -31,6 +31,8 @@ package org.opennms.integration.api.sample;
 import static org.opennms.integration.api.sample.MyGraphContainerProvider.NAMESPACE_1;
 import static org.opennms.integration.api.sample.MyGraphContainerProvider.NAMESPACE_2;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -44,8 +46,6 @@ import org.opennms.integration.api.v1.graph.status.immutables.StatusInfoImmutabl
 import org.opennms.integration.api.v1.model.Alarm;
 import org.opennms.integration.api.v1.model.Severity;
 
-import com.google.common.collect.Lists;
-
 public class MyCustomStatusProvider implements LegacyStatusProvider {
 
     private final AlarmDao alarmDao;
@@ -56,7 +56,7 @@ public class MyCustomStatusProvider implements LegacyStatusProvider {
 
     @Override
     public boolean canCalculate(String namespace) {
-        return Lists.newArrayList(NAMESPACE_1, NAMESPACE_2).contains(namespace);
+        return new ArrayList<String>(Arrays.asList(NAMESPACE_1, NAMESPACE_2)).contains(namespace);
     }
 
     @Override

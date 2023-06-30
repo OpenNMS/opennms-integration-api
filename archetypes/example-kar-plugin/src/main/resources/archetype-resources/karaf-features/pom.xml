@@ -85,7 +85,6 @@
                             <features>
                                 <feature>opennms-plugins-${pluginId}</feature>
                                 <feature>okhttp</feature>
-                                <feature>guava</feature>
                             </features>
                         </configuration>
                     </execution>

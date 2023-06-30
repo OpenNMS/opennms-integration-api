@@ -28,6 +28,8 @@
 
 package org.opennms.integration.api.sample;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,8 +48,6 @@ import org.opennms.integration.api.v1.graph.immutables.ImmutableGraphInfo;
 import org.opennms.integration.api.v1.graph.immutables.ImmutableVertexRef;
 import org.opennms.integration.api.v1.topology.IconIds;
 
-import com.google.common.collect.Lists;
-
 public class MyGraphContainerProvider implements GraphContainerProvider {
 
     public static final String NAMESPACE_1 = "1";
@@ -58,7 +58,7 @@ public class MyGraphContainerProvider implements GraphContainerProvider {
         final GraphContainerInfo graphContainerInfo = getGraphContainerInfo();
         final ImmutableGraphContainer.Builder containerBuilder = ImmutableGraphContainer.newBuilder(graphContainerInfo);
         final ImmutableGraph.Builder graphBuilderA = ImmutableGraph.newBuilder(graphContainerInfo.getGraphInfo(NAMESPACE_1));
-        final List<Vertex> vertices = Lists.newArrayList(
+        final List<Vertex> vertices = new ArrayList<>(Arrays.asList(
                 graphBuilderA
                         .vertex("v1")
                         .label("Vertex 1")
@@ -75,18 +75,18 @@ public class MyGraphContainerProvider implements GraphContainerProvider {
                         .vertex("v3")
                         .label("Vertex 3")
                         .iconId(IconIds.Interface)
-                        .build());
+                        .build()));
         graphBuilderA.addVertices(vertices);
 
-        final List<Edge> edges = Lists.newArrayList(
+        final List<Edge> edges = new ArrayList<>(Arrays.asList(
                 graphBuilderA.edge("e1", ImmutableVertexRef.newBuilder(NAMESPACE_1, "v1").build(), ImmutableVertexRef.newBuilder(NAMESPACE_1, "v2").build()).build(),
                 graphBuilderA.edge("e2", ImmutableVertexRef.newBuilder(NAMESPACE_1, "v2").build(), ImmutableVertexRef.newBuilder(NAMESPACE_1, "v3").build()).build()
-        );
+        ));
         graphBuilderA.addEdges(edges);
         graphBuilderA.defaultFocus(ImmutableVertexRef.newBuilder(NAMESPACE_1, "v1").build());
 
         final ImmutableGraph.Builder graphBuilderB = ImmutableGraph.newBuilder(graphContainerInfo.getGraphInfo(NAMESPACE_2));
-        final List<String> iconKeys = Lists.newArrayList(
+        final List<String> iconKeys = new ArrayList<>(Arrays.asList(
                 IconIds.BusinessService,
                 IconIds.Server,
                 IconIds.Cloud,
@@ -94,7 +94,7 @@ public class MyGraphContainerProvider implements GraphContainerProvider {
                 IconIds.Switch,
                 IconIds.Situation,
                 IconIds.IpService,
-                IconIds.Market1);
+                IconIds.Market1));
         for (int i = 0; i < iconKeys.size(); i++) {
             final Vertex vertex = graphBuilderB.vertex("v" + (i+1)).label("Vertex " + (i+1)).iconId(iconKeys.get(i)).build();
             graphBuilderB.addVertex(vertex);
