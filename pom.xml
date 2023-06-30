@@ -52,7 +52,7 @@
         <karaf.version>4.3.6</karaf.version>
         <log4j.version>2.20.0</log4j.version>
         <re2j.version>1.6</re2j.version>
-        <slf4j-api.version>1.7.32</slf4j-api.version>
+        <slf4j-api.version>2.0.7</slf4j-api.version>
         <commonsIoVersion>2.13.0</commonsIoVersion>
         <osgiVersion>7.0.0</osgiVersion>
     </properties>
