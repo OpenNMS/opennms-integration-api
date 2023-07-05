@@ -105,20 +105,24 @@
         <dependency>
             <groupId>org.opennms.integration.api</groupId>
             <artifactId>api</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.opennms.integration.api</groupId>
             <artifactId>config</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.opennms.integration.api.sample</groupId>
             <artifactId>sample-project</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.sun.istack</groupId>
             <artifactId>istack-commons-runtime</artifactId>
             <version>4.2.0</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Framework distribution -->
