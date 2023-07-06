@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2013-2014 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2014 The OpenNMS Group, Inc.
+ * Copyright (C) 2013-2023 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2023 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -32,11 +32,11 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 public class EventLabelComparator implements Comparator<Event>, Serializable {
-    private static final long serialVersionUID = 7976730920523203921L;
+    private static final long serialVersionUID = 1L;
 
     @Override
     public int compare(final Event e1, final Event e2) {
-        if (e1.getEventLabel() == e2.getEventLabel()) return 0;
+        if (e1.getEventLabel().equals(e2.getEventLabel())) return 0;
         if (e1.getEventLabel() == null) return -1;
         if (e2.getEventLabel() == null) return 1;
         return e1.getEventLabel().compareToIgnoreCase(e2.getEventLabel());
