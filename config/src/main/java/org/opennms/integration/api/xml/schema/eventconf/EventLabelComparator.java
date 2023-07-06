@@ -36,9 +36,10 @@ public class EventLabelComparator implements Comparator<Event>, Serializable {
 
     @Override
     public int compare(final Event e1, final Event e2) {
-        if (e1.getEventLabel().equals(e2.getEventLabel())) return 0;
+        if (e1 == null && e2 == null) return 0;
         if (e1.getEventLabel() == null) return -1;
         if (e2.getEventLabel() == null) return 1;
+        if (e1.getEventLabel().equals(e2.getEventLabel())) return 0;
         return e1.getEventLabel().compareToIgnoreCase(e2.getEventLabel());
     }
 }
