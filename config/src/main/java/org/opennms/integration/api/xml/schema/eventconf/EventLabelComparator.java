@@ -36,10 +36,12 @@ public class EventLabelComparator implements Comparator<Event>, Serializable {
 
     @Override
     public int compare(final Event e1, final Event e2) {
-        if (e1 == null && e2 == null) return 0;
-        if (e1.getEventLabel() == null) return -1;
-        if (e2.getEventLabel() == null) return 1;
-        if (e1.getEventLabel().equals(e2.getEventLabel())) return 0;
-        return e1.getEventLabel().compareToIgnoreCase(e2.getEventLabel());
+        final var e1label = e1 == null? null : e1.getEventLabel();
+        final var e2label = e2 == null? null : e2.getEventLabel();
+        if (e1label == null && e2label == null) return 0;
+        if (e1label == null) return -1;
+        if (e2label == null) return 1;
+        if (e1label.equals(e2label)) return 0;
+        return e1label.compareToIgnoreCase(e2label);
     }
 }
