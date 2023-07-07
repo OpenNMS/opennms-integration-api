@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2019 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2019 The OpenNMS Group, Inc.
+ * Copyright (C) 2019-2023 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2023 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -55,39 +55,36 @@ public class Service implements Serializable {
      * Service name
      */
     @XmlAttribute(name = "name", required = true)
-    private String m_name;
+    private String m_name = null;
 
     /**
      * Interval at which the service is to be threshold
      *  checked
      */
     @XmlAttribute(name = "interval", required = true)
-    private Long m_interval;
+    private Long m_interval = null;
 
     /**
      * Specifies if this is a user-defined service. Used
      *  specifically for UI purposes.
      */
     @XmlAttribute(name = "user-defined")
-    private Boolean m_userDefined;
+    private Boolean m_userDefined = null;
 
     /**
      * Thresholding status for this service. Service is
      *  checked against thresholds only if set to 'on'.
      */
     @XmlAttribute(name = "status")
-    private ServiceStatus m_status;
+    private ServiceStatus m_status = null;
 
     /**
      * Parameters to be used for threshold checking this
-     *  service. Parameters are specfic to the service
+     *  service. Parameters are specific to the service
      *  thresholder.
      */
     @XmlElement(name = "parameter")
     private List<Parameter> m_parameters = new ArrayList<>();
-
-    public Service() {
-    }
 
     public String getName() {
         return m_name;
@@ -128,7 +125,9 @@ public class Service implements Serializable {
     public void setParameters(final List<Parameter> parameters) {
         if (parameters == m_parameters) return;
         m_parameters.clear();
-        if (parameters != null) m_parameters.addAll(parameters);
+        if (parameters != null) {
+            m_parameters.addAll(parameters);
+        }
     }
 
     public void addParameter(final Parameter parameter) {
@@ -149,20 +148,22 @@ public class Service implements Serializable {
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(Object obj) {
         if ( this == obj ) {
             return true;
         }
-
-        if (obj instanceof Service) {
-            final Service that = (Service)obj;
-            return Objects.equals(this.m_name, that.m_name)
-                    && Objects.equals(that.m_interval, that.m_interval)
-                    && Objects.equals(that.m_userDefined, that.m_userDefined)
-                    && Objects.equals(that.m_status, that.m_status)
-                    && Objects.equals(that.m_parameters, that.m_parameters);
+        if ( obj == null ) {
+            return false;
         }
-        return false;
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
+        final Service other = (Service) obj;
+        return Objects.equals(m_name, other.m_name)
+            && Objects.equals(m_interval, other.m_interval)
+            && Objects.equals(m_userDefined, other.m_userDefined)
+            && Objects.equals(m_status, other.m_status)
+            && Objects.equals(m_parameters, other.m_parameters);
     }
 
 }
