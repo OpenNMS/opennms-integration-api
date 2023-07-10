@@ -35,7 +35,7 @@ package org.opennms.integration.api.v1.model;
  * <code>opennms-kafka-producer.proto</code> file, so it can not be used for determining
  * serialized protocols from protobuf streams.
  *
- * @todo normalize protocol definition/ordering in 2.0
+ * TODO normalize protocol definition/ordering in 2.0
  */
 public enum TopologyProtocol {
     /**
