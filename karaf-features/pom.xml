@@ -11,7 +11,7 @@
 
     <properties>
         <!-- override to latest stable for newest validation code -->
-        <karaf.version>4.4.3</karaf.version>
+        <karaf.version>4.4.4</karaf.version>
     </properties>
 
     <build>
