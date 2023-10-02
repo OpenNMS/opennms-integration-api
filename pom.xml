@@ -54,7 +54,7 @@
         <log4j.version>2.20.0</log4j.version>
         <re2j.version>1.7</re2j.version>
         <slf4j-api.version>1.7.36</slf4j-api.version>
-        <commonsIoVersion>2.13.0</commonsIoVersion>
+        <commonsIoVersion>2.14.0</commonsIoVersion>
         <osgiVersion>7.0.0</osgiVersion>
     </properties>
 
