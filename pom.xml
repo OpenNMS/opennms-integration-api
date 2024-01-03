@@ -51,7 +51,7 @@
         <junit.version>4.13.2</junit.version>
         <guava.version>33.0.0-jre</guava.version>
         <karaf.version>4.3.6</karaf.version>
-        <log4j.version>2.22.0</log4j.version>
+        <log4j.version>2.22.1</log4j.version>
         <re2j.version>1.7</re2j.version>
         <slf4j-api.version>1.7.36</slf4j-api.version>
         <commonsIoVersion>2.15.1</commonsIoVersion>
@@ -142,7 +142,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.12.0</version>
+                <version>3.12.1</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
