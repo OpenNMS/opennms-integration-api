@@ -5,7 +5,7 @@
         <bundle>mvn:org.opennms.integration.api/api/${project.version}</bundle>
         <bundle>mvn:org.opennms.integration.api/common/${project.version}</bundle>
         <bundle>mvn:org.opennms.integration.api/config/${project.version}</bundle>
-        <bundle>mvn:org.opennms.integration.api/utils/${project.version}</bundle>
+        <bundle>mvn:org.opennms.integration.api/org.opennms.integration.api.utils/${project.version}</bundle>
     </feature>
 
     <feature name="sample-plugin-common" description="Sample Plugin :: Common" version="${project.version}">
