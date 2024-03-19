@@ -51,7 +51,7 @@
         <junit.version>4.13.2</junit.version>
         <guava.version>33.1.0-jre</guava.version>
         <karaf.version>4.3.6</karaf.version>
-        <log4j.version>2.22.1</log4j.version>
+        <log4j.version>2.23.1</log4j.version>
         <re2j.version>1.7</re2j.version>
         <slf4j-api.version>1.7.36</slf4j-api.version>
         <commonsIoVersion>2.15.1</commonsIoVersion>
