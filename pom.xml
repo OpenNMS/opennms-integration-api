@@ -49,9 +49,9 @@
         <jakarta.version>2.3.3</jakarta.version>
         <javax-activation.version>1.1.1</javax-activation.version>
         <junit.version>4.13.2</junit.version>
-        <guava.version>33.0.0-jre</guava.version>
+        <guava.version>33.1.0-jre</guava.version>
         <karaf.version>4.3.6</karaf.version>
-        <log4j.version>2.22.1</log4j.version>
+        <log4j.version>2.23.1</log4j.version>
         <re2j.version>1.7</re2j.version>
         <slf4j-api.version>1.7.36</slf4j-api.version>
         <commonsIoVersion>2.15.1</commonsIoVersion>
@@ -142,7 +142,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.12.1</version>
+                <version>3.13.0</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -292,7 +292,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>3.1.0</version>
+                        <version>3.2.1</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
