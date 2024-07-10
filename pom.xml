@@ -256,7 +256,7 @@
                             <rules>
                                 <requireUpperBoundDeps/>
                                 <requireJavaVersion>
-                                  <version>[11,21)</version>
+                                  <version>[17,21)</version>
                                 </requireJavaVersion>
                             </rules>
                         </configuration>
