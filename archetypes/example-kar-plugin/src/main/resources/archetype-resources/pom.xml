@@ -11,12 +11,14 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <hamcrest.version>1.3</hamcrest.version>
         <jackson.version>2.11.1</jackson.version>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
         <jaxrs.version>2.1.1</jaxrs.version>
         <jexl.version>3.1</jexl.version>
         <junit.version>4.13.1</junit.version>
         <karaf.version>4.3.6</karaf.version>
         <log4j.version>2.17.2</log4j.version>
+        <maven.bundle.plugin.version>5.1.1</maven.bundle.plugin.version>
+        <maven.karaf.plugin.version>4.4.5</maven.karaf.plugin.version>
         <metrics.version>4.1.12.1</metrics.version>
         <mockito.version>2.18.0</mockito.version>
         <okhttp.version>3.10.0</okhttp.version>
@@ -104,7 +106,7 @@
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
-                    <version>4.2.1</version>
+                    <version>${maven.bundle.plugin.version}</version>
                     <extensions>true</extensions>
                     <configuration>
                         <instructions>
