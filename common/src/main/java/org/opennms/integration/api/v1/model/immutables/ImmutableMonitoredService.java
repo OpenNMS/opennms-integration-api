@@ -28,18 +28,15 @@
 
 package org.opennms.integration.api.v1.model.immutables;
 
-import java.net.InetAddress;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
 import org.opennms.integration.api.v1.model.IpInterface;
 import org.opennms.integration.api.v1.model.MetaData;
 import org.opennms.integration.api.v1.model.MonitoredService;
-import org.opennms.integration.api.v1.model.SnmpInterface;
 import org.opennms.integration.api.v1.util.ImmutableCollections;
 import org.opennms.integration.api.v1.util.MutableCollections;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * An immutable implementation of {@link IpInterface} that enforces deep immutability.
@@ -48,14 +45,17 @@ public final class ImmutableMonitoredService implements MonitoredService {
     private final String name;
     private final List<MetaData> metaData;
 
-    private ImmutableMonitoredService(final String name, final List<MetaData> metaData) {
+    private final boolean status;
+
+    private ImmutableMonitoredService(final String name, final boolean status, final List<MetaData> metaData) {
         this.name = name;
+        this.status = status;
         this.metaData = ImmutableCollections.with(ImmutableMetaData::immutableCopy)
                 .newList(metaData);
     }
 
-    public static ImmutableMonitoredService newInstance(final String name, final List<MetaData> metaData) {
-        return new ImmutableMonitoredService(Objects.requireNonNull(name),
+    public static ImmutableMonitoredService newInstance(final String name, final boolean status, final List<MetaData> metaData) {
+        return new ImmutableMonitoredService(Objects.requireNonNull(name), status,
                                              metaData);
     }
 
@@ -63,7 +63,7 @@ public final class ImmutableMonitoredService implements MonitoredService {
         if (monitoredService == null || monitoredService instanceof ImmutableMonitoredService) {
             return monitoredService;
         }
-        return newInstance(monitoredService.getName(), monitoredService.getMetaData());
+        return newInstance(monitoredService.getName(), monitoredService.getStatus(),  monitoredService.getMetaData());
     }
 
     public static Builder newBuilder() {
@@ -78,16 +78,24 @@ public final class ImmutableMonitoredService implements MonitoredService {
         private String name;
         private List<MetaData> metaData;
 
+        private boolean status;
+
         private Builder() {
         }
 
         private Builder(final MonitoredService monitoredService) {
             this.name = monitoredService.getName();
+            this.status = monitoredService.getStatus();
             this.metaData = MutableCollections.copyListFromNullable(monitoredService.getMetaData(), LinkedList::new);
         }
 
         public Builder setName(final String name) {
             this.name = name;
+            return this;
+        }
+
+        public Builder setStatus(final boolean status) {
+            this.status = status;
             return this;
         }
 
@@ -105,7 +113,7 @@ public final class ImmutableMonitoredService implements MonitoredService {
         }
 
         public ImmutableMonitoredService build() {
-            return ImmutableMonitoredService.newInstance(this.name, this.metaData);
+            return ImmutableMonitoredService.newInstance(this.name, this.status, this.metaData);
         }
     }
 
@@ -120,17 +128,23 @@ public final class ImmutableMonitoredService implements MonitoredService {
     }
 
     @Override
+    public boolean getStatus() {
+        return this.status;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ImmutableMonitoredService that = (ImmutableMonitoredService) o;
         return Objects.equals(this.name, that.name) &&
-                Objects.equals(this.metaData, that.metaData);
+                Objects.equals(this.metaData, that.metaData) &&
+                Objects.equals(this.status, that.status);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.name, this.metaData);
+        return Objects.hash(this.name, this.metaData, this.status);
     }
 
     @Override
@@ -138,6 +152,7 @@ public final class ImmutableMonitoredService implements MonitoredService {
         return "ImmutableIpInterface{" +
                 "name=" + this.name +
                 ", metaData=" + metaData +
+                ", status=" + status +
                 '}';
     }
 }
