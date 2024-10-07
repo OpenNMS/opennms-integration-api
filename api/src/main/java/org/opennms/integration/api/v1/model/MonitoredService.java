@@ -28,9 +28,9 @@
 
 package org.opennms.integration.api.v1.model;
 
-import java.util.List;
-
 import org.opennms.integration.api.v1.annotations.Model;
+
+import java.util.List;
 
 @Model
 public interface MonitoredService {
@@ -38,4 +38,6 @@ public interface MonitoredService {
     String getName();
 
     List<MetaData> getMetaData();
+
+    boolean getStatus();
 }
