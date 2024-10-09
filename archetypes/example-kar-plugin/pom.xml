@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.opennms.integration.api</groupId>
         <artifactId>archetypes</artifactId>
-        <version>v1.6.1</version>
+        <version>1.6.1</version>
     </parent>
     <artifactId>example-kar-plugin</artifactId>
     <packaging>maven-archetype</packaging>

@@ -2,7 +2,7 @@
     <parent>
         <groupId>org.opennms.integration.api</groupId>
         <artifactId>api-project</artifactId>
-        <version>v1.6.1</version>
+        <version>1.6.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>archetypes</artifactId>
