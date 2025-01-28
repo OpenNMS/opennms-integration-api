@@ -43,7 +43,7 @@ import org.opennms.integration.api.v1.util.MutableCollections;
  */
 public final class ImmutableDatabaseEvent implements DatabaseEvent {
     private final String uei;
-    private final Integer id;
+    private final Long id;
     private final List<EventParameter> parameters;
 
     private ImmutableDatabaseEvent(Builder builder) {
@@ -69,7 +69,7 @@ public final class ImmutableDatabaseEvent implements DatabaseEvent {
 
     public static final class Builder {
         private String uei;
-        private Integer id;
+        private Long id;
         private List<EventParameter> parameters;
 
         private Builder() {
@@ -86,7 +86,7 @@ public final class ImmutableDatabaseEvent implements DatabaseEvent {
             return this;
         }
 
-        public Builder setId(Integer id) {
+        public Builder setId(Long id) {
             this.id = id;
             return this;
         }
@@ -115,7 +115,7 @@ public final class ImmutableDatabaseEvent implements DatabaseEvent {
     }
 
     @Override
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 

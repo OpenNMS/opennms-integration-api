@@ -44,7 +44,7 @@ public interface DatabaseEvent {
 
     String getUei();
 
-    Integer getId();
+    Long getId();
 
     List<EventParameter> getParameters();
 
