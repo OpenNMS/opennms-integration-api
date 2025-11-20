@@ -37,7 +37,7 @@ import org.opennms.integration.api.xml.ClasspathSyslogMatchLoader;
 public class MySyslogMatchExtension implements SyslogMatchExtension {
 
     private final ClasspathSyslogMatchLoader classpathSyslogMatchLoader = new ClasspathSyslogMatchLoader(
-            MyEventConfExtension.class,
+            MySyslogMatchExtension.class,
             "Cisco.syslog.xml");
 
     @Override
