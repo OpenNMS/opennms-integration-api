@@ -30,19 +30,19 @@ package org.opennms.integration.api.sample;
 
 import java.util.List;
 
-import org.opennms.integration.api.v1.config.syslog.SyslogMatchExtension;
-import org.opennms.integration.api.v1.config.syslog.SyslogMatch;
-import org.opennms.integration.api.xml.ClasspathSyslogMatchLoader;
+import org.opennms.integration.api.v1.config.events.EventConfExtension;
+import org.opennms.integration.api.v1.config.events.EventDefinition;
+import org.opennms.integration.api.xml.ClasspathEventDefinitionLoader;
 
-public class MySyslogMatchExtension implements SyslogMatchExtension {
+public class MyEventConfExtension implements EventConfExtension {
 
-    private final ClasspathSyslogMatchLoader classpathSyslogMatchLoader = new ClasspathSyslogMatchLoader(
+    private final ClasspathEventDefinitionLoader classpathEventDefinitionLoader = new ClasspathEventDefinitionLoader(
             MyEventConfExtension.class,
-            "Cisco.syslog.xml");
+            "SNMP_Link_UpDown.xml",
+            "sample.xml");
 
     @Override
-    public List<SyslogMatch> getSyslogMatches() {
-        return classpathSyslogMatchLoader.getSyslogMatches();
+    public List<EventDefinition> getEventDefinitions() {
+        return classpathEventDefinitionLoader.getEventDefinitions();
     }
-
 }
