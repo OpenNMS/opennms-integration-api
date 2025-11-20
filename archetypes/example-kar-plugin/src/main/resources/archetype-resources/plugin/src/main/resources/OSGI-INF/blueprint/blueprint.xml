@@ -54,9 +54,4 @@
         </service-properties>
     </service>
 
-    <!-- Expose our custom event definitions bundled in the .jar -->
-    <service interface="org.opennms.integration.api.v1.config.events.EventConfExtension">
-        <bean class="${package}.EventConfExtension"/>
-    </service>
-
 </blueprint>
