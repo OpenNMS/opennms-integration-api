@@ -26,23 +26,20 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.integration.api.sample;
+package org.opennms.integration.api.v1.config.events;
 
 import java.util.List;
 
-import org.opennms.integration.api.v1.config.syslog.SyslogMatchExtension;
-import org.opennms.integration.api.v1.config.syslog.SyslogMatch;
-import org.opennms.integration.api.xml.ClasspathSyslogMatchLoader;
+import org.opennms.integration.api.v1.annotations.Exposable;
 
-public class MySyslogMatchExtension implements SyslogMatchExtension {
+/**
+ * Used to expose event definitions.
+ *
+ * @since 1.0.0
+ */
+@Exposable
+public interface EventConfExtension {
 
-    private final ClasspathSyslogMatchLoader classpathSyslogMatchLoader = new ClasspathSyslogMatchLoader(
-            MyEventConfExtension.class,
-            "Cisco.syslog.xml");
-
-    @Override
-    public List<SyslogMatch> getSyslogMatches() {
-        return classpathSyslogMatchLoader.getSyslogMatches();
-    }
+    List<EventDefinition> getEventDefinitions();
 
 }
