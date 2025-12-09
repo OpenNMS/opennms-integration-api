@@ -7,18 +7,17 @@
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published
- * by the Free Software Foundation, either version 3 of the License,
- * or (at your option) any later version.
+ * it under the terms of the Apache License Version 2.0 as published
+ * by the Apache Software Foundation.
  *
  * OpenNMS(R) is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * Apache License Version 2.0 for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
+ * You should have received a copy of the Apache License Version 2.0
  * along with OpenNMS(R).  If not, see:
- *      http://www.gnu.org/licenses/
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * For more information contact:
  *     OpenNMS(R) Licensing &lt;license@opennms.org&gt;
