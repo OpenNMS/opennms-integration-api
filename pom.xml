@@ -262,6 +262,13 @@
         </extensions>
     </build>
 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>opennms-ossrh</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <profiles>
         <profile>
             <id>release</id>
