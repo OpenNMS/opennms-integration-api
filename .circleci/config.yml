@@ -95,7 +95,7 @@ jobs:
       - branch-management/merge-branch:
           committer_email: "cicd-system@opennms.com"
           committer_name: "CI/CD System"
-          from: release-1.x
+          from: release-2.x
           to: master
 
       # make sure the build passes after merge
