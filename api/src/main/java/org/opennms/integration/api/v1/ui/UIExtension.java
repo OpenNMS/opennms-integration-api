@@ -58,4 +58,18 @@ public interface UIExtension {
      * @return return the implementation class used to lookup OSGI bundle
      */
     Class<? extends UIExtension> getExtensionClass();
+
+    /**
+     * Optional second module that the OpenNMS shell mounts globally (via Teleport to body)
+     * so it is visible on every page, not just under Plugins &gt; menu entry.
+     * <p>
+     * Return {@code null} (the default) if the plugin has no global component. Old OpenNMS
+     * versions that do not recognise this method will simply never mount the global module,
+     * so existing behaviour is fully preserved.
+     *
+     * @return the Vue3 ES-module file name for the global overlay, or {@code null}
+     */
+    default String getGlobalModuleFileName() {
+        return null;
+    }
 }
