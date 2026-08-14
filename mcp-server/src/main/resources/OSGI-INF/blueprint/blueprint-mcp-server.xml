@@ -1,0 +1,67 @@
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0
+        http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
+
+    <reference id="nodeDao" interface="org.opennms.integration.api.v1.dao.NodeDao" />
+    <reference id="alarmDao" interface="org.opennms.integration.api.v1.dao.AlarmDao" />
+    <reference id="interfaceToNodeCache" interface="org.opennms.integration.api.v1.dao.InterfaceToNodeCache" />
+    <reference id="eventForwarder" interface="org.opennms.integration.api.v1.events.EventForwarder" />
+
+    <!-- Built-in tools -->
+    <bean id="listNodesTool" class="org.opennms.integration.api.mcpserver.tools.ListNodesTool">
+        <argument ref="nodeDao"/>
+    </bean>
+    <bean id="getNodeTool" class="org.opennms.integration.api.mcpserver.tools.GetNodeTool">
+        <argument ref="nodeDao"/>
+    </bean>
+    <bean id="listAlarmsTool" class="org.opennms.integration.api.mcpserver.tools.ListAlarmsTool">
+        <argument ref="alarmDao"/>
+    </bean>
+    <bean id="findNodeByIpTool" class="org.opennms.integration.api.mcpserver.tools.FindNodeByIpTool">
+        <argument ref="interfaceToNodeCache"/>
+        <argument ref="nodeDao"/>
+    </bean>
+    <bean id="updateAlarmsTool" class="org.opennms.integration.api.mcpserver.tools.UpdateAlarmsTool">
+        <argument ref="alarmDao"/>
+    </bean>
+    <bean id="sendEventTool" class="org.opennms.integration.api.mcpserver.tools.SendEventTool">
+        <argument ref="eventForwarder"/>
+    </bean>
+
+    <!-- Tools contributed by other plugins via the Integration API -->
+    <reference-list id="toolProviders" interface="org.opennms.integration.api.v1.mcp.McpToolProvider"
+                    availability="optional"/>
+
+    <bean id="toolRegistry" class="org.opennms.integration.api.mcpserver.ToolRegistry">
+        <argument>
+            <list>
+                <ref component-id="listNodesTool"/>
+                <ref component-id="getNodeTool"/>
+                <ref component-id="listAlarmsTool"/>
+                <ref component-id="findNodeByIpTool"/>
+                <ref component-id="updateAlarmsTool"/>
+                <ref component-id="sendEventTool"/>
+            </list>
+        </argument>
+        <argument ref="toolProviders"/>
+    </bean>
+
+    <bean id="mcpRequestHandler" class="org.opennms.integration.api.mcpserver.McpRequestHandler">
+        <argument ref="toolRegistry"/>
+    </bean>
+
+    <!-- Published through the OSGi JAX-RS connector, mounted under /rest via
+         application-path (like the other OSGi REST services), surfacing at
+         /opennms/rest/mcp. Living under /rest/** puts it in the stateless
+         basic-auth Spring Security block (CSRF disabled, POST requires
+         ROLE_REST/ROLE_ADMIN); other paths get the interactive web-UI
+         security (login redirects, CSRF). -->
+    <service interface="org.opennms.integration.api.mcpserver.McpRestEndpoint">
+        <service-properties>
+            <entry key="application-path" value="/rest" />
+        </service-properties>
+        <bean class="org.opennms.integration.api.mcpserver.McpRestEndpoint">
+            <argument ref="mcpRequestHandler"/>
+        </bean>
+    </service>
+</blueprint>
