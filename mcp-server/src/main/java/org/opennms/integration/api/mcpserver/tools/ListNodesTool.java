@@ -54,7 +54,7 @@ public class ListNodesTool implements McpToolProvider {
     @Override
     public String getToolDescription() {
         return "List the nodes in the OpenNMS inventory. Optionally filter by a case-insensitive "
-                + "substring of the node label and limit the number of results.";
+                + "substring of the node label and limit the number of results (at most 500 per call).";
     }
 
     @Override
@@ -63,7 +63,8 @@ public class ListNodesTool implements McpToolProvider {
                 + "\"type\":\"object\","
                 + "\"properties\":{"
                 + "\"search\":{\"type\":\"string\",\"description\":\"Case-insensitive substring to match against node labels\"},"
-                + "\"limit\":{\"type\":\"integer\",\"description\":\"Maximum number of nodes to return\",\"default\":50}"
+                + "\"limit\":{\"type\":\"integer\",\"description\":\"Maximum number of nodes to return\","
+                + "\"minimum\":1,\"maximum\":500,\"default\":50}"
                 + "},"
                 + "\"additionalProperties\":false"
                 + "}";

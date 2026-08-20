@@ -56,7 +56,7 @@ public class ListAlarmsTool implements McpToolProvider {
     public String getToolDescription() {
         return "List current alarms, most severe first. Optionally filter by minimum severity "
                 + "(INDETERMINATE, CLEARED, NORMAL, WARNING, MINOR, MAJOR, CRITICAL) and by "
-                + "acknowledgement state.";
+                + "acknowledgement state. Returns at most 1000 alarms per call.";
     }
 
     @Override
@@ -67,7 +67,8 @@ public class ListAlarmsTool implements McpToolProvider {
                 + "\"minSeverity\":{\"type\":\"string\",\"description\":\"Only return alarms at or above this severity\","
                 + "\"enum\":[\"INDETERMINATE\",\"CLEARED\",\"NORMAL\",\"WARNING\",\"MINOR\",\"MAJOR\",\"CRITICAL\"]},"
                 + "\"acknowledged\":{\"type\":\"boolean\",\"description\":\"Only return alarms with this acknowledgement state\"},"
-                + "\"limit\":{\"type\":\"integer\",\"description\":\"Maximum number of alarms to return\",\"default\":100}"
+                + "\"limit\":{\"type\":\"integer\",\"description\":\"Maximum number of alarms to return\","
+                + "\"minimum\":1,\"maximum\":1000,\"default\":100}"
                 + "},"
                 + "\"additionalProperties\":false"
                 + "}";

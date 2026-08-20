@@ -91,13 +91,9 @@ public class FindNodeByIpTool implements McpToolProvider {
         }
 
         final Optional<Integer> nodeId = interfaceToNodeCache.getFirstNodeId(location, inetAddress);
-        if (nodeId.isEmpty()) {
-            return McpToolResult.text("No node found for IP " + ip + " in location " + location);
-        }
-        final Node node = nodeDao.getNodeById(nodeId.get());
+        final Node node = nodeId.map(nodeDao::getNodeById).orElse(null);
         if (node == null) {
-            return McpToolResult.text("Node id " + nodeId.get() + " found for IP " + ip
-                    + " but the node no longer exists");
+            return McpToolResult.text("No node found for IP " + ip + " in location " + location);
         }
         return McpToolResult.text(JsonSupport.toJson(JsonSupport.nodeSummary(node)));
     }
