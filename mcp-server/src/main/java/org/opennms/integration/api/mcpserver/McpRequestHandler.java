@@ -31,8 +31,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 
+import org.opennms.integration.api.v1.mcp.McpToolContext;
 import org.opennms.integration.api.v1.mcp.McpToolProvider;
 import org.opennms.integration.api.v1.mcp.McpToolResult;
 import org.osgi.framework.Bundle;
@@ -41,6 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -49,18 +52,23 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * Transport-neutral request handler implementing the stateless MCP protocol
  * (revision 2026-07-28) for a tools-only server: server/discover, tools/list
- * and tools/call over single JSON-RPC 2.0 messages.
+ * and tools/call over single JSON-RPC 2.0 messages. Legacy (2025-03-26 through
+ * 2025-11-25) clients are served in dual-era mode via a stateless initialize
+ * handshake.
  */
 public class McpRequestHandler {
     private static final Logger LOG = LoggerFactory.getLogger(McpRequestHandler.class);
+    private static final Logger AUDIT_LOG = LoggerFactory.getLogger("org.opennms.integration.api.mcpserver.audit");
 
     public static final String PROTOCOL_VERSION = "2026-07-28";
     public static final String SERVER_NAME = "OpenNMS MCP Server";
 
     /** Legacy (initialize-handshake) revisions served in dual-era mode, all statelessly. */
-    static final java.util.Set<String> LEGACY_VERSIONS =
-            java.util.Set.of("2025-03-26", "2025-06-18", "2025-11-25");
+    static final Set<String> LEGACY_VERSIONS = Set.of("2025-03-26", "2025-06-18", "2025-11-25");
     static final String DEFAULT_LEGACY_VERSION = "2025-06-18";
+
+    static final String ROLE_ADMIN = "ROLE_ADMIN";
+    static final String ROLE_READONLY = "ROLE_READONLY";
 
     private static final String INSTRUCTIONS =
             "Provides tools to inspect and operate this OpenNMS network monitoring "
@@ -86,6 +94,7 @@ public class McpRequestHandler {
 
     private static final String BASE64_SENTINEL_PREFIX = "=?base64?";
     private static final String BASE64_SENTINEL_SUFFIX = "?=";
+    private static final String X_MCP_HEADER = "x-mcp-header";
 
     private final ObjectMapper mapper = new ObjectMapper();
     private final ToolRegistry toolRegistry;
@@ -123,9 +132,18 @@ public class McpRequestHandler {
      *
      * @param body the raw request body
      * @param headers case-insensitive header lookup (e.g. HttpServletRequest::getHeader)
-     * @param canWrite whether the authenticated user may invoke write tools
+     * @param caller the authenticated caller
      */
-    public Result handle(String body, Function<String, String> headers, boolean canWrite) {
+    public Result handle(String body, Function<String, String> headers, McpCaller caller) {
+        try {
+            return doHandle(body, headers, caller);
+        } catch (RuntimeException e) {
+            LOG.error("Unexpected error handling MCP request", e);
+            return error(500, null, INTERNAL_ERROR, "Internal error");
+        }
+    }
+
+    private Result doHandle(String body, Function<String, String> headers, McpCaller caller) {
         final JsonNode root;
         try {
             root = mapper.readTree(body);
@@ -163,12 +181,17 @@ public class McpRequestHandler {
             return json(200, response(id, legacyInitialize(params)));
         }
         if (!modern) {
-            // Legacy-era request: the modern per-request _meta and the
-            // Mcp-Method/Mcp-Name/MCP-Protocol-Version header rules do not apply.
-            return legacyDispatch(method, id, params, canWrite);
+            // Legacy-era request: the modern _meta requirements do not apply, but any
+            // MCP headers that ARE present must still be consistent with the body so
+            // that intermediaries routing on headers cannot be fed a different truth.
+            final Result headerFailure = validateLegacyHeaders(method, id, params, headers);
+            if (headerFailure != null) {
+                return headerFailure;
+            }
+            return legacyDispatch(method, id, params, caller);
         }
 
-        // Header/body validation per the Streamable HTTP transport
+        // Header/body validation per the Streamable HTTP transport (modern era)
         final String mcpMethod = headers.apply(HEADER_METHOD);
         if (mcpMethod == null) {
             return error(400, id, HEADER_MISMATCH, "Missing required header: " + HEADER_METHOD);
@@ -216,12 +239,45 @@ public class McpRequestHandler {
             case "server/discover":
                 return json(200, response(id, discover()));
             case "tools/list":
-                return json(200, response(id, toolsList(canWrite)));
+                return json(200, response(id, toolsList(caller)));
             case "tools/call":
-                return toolsCall(id, params, canWrite, true);
+                return toolsCall(id, params, caller, true);
             default:
                 return error(404, id, METHOD_NOT_FOUND, "Method not found: " + method);
         }
+    }
+
+    /**
+     * Legacy-era requests do not require the modern headers, but if a client or
+     * intermediary put them on the wire anyway, they must not contradict the body.
+     * A modern protocol version header without modern _meta is likewise rejected
+     * so validation cannot be bypassed by dropping the _meta field.
+     */
+    private Result validateLegacyHeaders(String method, JsonNode id, JsonNode params,
+                                         Function<String, String> headers) {
+        final String protocolHeader = headers.apply(HEADER_PROTOCOL_VERSION);
+        if (protocolHeader != null && !LEGACY_VERSIONS.contains(protocolHeader)) {
+            return error(400, id, HEADER_MISMATCH, String.format(
+                    "Header mismatch: %s header value '%s' requires the matching "
+                            + "'%s' field in params._meta", HEADER_PROTOCOL_VERSION,
+                    protocolHeader, META_PROTOCOL_VERSION));
+        }
+        final String mcpMethod = headers.apply(HEADER_METHOD);
+        if (mcpMethod != null && !mcpMethod.equals(method)) {
+            return error(400, id, HEADER_MISMATCH, String.format(
+                    "Header mismatch: %s header value '%s' does not match body value '%s'",
+                    HEADER_METHOD, mcpMethod, method));
+        }
+        if ("tools/call".equals(method)) {
+            final String mcpName = decodeSentinel(headers.apply(HEADER_NAME));
+            final String name = params.path("name").asText(null);
+            if (mcpName != null && !mcpName.equals(name)) {
+                return error(400, id, HEADER_MISMATCH, String.format(
+                        "Header mismatch: %s header value '%s' does not match body value '%s'",
+                        HEADER_NAME, mcpName, name));
+            }
+        }
+        return null;
     }
 
     private ObjectNode legacyInitialize(JsonNode params) {
@@ -239,17 +295,17 @@ public class McpRequestHandler {
         return result;
     }
 
-    private Result legacyDispatch(String method, JsonNode id, JsonNode params, boolean canWrite) {
+    private Result legacyDispatch(String method, JsonNode id, JsonNode params, McpCaller caller) {
         switch (method) {
             case "ping":
                 return json(200, response(id, mapper.createObjectNode()));
             case "tools/list": {
                 final ObjectNode result = mapper.createObjectNode();
-                result.set("tools", toolsArray(canWrite));
+                result.set("tools", toolsArray(caller));
                 return json(200, response(id, result));
             }
             case "tools/call":
-                return toolsCall(id, params, canWrite, false);
+                return toolsCall(id, params, caller, false);
             default:
                 return error(200, id, METHOD_NOT_FOUND, "Method not found: " + method);
         }
@@ -267,42 +323,55 @@ public class McpRequestHandler {
         return result;
     }
 
-    private ObjectNode toolsList(boolean canWrite) {
+    private ObjectNode toolsList(McpCaller caller) {
         final ObjectNode result = mapper.createObjectNode();
         result.put("resultType", "complete");
-        result.set("tools", toolsArray(canWrite));
+        result.set("tools", toolsArray(caller));
         result.put("ttlMs", 60000L);
         result.put("cacheScope", "private");
         addServerInfo(result);
         return result;
     }
 
-    private ArrayNode toolsArray(boolean canWrite) {
+    private ArrayNode toolsArray(McpCaller caller) {
+        final boolean canWrite = canWrite(caller);
         final ArrayNode tools = mapper.createArrayNode();
         for (McpToolProvider tool : toolRegistry.getTools()) {
-            if (tool.isWriteAccess() && !canWrite) {
-                // Write tools are only offered to administrators; advertising them
-                // to read-only users would invite calls that are always rejected.
-                continue;
+            // One misbehaving provider must not break the listing for everyone.
+            try {
+                if (tool.isWriteAccess() && !canWrite) {
+                    // Write tools are only offered to administrators; advertising them
+                    // to read-only users would invite calls that are always rejected.
+                    continue;
+                }
+                final JsonNode schema = parseSchema(tool);
+                if (schema == null) {
+                    continue;
+                }
+                final ObjectNode toolNode = mapper.createObjectNode();
+                toolNode.put("name", tool.getToolName());
+                toolNode.put("description", tool.getToolDescription());
+                toolNode.set("inputSchema", schema);
+                tools.add(toolNode);
+            } catch (RuntimeException e) {
+                LOG.warn("Skipping misbehaving MCP tool provider {}", tool.getClass().getName(), e);
             }
-            final ObjectNode toolNode = tools.addObject();
-            toolNode.put("name", tool.getToolName());
-            toolNode.put("description", tool.getToolDescription());
-            toolNode.set("inputSchema", parseSchema(tool));
         }
         return tools;
     }
 
-    private Result toolsCall(JsonNode id, JsonNode params, boolean canWrite, boolean modern) {
+    private Result toolsCall(JsonNode id, JsonNode params, McpCaller caller, boolean modern) {
         final String name = params.path("name").asText(null);
         if (name == null) {
             return error(200, id, INVALID_PARAMS, "Missing required parameter: name");
         }
         final McpToolProvider tool = toolRegistry.getTool(name);
-        if (tool == null) {
+        if (tool == null || parseSchema(tool) == null) {
             return error(200, id, INVALID_PARAMS, "Unknown tool: " + name);
         }
-        if (tool.isWriteAccess() && !canWrite) {
+        if (tool.isWriteAccess() && !canWrite(caller)) {
+            AUDIT_LOG.warn("MCP tools/call denied: user='{}' tool='{}' (requires administrative access)",
+                    caller.getUserName(), name);
             return error(200, id, INSUFFICIENT_PRIVILEGES,
                     "Insufficient privileges: tool '" + name + "' requires administrative access");
         }
@@ -311,7 +380,7 @@ public class McpRequestHandler {
         try {
             final JsonNode argsNode = params.path("arguments");
             arguments = argsNode.isObject()
-                    ? mapper.convertValue(argsNode, new com.fasterxml.jackson.core.type.TypeReference<Map<String, Object>>() {})
+                    ? mapper.convertValue(argsNode, new TypeReference<Map<String, Object>>() {})
                     : Map.of();
         } catch (IllegalArgumentException e) {
             return error(200, id, INVALID_PARAMS, "Invalid tool arguments: " + e.getMessage());
@@ -319,11 +388,18 @@ public class McpRequestHandler {
 
         McpToolResult toolResult;
         try {
-            toolResult = tool.execute(arguments);
+            toolResult = tool.execute(new ToolContext(arguments, caller));
+            if (toolResult == null) {
+                LOG.warn("Tool '{}' returned null", name);
+                toolResult = McpToolResult.error("Tool execution failed: no result");
+            }
         } catch (Exception e) {
             LOG.warn("Tool '{}' threw while executing", name, e);
             toolResult = McpToolResult.error("Tool execution failed: " + e.getMessage());
         }
+
+        AUDIT_LOG.info("MCP tools/call: user='{}' tool='{}' arguments={} isError={}",
+                caller.getUserName(), name, toJsonSafe(arguments), toolResult.isError());
 
         final ObjectNode result = mapper.createObjectNode();
         if (modern) {
@@ -342,19 +418,88 @@ public class McpRequestHandler {
         return json(200, response(id, result));
     }
 
+    static boolean canWrite(McpCaller caller) {
+        // Mirrors the REST API's write rules: administrative access, and the
+        // ROLE_READONLY marker role revokes write access even for admins.
+        return caller.isUserInRole(ROLE_ADMIN) && !caller.isUserInRole(ROLE_READONLY);
+    }
+
+    /**
+     * Parses and vets a tool's input schema. Returns null if the tool must not
+     * be served: schemas declaring x-mcp-header are rejected because this server
+     * does not validate Mcp-Param-* headers against the body, and serving such a
+     * tool would let intermediaries authorize on unvalidated header values.
+     * Schemas that are unparseable (but present) fall back to an open schema.
+     */
     private JsonNode parseSchema(McpToolProvider tool) {
+        final String schemaString;
         try {
-            final JsonNode schema = mapper.readTree(tool.getInputSchema());
-            if (schema != null && schema.isObject()) {
-                return schema;
+            schemaString = tool.getInputSchema();
+        } catch (RuntimeException e) {
+            LOG.warn("Tool '{}' threw while providing its input schema", safeToolName(tool), e);
+            return null;
+        }
+        if (schemaString == null) {
+            LOG.warn("Tool '{}' declares no input schema, not serving it", safeToolName(tool));
+            return null;
+        }
+        JsonNode schema = null;
+        try {
+            final JsonNode parsed = mapper.readTree(schemaString);
+            if (parsed != null && parsed.isObject()) {
+                schema = parsed;
             }
         } catch (JsonProcessingException e) {
             LOG.warn("Tool '{}' declares an invalid input schema, advertising an open schema instead",
-                    tool.getToolName(), e);
+                    safeToolName(tool), e);
         }
-        final ObjectNode fallback = mapper.createObjectNode();
-        fallback.put("type", "object");
-        return fallback;
+        if (schema == null) {
+            final ObjectNode fallback = mapper.createObjectNode();
+            fallback.put("type", "object");
+            return fallback;
+        }
+        if (containsField(schema, X_MCP_HEADER)) {
+            LOG.warn("Tool '{}' declares {} in its input schema, which this server does not support; "
+                    + "not serving it", safeToolName(tool), X_MCP_HEADER);
+            return null;
+        }
+        return schema;
+    }
+
+    private static boolean containsField(JsonNode node, String fieldName) {
+        if (node.isObject()) {
+            if (node.has(fieldName)) {
+                return true;
+            }
+            for (JsonNode child : node) {
+                if (containsField(child, fieldName)) {
+                    return true;
+                }
+            }
+        } else if (node.isArray()) {
+            for (JsonNode child : node) {
+                if (containsField(child, fieldName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static String safeToolName(McpToolProvider tool) {
+        try {
+            return tool.getToolName();
+        } catch (RuntimeException e) {
+            return tool.getClass().getName();
+        }
+    }
+
+    private String toJsonSafe(Map<String, Object> arguments) {
+        try {
+            return mapper.writeValueAsString(arguments);
+        } catch (JsonProcessingException e) {
+            return String.valueOf(arguments);
+        }
     }
 
     private void addServerInfo(ObjectNode result) {
@@ -423,5 +568,30 @@ public class McpRequestHandler {
             // running outside OSGi (unit tests)
         }
         return "dev";
+    }
+
+    private static final class ToolContext implements McpToolContext {
+        private final Map<String, Object> arguments;
+        private final McpCaller caller;
+
+        ToolContext(Map<String, Object> arguments, McpCaller caller) {
+            this.arguments = arguments;
+            this.caller = caller;
+        }
+
+        @Override
+        public Map<String, Object> getArguments() {
+            return arguments;
+        }
+
+        @Override
+        public String getUserName() {
+            return caller.getUserName();
+        }
+
+        @Override
+        public boolean isUserInRole(String role) {
+            return caller.isUserInRole(role);
+        }
     }
 }

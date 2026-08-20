@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.opennms.integration.api.v1.dao.NodeDao;
+import org.opennms.integration.api.v1.mcp.McpToolContext;
 import org.opennms.integration.api.v1.mcp.McpToolProvider;
 import org.opennms.integration.api.v1.mcp.McpToolResult;
 import org.opennms.integration.api.v1.model.Node;
@@ -67,7 +68,8 @@ public class GetNodeTool implements McpToolProvider {
     }
 
     @Override
-    public McpToolResult execute(Map<String, Object> arguments) {
+    public McpToolResult execute(McpToolContext context) {
+        final Map<String, Object> arguments = context.getArguments();
         final Node node;
         if (arguments.get("id") != null) {
             node = nodeDao.getNodeById(JsonSupport.intArgument(arguments, "id", -1));

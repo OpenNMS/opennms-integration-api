@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.opennms.integration.api.v1.events.EventForwarder;
+import org.opennms.integration.api.v1.mcp.McpToolContext;
 import org.opennms.integration.api.v1.mcp.McpToolProvider;
 import org.opennms.integration.api.v1.mcp.McpToolResult;
 import org.opennms.integration.api.v1.model.Severity;
@@ -77,15 +78,19 @@ public class SendEventTool implements McpToolProvider {
     }
 
     @Override
-    public McpToolResult execute(Map<String, Object> arguments) {
+    public McpToolResult execute(McpToolContext context) {
+        final Map<String, Object> arguments = context.getArguments();
         final String uei = JsonSupport.stringArgument(arguments, "uei", null);
         if (uei == null || uei.isBlank()) {
             return McpToolResult.error("Missing required argument: uei");
         }
 
+        // Record who sent the event: the authenticated principal, not a value
+        // the model could choose.
+        final String source = "mcp:" + (context.getUserName() != null ? context.getUserName() : "anonymous");
         final ImmutableInMemoryEvent.Builder builder = ImmutableInMemoryEvent.newBuilder()
                 .setUei(uei)
-                .setSource("mcp");
+                .setSource(source);
 
         if (arguments.get("nodeId") != null) {
             builder.setNodeId(JsonSupport.intArgument(arguments, "nodeId", -1));

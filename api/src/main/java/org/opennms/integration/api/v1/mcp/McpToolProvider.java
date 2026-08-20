@@ -27,8 +27,6 @@
 
 package org.opennms.integration.api.v1.mcp;
 
-import java.util.Map;
-
 import org.opennms.integration.api.v1.annotations.Exposable;
 
 /**
@@ -72,11 +70,12 @@ public interface McpToolProvider {
      *
      * Implementations should report tool-level failures (bad arguments, lookups
      * that fail) by returning a result with {@code isError=true} rather than
-     * throwing; thrown exceptions are converted to error results by the server.
+     * throwing; thrown exceptions and null returns are converted to error
+     * results by the server.
      *
-     * @param arguments the tool arguments as parsed JSON (values are String,
-     *                  Number, Boolean, List or Map); never null, may be empty
+     * @param context the invocation context carrying the tool arguments and
+     *                the authenticated caller's identity; never null
      * @return the tool result; must not be null
      */
-    McpToolResult execute(Map<String, Object> arguments);
+    McpToolResult execute(McpToolContext context);
 }

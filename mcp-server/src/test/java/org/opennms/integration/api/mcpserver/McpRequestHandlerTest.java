@@ -37,11 +37,13 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Function;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.opennms.integration.api.v1.mcp.McpToolContext;
 import org.opennms.integration.api.v1.mcp.McpToolProvider;
 import org.opennms.integration.api.v1.mcp.McpToolResult;
 
@@ -54,6 +56,7 @@ public class McpRequestHandlerTest {
     private final ObjectMapper mapper = new ObjectMapper();
     private McpRequestHandler handler;
     private Map<String, Object> lastEchoArguments;
+    private String lastEchoUser;
 
     private class EchoTool implements McpToolProvider {
         @Override
@@ -72,9 +75,10 @@ public class McpRequestHandlerTest {
         }
 
         @Override
-        public McpToolResult execute(Map<String, Object> arguments) {
-            lastEchoArguments = arguments;
-            return McpToolResult.text("echo: " + arguments.get("message"));
+        public McpToolResult execute(McpToolContext context) {
+            lastEchoArguments = context.getArguments();
+            lastEchoUser = context.getUserName();
+            return McpToolResult.text("echo: " + context.getArguments().get("message"));
         }
     }
 
@@ -100,7 +104,7 @@ public class McpRequestHandlerTest {
         }
 
         @Override
-        public McpToolResult execute(Map<String, Object> arguments) {
+        public McpToolResult execute(McpToolContext context) {
             return McpToolResult.text("done");
         }
     }
@@ -113,7 +117,7 @@ public class McpRequestHandlerTest {
 
         @Override
         public String getToolDescription() {
-            return "Always throws";
+            return "Always throws, schema is not JSON";
         }
 
         @Override
@@ -122,15 +126,96 @@ public class McpRequestHandlerTest {
         }
 
         @Override
-        public McpToolResult execute(Map<String, Object> arguments) {
+        public McpToolResult execute(McpToolContext context) {
             throw new IllegalStateException("boom");
+        }
+    }
+
+    private static class NullSchemaTool implements McpToolProvider {
+        @Override
+        public String getToolName() {
+            return "null-schema";
+        }
+
+        @Override
+        public String getToolDescription() {
+            return "Returns a null schema";
+        }
+
+        @Override
+        public String getInputSchema() {
+            return null;
+        }
+
+        @Override
+        public McpToolResult execute(McpToolContext context) {
+            return McpToolResult.text("never reached");
+        }
+    }
+
+    private static class NullResultTool implements McpToolProvider {
+        @Override
+        public String getToolName() {
+            return "null-result";
+        }
+
+        @Override
+        public String getToolDescription() {
+            return "Returns null from execute";
+        }
+
+        @Override
+        public String getInputSchema() {
+            return "{\"type\":\"object\"}";
+        }
+
+        @Override
+        public McpToolResult execute(McpToolContext context) {
+            return null;
+        }
+    }
+
+    private static class HeaderParamTool implements McpToolProvider {
+        @Override
+        public String getToolName() {
+            return "header-param";
+        }
+
+        @Override
+        public String getToolDescription() {
+            return "Declares x-mcp-header, which this server does not support";
+        }
+
+        @Override
+        public String getInputSchema() {
+            return "{\"type\":\"object\",\"properties\":{\"region\":{\"type\":\"string\",\"x-mcp-header\":\"Region\"}}}";
+        }
+
+        @Override
+        public McpToolResult execute(McpToolContext context) {
+            return McpToolResult.text("never reached");
         }
     }
 
     @Before
     public void setUp() {
         handler = new McpRequestHandler(new ToolRegistry(
-                List.of(new EchoTool(), new RestrictedTool(), new BrokenTool()), List.of()));
+                List.of(new EchoTool(), new RestrictedTool(), new BrokenTool(),
+                        new NullSchemaTool(), new NullResultTool(), new HeaderParamTool()),
+                List.of()));
+    }
+
+    private static McpCaller caller(String... roles) {
+        final Set<String> roleSet = Set.of(roles);
+        return new McpCaller("test-user", roleSet::contains);
+    }
+
+    private static McpCaller reader() {
+        return caller("ROLE_REST");
+    }
+
+    private static McpCaller admin() {
+        return caller("ROLE_REST", "ROLE_ADMIN");
     }
 
     private static Function<String, String> headers(String... namesAndValues) {
@@ -168,7 +253,7 @@ public class McpRequestHandlerTest {
     @Test
     public void canDiscover() throws Exception {
         final McpRequestHandler.Result result = handler.handle(
-                request(1, "server/discover", Map.of()), standardHeaders("server/discover"), false);
+                request(1, "server/discover", Map.of()), standardHeaders("server/discover"), reader());
 
         assertThat(result.getHttpStatus(), equalTo(200));
         final JsonNode response = body(result);
@@ -187,7 +272,7 @@ public class McpRequestHandlerTest {
         final String body = request(1, "server/discover", Map.of())
                 .replace(PV, "1999-01-01");
         final McpRequestHandler.Result result = handler.handle(body,
-                headers("MCP-Protocol-Version", "1999-01-01", "Mcp-Method", "server/discover"), false);
+                headers("MCP-Protocol-Version", "1999-01-01", "Mcp-Method", "server/discover"), reader());
 
         assertThat(result.getHttpStatus(), equalTo(200));
         assertThat(body(result).path("result").path("supportedVersions").get(0).asText(), equalTo(PV));
@@ -196,7 +281,7 @@ public class McpRequestHandlerTest {
     @Test
     public void canListTools() throws Exception {
         final McpRequestHandler.Result result = handler.handle(
-                request(2, "tools/list", Map.of()), standardHeaders("tools/list"), false);
+                request(2, "tools/list", Map.of()), standardHeaders("tools/list"), reader());
 
         assertThat(result.getHttpStatus(), equalTo(200));
         final JsonNode listResult = body(result).path("result");
@@ -204,41 +289,48 @@ public class McpRequestHandlerTest {
         assertThat(listResult.path("cacheScope").asText(), equalTo("private"));
         assertThat(listResult.path("ttlMs").isNumber(), is(true));
 
+        // deterministic (alphabetical) order; write tools hidden from read-only users;
+        // null-schema and x-mcp-header tools are not served
         final JsonNode tools = listResult.path("tools");
-        // deterministic (alphabetical) order; write tools are hidden from read-only users
-        assertThat(tools.size(), equalTo(2));
+        assertThat(tools.size(), equalTo(3));
         assertThat(tools.get(0).path("name").asText(), equalTo("broken"));
         assertThat(tools.get(1).path("name").asText(), equalTo("echo"));
+        assertThat(tools.get(2).path("name").asText(), equalTo("null-result"));
         assertThat(tools.get(1).path("inputSchema").path("type").asText(), equalTo("object"));
-        // invalid schema string falls back to an open object schema
+        // invalid (but present) schema string falls back to an open object schema
         assertThat(tools.get(0).path("inputSchema").path("type").asText(), equalTo("object"));
     }
 
     @Test
     public void writeToolsAreListedForAdmins() throws Exception {
         final McpRequestHandler.Result result = handler.handle(
-                request(2, "tools/list", Map.of()), standardHeaders("tools/list"), true);
+                request(2, "tools/list", Map.of()), standardHeaders("tools/list"), admin());
 
         final JsonNode tools = body(result).path("result").path("tools");
-        assertThat(tools.size(), equalTo(3));
-        assertThat(tools.get(2).path("name").asText(), equalTo("restricted"));
+        assertThat(tools.size(), equalTo(4));
+        assertThat(tools.get(3).path("name").asText(), equalTo("restricted"));
     }
 
     @Test
-    public void explicitNullIdIsInvalidRequest() throws Exception {
-        final McpRequestHandler.Result result = handler.handle(
-                "{\"jsonrpc\":\"2.0\",\"id\":null,\"method\":\"tools/list\"}",
-                standardHeaders("tools/list"), false);
+    public void readonlyAdminIsTreatedAsReader() throws Exception {
+        final McpCaller readonlyAdmin = caller("ROLE_REST", "ROLE_ADMIN", "ROLE_READONLY");
 
-        assertThat(result.getHttpStatus(), equalTo(400));
-        assertThat(body(result).path("error").path("code").asInt(), equalTo(-32600));
+        final McpRequestHandler.Result list = handler.handle(
+                request(2, "tools/list", Map.of()), standardHeaders("tools/list"), readonlyAdmin);
+        assertThat(body(list).path("result").path("tools").size(), equalTo(3));
+
+        final McpRequestHandler.Result call = handler.handle(
+                request(3, "tools/call", Map.of("name", "restricted")),
+                headers("MCP-Protocol-Version", PV, "Mcp-Method", "tools/call", "Mcp-Name", "restricted"),
+                readonlyAdmin);
+        assertThat(body(call).path("error").path("code").asInt(), equalTo(-32000));
     }
 
     @Test
     public void canCallTool() throws Exception {
         final McpRequestHandler.Result result = handler.handle(
                 request(3, "tools/call", Map.of("name", "echo", "arguments", Map.of("message", "hi"))),
-                headers("MCP-Protocol-Version", PV, "Mcp-Method", "tools/call", "Mcp-Name", "echo"), false);
+                headers("MCP-Protocol-Version", PV, "Mcp-Method", "tools/call", "Mcp-Name", "echo"), reader());
 
         assertThat(result.getHttpStatus(), equalTo(200));
         final JsonNode callResult = body(result).path("result");
@@ -250,11 +342,20 @@ public class McpRequestHandlerTest {
     }
 
     @Test
+    public void toolSeesTheAuthenticatedUser() throws Exception {
+        handler.handle(
+                request(3, "tools/call", Map.of("name", "echo", "arguments", Map.of("message", "hi"))),
+                headers("MCP-Protocol-Version", PV, "Mcp-Method", "tools/call", "Mcp-Name", "echo"), reader());
+
+        assertThat(lastEchoUser, equalTo("test-user"));
+    }
+
+    @Test
     public void canCallToolWithBase64EncodedNameHeader() throws Exception {
         final String encoded = "=?base64?" + Base64.getEncoder().encodeToString("echo".getBytes(StandardCharsets.UTF_8)) + "?=";
         final McpRequestHandler.Result result = handler.handle(
                 request(3, "tools/call", Map.of("name", "echo", "arguments", Map.of("message", "hi"))),
-                headers("MCP-Protocol-Version", PV, "Mcp-Method", "tools/call", "Mcp-Name", encoded), false);
+                headers("MCP-Protocol-Version", PV, "Mcp-Method", "tools/call", "Mcp-Name", encoded), reader());
 
         assertThat(result.getHttpStatus(), equalTo(200));
         assertThat(body(result).path("result").path("isError").asBoolean(), is(false));
@@ -264,18 +365,39 @@ public class McpRequestHandlerTest {
     public void toolExceptionsBecomeErrorResults() throws Exception {
         final McpRequestHandler.Result result = handler.handle(
                 request(4, "tools/call", Map.of("name", "broken")),
-                headers("MCP-Protocol-Version", PV, "Mcp-Method", "tools/call", "Mcp-Name", "broken"), false);
+                headers("MCP-Protocol-Version", PV, "Mcp-Method", "tools/call", "Mcp-Name", "broken"), reader());
 
         assertThat(result.getHttpStatus(), equalTo(200));
-        final JsonNode callResult = body(result).path("result");
-        assertThat(callResult.path("isError").asBoolean(), is(true));
+        assertThat(body(result).path("result").path("isError").asBoolean(), is(true));
+    }
+
+    @Test
+    public void nullToolResultsBecomeErrorResults() throws Exception {
+        final McpRequestHandler.Result result = handler.handle(
+                request(4, "tools/call", Map.of("name", "null-result")),
+                headers("MCP-Protocol-Version", PV, "Mcp-Method", "tools/call", "Mcp-Name", "null-result"), reader());
+
+        assertThat(result.getHttpStatus(), equalTo(200));
+        assertThat(body(result).path("result").path("isError").asBoolean(), is(true));
+    }
+
+    @Test
+    public void unservableToolsCannotBeCalled() throws Exception {
+        for (String name : List.of("null-schema", "header-param")) {
+            final McpRequestHandler.Result result = handler.handle(
+                    request(5, "tools/call", Map.of("name", name)),
+                    headers("MCP-Protocol-Version", PV, "Mcp-Method", "tools/call", "Mcp-Name", name), reader());
+
+            assertThat(result.getHttpStatus(), equalTo(200));
+            assertThat(body(result).path("error").path("code").asInt(), equalTo(-32602));
+        }
     }
 
     @Test
     public void unknownToolIsInvalidParams() throws Exception {
         final McpRequestHandler.Result result = handler.handle(
                 request(5, "tools/call", Map.of("name", "nope")),
-                headers("MCP-Protocol-Version", PV, "Mcp-Method", "tools/call", "Mcp-Name", "nope"), false);
+                headers("MCP-Protocol-Version", PV, "Mcp-Method", "tools/call", "Mcp-Name", "nope"), reader());
 
         assertThat(result.getHttpStatus(), equalTo(200));
         assertThat(body(result).path("error").path("code").asInt(), equalTo(-32602));
@@ -287,18 +409,18 @@ public class McpRequestHandlerTest {
                 "MCP-Protocol-Version", PV, "Mcp-Method", "tools/call", "Mcp-Name", "restricted");
 
         final McpRequestHandler.Result denied = handler.handle(
-                request(6, "tools/call", Map.of("name", "restricted")), h, false);
+                request(6, "tools/call", Map.of("name", "restricted")), h, reader());
         assertThat(body(denied).path("error").path("code").asInt(), equalTo(-32000));
 
         final McpRequestHandler.Result allowed = handler.handle(
-                request(6, "tools/call", Map.of("name", "restricted")), h, true);
+                request(6, "tools/call", Map.of("name", "restricted")), h, admin());
         assertThat(body(allowed).path("result").path("isError").asBoolean(), is(false));
     }
 
     @Test
     public void missingMethodHeaderIsRejected() throws Exception {
         final McpRequestHandler.Result result = handler.handle(
-                request(7, "tools/list", Map.of()), headers("MCP-Protocol-Version", PV), false);
+                request(7, "tools/list", Map.of()), headers("MCP-Protocol-Version", PV), reader());
 
         assertThat(result.getHttpStatus(), equalTo(400));
         assertThat(body(result).path("error").path("code").asInt(), equalTo(-32020));
@@ -308,7 +430,7 @@ public class McpRequestHandlerTest {
     public void mismatchedNameHeaderIsRejected() throws Exception {
         final McpRequestHandler.Result result = handler.handle(
                 request(8, "tools/call", Map.of("name", "echo")),
-                headers("MCP-Protocol-Version", PV, "Mcp-Method", "tools/call", "Mcp-Name", "other"), false);
+                headers("MCP-Protocol-Version", PV, "Mcp-Method", "tools/call", "Mcp-Name", "other"), reader());
 
         assertThat(result.getHttpStatus(), equalTo(400));
         assertThat(body(result).path("error").path("code").asInt(), equalTo(-32020));
@@ -318,7 +440,7 @@ public class McpRequestHandlerTest {
     public void mismatchedProtocolVersionHeaderIsRejected() throws Exception {
         final McpRequestHandler.Result result = handler.handle(
                 request(9, "tools/list", Map.of()),
-                headers("MCP-Protocol-Version", "2025-11-25", "Mcp-Method", "tools/list"), false);
+                headers("MCP-Protocol-Version", "2025-11-25", "Mcp-Method", "tools/list"), reader());
 
         assertThat(result.getHttpStatus(), equalTo(400));
         assertThat(body(result).path("error").path("code").asInt(), equalTo(-32020));
@@ -328,7 +450,7 @@ public class McpRequestHandlerTest {
     public void unsupportedProtocolVersionIsRejected() throws Exception {
         final String body = request(10, "tools/list", Map.of()).replace(PV, "2025-11-25");
         final McpRequestHandler.Result result = handler.handle(body,
-                headers("MCP-Protocol-Version", "2025-11-25", "Mcp-Method", "tools/list"), false);
+                headers("MCP-Protocol-Version", "2025-11-25", "Mcp-Method", "tools/list"), reader());
 
         assertThat(result.getHttpStatus(), equalTo(400));
         final JsonNode error = body(result).path("error");
@@ -338,15 +460,11 @@ public class McpRequestHandlerTest {
     }
 
     @Test
-    public void unknownMethodIs404(){
-        try {
-            final McpRequestHandler.Result result = handler.handle(
-                    request(11, "resources/list", Map.of()), standardHeaders("resources/list"), false);
-            assertThat(result.getHttpStatus(), equalTo(404));
-            assertThat(body(result).path("error").path("code").asInt(), equalTo(-32601));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public void unknownMethodIs404() throws Exception {
+        final McpRequestHandler.Result result = handler.handle(
+                request(11, "resources/list", Map.of()), standardHeaders("resources/list"), reader());
+        assertThat(result.getHttpStatus(), equalTo(404));
+        assertThat(body(result).path("error").path("code").asInt(), equalTo(-32601));
     }
 
     @Test
@@ -355,7 +473,7 @@ public class McpRequestHandlerTest {
         // dual-era support answers with a stateless legacy InitializeResult.
         final McpRequestHandler.Result result = handler.handle(
                 "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2025-11-25\"}}",
-                headers(), false);
+                headers(), reader());
 
         assertThat(result.getHttpStatus(), equalTo(200));
         final JsonNode init = body(result).path("result");
@@ -368,7 +486,7 @@ public class McpRequestHandlerTest {
     public void legacyInitializeFallsBackToDefaultVersion() throws Exception {
         final McpRequestHandler.Result result = handler.handle(
                 "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2024-11-05\"}}",
-                headers(), false);
+                headers(), reader());
 
         assertThat(body(result).path("result").path("protocolVersion").asText(),
                 equalTo(McpRequestHandler.DEFAULT_LEGACY_VERSION));
@@ -379,31 +497,65 @@ public class McpRequestHandlerTest {
         // tools/list without _meta or Mcp-* headers is a legacy-era request
         final McpRequestHandler.Result list = handler.handle(
                 "{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/list\",\"params\":{}}",
-                headers(), false);
+                headers(), reader());
         assertThat(list.getHttpStatus(), equalTo(200));
         final JsonNode listResult = body(list).path("result");
-        assertThat(listResult.path("tools").size(), equalTo(2));
+        assertThat(listResult.path("tools").size(), equalTo(3));
         assertThat(listResult.has("resultType"), is(false));
 
         final McpRequestHandler.Result call = handler.handle(
                 "{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"tools/call\",\"params\":{\"name\":\"echo\",\"arguments\":{\"message\":\"hi\"}}}",
-                headers(), false);
+                headers(), reader());
         assertThat(call.getHttpStatus(), equalTo(200));
         final JsonNode callResult = body(call).path("result");
         assertThat(callResult.path("content").get(0).path("text").asText(), equalTo("echo: hi"));
         assertThat(callResult.has("resultType"), is(false));
 
         final McpRequestHandler.Result ping = handler.handle(
-                "{\"jsonrpc\":\"2.0\",\"id\":4,\"method\":\"ping\"}", headers(), false);
+                "{\"jsonrpc\":\"2.0\",\"id\":4,\"method\":\"ping\"}", headers(), reader());
         assertThat(ping.getHttpStatus(), equalTo(200));
         assertThat(body(ping).path("result").isObject(), is(true));
+    }
+
+    @Test
+    public void legacyRequestsWithInconsistentHeadersAreRejected() throws Exception {
+        // A present Mcp-Method header must still match the body
+        final McpRequestHandler.Result mismatchedMethod = handler.handle(
+                "{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/list\",\"params\":{}}",
+                headers("Mcp-Method", "tools/call"), reader());
+        assertThat(mismatchedMethod.getHttpStatus(), equalTo(400));
+        assertThat(body(mismatchedMethod).path("error").path("code").asInt(), equalTo(-32020));
+
+        // A modern protocol version header cannot be combined with a body lacking modern _meta
+        final McpRequestHandler.Result modernHeaderNoMeta = handler.handle(
+                "{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/list\",\"params\":{}}",
+                headers("MCP-Protocol-Version", PV), reader());
+        assertThat(modernHeaderNoMeta.getHttpStatus(), equalTo(400));
+        assertThat(body(modernHeaderNoMeta).path("error").path("code").asInt(), equalTo(-32020));
+
+        // A present Mcp-Name header must still match the called tool
+        final McpRequestHandler.Result mismatchedName = handler.handle(
+                "{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"tools/call\",\"params\":{\"name\":\"echo\"}}",
+                headers("Mcp-Name", "other"), reader());
+        assertThat(mismatchedName.getHttpStatus(), equalTo(400));
+        assertThat(body(mismatchedName).path("error").path("code").asInt(), equalTo(-32020));
+    }
+
+    @Test
+    public void explicitNullIdIsInvalidRequest() throws Exception {
+        final McpRequestHandler.Result result = handler.handle(
+                "{\"jsonrpc\":\"2.0\",\"id\":null,\"method\":\"tools/list\"}",
+                standardHeaders("tools/list"), reader());
+
+        assertThat(result.getHttpStatus(), equalTo(400));
+        assertThat(body(result).path("error").path("code").asInt(), equalTo(-32600));
     }
 
     @Test
     public void notificationsAreAccepted() throws Exception {
         final McpRequestHandler.Result result = handler.handle(
                 "{\"jsonrpc\":\"2.0\",\"method\":\"notifications/initialized\"}",
-                headers(), false);
+                headers(), reader());
 
         assertThat(result.getHttpStatus(), equalTo(202));
         assertThat(result.getBody(), nullValue());
@@ -411,7 +563,7 @@ public class McpRequestHandlerTest {
 
     @Test
     public void parseErrorsAreReported() throws Exception {
-        final McpRequestHandler.Result result = handler.handle("{nope", headers(), false);
+        final McpRequestHandler.Result result = handler.handle("{nope", headers(), reader());
 
         assertThat(result.getHttpStatus(), equalTo(400));
         final JsonNode response = body(result);
@@ -421,7 +573,7 @@ public class McpRequestHandlerTest {
 
     @Test
     public void invalidRequestsAreReported() throws Exception {
-        final McpRequestHandler.Result result = handler.handle("{\"jsonrpc\":\"1.0\"}", headers(), false);
+        final McpRequestHandler.Result result = handler.handle("{\"jsonrpc\":\"1.0\"}", headers(), reader());
 
         assertThat(result.getHttpStatus(), equalTo(400));
         assertThat(body(result).path("error").path("code").asInt(), equalTo(-32600));

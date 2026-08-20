@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.opennms.integration.api.v1.dao.AlarmDao;
+import org.opennms.integration.api.v1.mcp.McpToolContext;
 import org.opennms.integration.api.v1.mcp.McpToolProvider;
 import org.opennms.integration.api.v1.mcp.McpToolResult;
 
@@ -61,8 +62,7 @@ public class UpdateAlarmsTool implements McpToolProvider {
                 + "\"alarmIds\":{\"type\":\"array\",\"items\":{\"type\":\"integer\"},\"minItems\":1,"
                 + "\"description\":\"The ids of the alarms to update\"},"
                 + "\"action\":{\"type\":\"string\",\"enum\":[\"acknowledge\",\"unacknowledge\",\"escalate\",\"clear\"],"
-                + "\"description\":\"The action to apply\"},"
-                + "\"user\":{\"type\":\"string\",\"description\":\"The user to record for acknowledge/escalate\",\"default\":\"mcp\"}"
+                + "\"description\":\"The action to apply\"}"
                 + "},"
                 + "\"required\":[\"alarmIds\",\"action\"],"
                 + "\"additionalProperties\":false"
@@ -75,7 +75,8 @@ public class UpdateAlarmsTool implements McpToolProvider {
     }
 
     @Override
-    public McpToolResult execute(Map<String, Object> arguments) {
+    public McpToolResult execute(McpToolContext context) {
+        final Map<String, Object> arguments = context.getArguments();
         final Object alarmIdsArg = arguments.get("alarmIds");
         if (!(alarmIdsArg instanceof List) || ((List<?>) alarmIdsArg).isEmpty()) {
             return McpToolResult.error("Argument 'alarmIds' must be a non-empty array of integers");
@@ -90,7 +91,9 @@ public class UpdateAlarmsTool implements McpToolProvider {
         }
 
         final String action = JsonSupport.stringArgument(arguments, "action", "");
-        final String user = JsonSupport.stringArgument(arguments, "user", "mcp");
+        // The audit identity is the authenticated principal, never a tool argument
+        // the model could choose.
+        final String user = context.getUserName() != null ? context.getUserName() : "mcp";
 
         switch (action.toLowerCase(Locale.ROOT)) {
             case "acknowledge":

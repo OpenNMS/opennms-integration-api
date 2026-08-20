@@ -53,8 +53,6 @@ import org.slf4j.LoggerFactory;
 public class McpRestEndpoint {
     private static final Logger LOG = LoggerFactory.getLogger(McpRestEndpoint.class);
 
-    private static final String[] WRITE_ROLES = {"ROLE_ADMIN"};
-
     private final McpRequestHandler handler;
 
     public McpRestEndpoint(McpRequestHandler handler) {
@@ -70,21 +68,13 @@ public class McpRestEndpoint {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
 
-        final McpRequestHandler.Result result = handler.handle(body, request::getHeader, canWrite(request));
+        final McpCaller caller = new McpCaller(request.getRemoteUser(), request::isUserInRole);
+        final McpRequestHandler.Result result = handler.handle(body, request::getHeader, caller);
         final Response.ResponseBuilder builder = Response.status(result.getHttpStatus());
         if (result.getBody() != null) {
             builder.entity(result.getBody()).type(MediaType.APPLICATION_JSON);
         }
         return builder.build();
-    }
-
-    private static boolean canWrite(HttpServletRequest request) {
-        for (String role : WRITE_ROLES) {
-            if (request.isUserInRole(role)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private static boolean isSameHost(String origin, String serverName) {

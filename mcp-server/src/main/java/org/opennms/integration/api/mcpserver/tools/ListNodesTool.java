@@ -34,6 +34,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.opennms.integration.api.v1.dao.NodeDao;
+import org.opennms.integration.api.v1.mcp.McpToolContext;
 import org.opennms.integration.api.v1.mcp.McpToolProvider;
 import org.opennms.integration.api.v1.mcp.McpToolResult;
 import org.opennms.integration.api.v1.model.Node;
@@ -69,7 +70,8 @@ public class ListNodesTool implements McpToolProvider {
     }
 
     @Override
-    public McpToolResult execute(Map<String, Object> arguments) {
+    public McpToolResult execute(McpToolContext context) {
+        final Map<String, Object> arguments = context.getArguments();
         final int limit = Math.max(1, Math.min(500, JsonSupport.intArgument(arguments, "limit", 50)));
         final String search = JsonSupport.stringArgument(arguments, "search", null);
 

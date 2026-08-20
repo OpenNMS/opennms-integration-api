@@ -34,6 +34,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.opennms.integration.api.v1.dao.AlarmDao;
+import org.opennms.integration.api.v1.mcp.McpToolContext;
 import org.opennms.integration.api.v1.mcp.McpToolProvider;
 import org.opennms.integration.api.v1.mcp.McpToolResult;
 import org.opennms.integration.api.v1.model.Alarm;
@@ -73,7 +74,8 @@ public class ListAlarmsTool implements McpToolProvider {
     }
 
     @Override
-    public McpToolResult execute(Map<String, Object> arguments) {
+    public McpToolResult execute(McpToolContext context) {
+        final Map<String, Object> arguments = context.getArguments();
         final int limit = Math.max(1, Math.min(1000, JsonSupport.intArgument(arguments, "limit", 100)));
         final String minSeverityArg = JsonSupport.stringArgument(arguments, "minSeverity", null);
         final Object acknowledgedArg = arguments.get("acknowledged");

@@ -41,9 +41,29 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.opennms.integration.api.v1.dao.AlarmDao;
+import org.opennms.integration.api.v1.mcp.McpToolContext;
 import org.opennms.integration.api.v1.mcp.McpToolResult;
 
 public class JsonSupportTest {
+
+    private static McpToolContext context(Map<String, Object> arguments) {
+        return new McpToolContext() {
+            @Override
+            public Map<String, Object> getArguments() {
+                return arguments;
+            }
+
+            @Override
+            public String getUserName() {
+                return "test-user";
+            }
+
+            @Override
+            public boolean isUserInRole(String role) {
+                return false;
+            }
+        };
+    }
 
     @Test
     public void exactIntAcceptsIntegralNumbers() {
@@ -70,11 +90,22 @@ public class JsonSupportTest {
     @Test
     public void updateAlarmsRejectsWrappingIdsWithoutTouchingDao() {
         final AlarmDao alarmDao = mock(AlarmDao.class);
-        final McpToolResult result = new UpdateAlarmsTool(alarmDao).execute(Map.of(
+        final McpToolResult result = new UpdateAlarmsTool(alarmDao).execute(context(Map.of(
                 "alarmIds", List.of(4294967297L),
-                "action", "clear"));
+                "action", "clear")));
 
         assertThat(result.isError(), equalTo(true));
         verify(alarmDao, never()).clear(any(int[].class));
+    }
+
+    @Test
+    public void updateAlarmsRecordsTheAuthenticatedUser() {
+        final AlarmDao alarmDao = mock(AlarmDao.class);
+        final McpToolResult result = new UpdateAlarmsTool(alarmDao).execute(context(Map.of(
+                "alarmIds", List.of(7),
+                "action", "acknowledge")));
+
+        assertThat(result.isError(), equalTo(false));
+        verify(alarmDao).acknowledge("test-user", 7);
     }
 }

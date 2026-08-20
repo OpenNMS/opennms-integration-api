@@ -35,6 +35,7 @@ import java.util.Optional;
 
 import org.opennms.integration.api.v1.dao.InterfaceToNodeCache;
 import org.opennms.integration.api.v1.dao.NodeDao;
+import org.opennms.integration.api.v1.mcp.McpToolContext;
 import org.opennms.integration.api.v1.mcp.McpToolProvider;
 import org.opennms.integration.api.v1.mcp.McpToolResult;
 import org.opennms.integration.api.v1.model.Node;
@@ -73,7 +74,8 @@ public class FindNodeByIpTool implements McpToolProvider {
     }
 
     @Override
-    public McpToolResult execute(Map<String, Object> arguments) {
+    public McpToolResult execute(McpToolContext context) {
+        final Map<String, Object> arguments = context.getArguments();
         final String ip = JsonSupport.stringArgument(arguments, "ip", null);
         if (ip == null) {
             return McpToolResult.error("Missing required argument: ip");
