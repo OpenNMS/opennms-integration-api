@@ -28,11 +28,10 @@
 package org.opennms.integration.api.mcpserver;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 
 import org.opennms.integration.api.v1.mcp.McpToolProvider;
 import org.slf4j.Logger;
@@ -43,7 +42,9 @@ import org.slf4j.LoggerFactory;
  * OSGi services. The service list is a live blueprint reference-list, so the
  * merge happens on every access. Tools are advertised in deterministic
  * (alphabetical) order as recommended by the MCP specification; on duplicate
- * names the first registration wins.
+ * names the first registration wins. Providers that fail to supply a usable
+ * tool name are skipped, so one faulty provider cannot break the registry
+ * for everyone.
  */
 public class ToolRegistry {
     private static final Logger LOG = LoggerFactory.getLogger(ToolRegistry.class);
@@ -57,31 +58,45 @@ public class ToolRegistry {
     }
 
     public List<McpToolProvider> getTools() {
-        final Map<String, McpToolProvider> byName = new LinkedHashMap<>();
-        for (McpToolProvider tool : concat()) {
-            final McpToolProvider existing = byName.putIfAbsent(tool.getToolName(), tool);
-            if (existing != null && existing != tool) {
-                LOG.warn("Duplicate MCP tool name '{}' from {}, keeping {}",
-                        tool.getToolName(), tool.getClass().getName(), existing.getClass().getName());
-            }
-        }
-        final List<McpToolProvider> tools = new ArrayList<>(byName.values());
-        tools.sort((a, b) -> a.getToolName().compareTo(b.getToolName()));
-        return Collections.unmodifiableList(tools);
+        return List.copyOf(toolsByName().values());
     }
 
     public McpToolProvider getTool(String name) {
-        for (McpToolProvider tool : getTools()) {
-            if (tool.getToolName().equals(name)) {
-                return tool;
+        return toolsByName().get(name);
+    }
+
+    private Map<String, McpToolProvider> toolsByName() {
+        final Map<String, McpToolProvider> byName = new TreeMap<>();
+        for (McpToolProvider tool : concat()) {
+            final String name;
+            try {
+                name = tool.getToolName();
+            } catch (RuntimeException e) {
+                LOG.warn("Skipping MCP tool provider {}: getToolName() threw", tool.getClass().getName(), e);
+                continue;
+            }
+            if (name == null || name.isBlank()) {
+                LOG.warn("Skipping MCP tool provider {}: null or blank tool name", tool.getClass().getName());
+                continue;
+            }
+            final McpToolProvider existing = byName.putIfAbsent(name, tool);
+            if (existing != null && existing != tool) {
+                LOG.warn("Duplicate MCP tool name '{}' from {}, keeping {}",
+                        name, tool.getClass().getName(), existing.getClass().getName());
             }
         }
-        return null;
+        return byName;
     }
 
     private List<McpToolProvider> concat() {
         final List<McpToolProvider> all = new ArrayList<>(builtInTools);
-        all.addAll(dynamicTools);
+        try {
+            all.addAll(dynamicTools);
+        } catch (RuntimeException e) {
+            // The dynamic list is a live OSGi proxy; a service vanishing mid-iteration
+            // must not take the built-in tools down with it.
+            LOG.warn("Failed to enumerate dynamically registered MCP tool providers", e);
+        }
         return all;
     }
 }

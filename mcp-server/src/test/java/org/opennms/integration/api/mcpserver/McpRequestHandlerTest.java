@@ -197,12 +197,58 @@ public class McpRequestHandlerTest {
         }
     }
 
+    private static class ThrowingNameTool implements McpToolProvider {
+        @Override
+        public String getToolName() {
+            throw new IllegalStateException("gone");
+        }
+
+        @Override
+        public String getToolDescription() {
+            return "never reached";
+        }
+
+        @Override
+        public String getInputSchema() {
+            return "{\"type\":\"object\"}";
+        }
+
+        @Override
+        public McpToolResult execute(McpToolContext context) {
+            return McpToolResult.text("never reached");
+        }
+    }
+
+    private static class NullNameTool implements McpToolProvider {
+        @Override
+        public String getToolName() {
+            return null;
+        }
+
+        @Override
+        public String getToolDescription() {
+            return "never reached";
+        }
+
+        @Override
+        public String getInputSchema() {
+            return "{\"type\":\"object\"}";
+        }
+
+        @Override
+        public McpToolResult execute(McpToolContext context) {
+            return McpToolResult.text("never reached");
+        }
+    }
+
     @Before
     public void setUp() {
+        // ThrowingNameTool and NullNameTool are registered as dynamic providers:
+        // faulty providers must not break the registry for everyone else.
         handler = new McpRequestHandler(new ToolRegistry(
                 List.of(new EchoTool(), new RestrictedTool(), new BrokenTool(),
                         new NullSchemaTool(), new NullResultTool(), new HeaderParamTool()),
-                List.of()));
+                List.of(new ThrowingNameTool(), new NullNameTool())));
     }
 
     private static McpCaller caller(String... roles) {
@@ -362,13 +408,18 @@ public class McpRequestHandlerTest {
     }
 
     @Test
-    public void toolExceptionsBecomeErrorResults() throws Exception {
+    public void toolExceptionsBecomeGenericErrorResults() throws Exception {
         final McpRequestHandler.Result result = handler.handle(
                 request(4, "tools/call", Map.of("name", "broken")),
                 headers("MCP-Protocol-Version", PV, "Mcp-Method", "tools/call", "Mcp-Name", "broken"), reader());
 
         assertThat(result.getHttpStatus(), equalTo(200));
-        assertThat(body(result).path("result").path("isError").asBoolean(), is(true));
+        final JsonNode callResult = body(result).path("result");
+        assertThat(callResult.path("isError").asBoolean(), is(true));
+        // The exception message ("boom") must stay in the server log, not the response
+        final String text = callResult.path("content").get(0).path("text").asText();
+        assertThat(text.contains("boom"), is(false));
+        assertThat(text, equalTo("Tool execution failed; see the server log for details"));
     }
 
     @Test

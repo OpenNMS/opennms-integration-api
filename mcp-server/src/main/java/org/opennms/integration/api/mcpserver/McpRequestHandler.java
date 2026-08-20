@@ -58,7 +58,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class McpRequestHandler {
     private static final Logger LOG = LoggerFactory.getLogger(McpRequestHandler.class);
-    private static final Logger AUDIT_LOG = LoggerFactory.getLogger("org.opennms.integration.api.mcpserver.audit");
+    // Child of the container's "audit" logger, which routes to the security audit
+    // log (data/security/audit.log in Karaf) regardless of application log levels.
+    private static final Logger AUDIT_LOG = LoggerFactory.getLogger("audit.mcp");
 
     public static final String PROTOCOL_VERSION = "2026-07-28";
     public static final String SERVER_NAME = "OpenNMS MCP Server";
@@ -393,13 +395,20 @@ public class McpRequestHandler {
                 LOG.warn("Tool '{}' returned null", name);
                 toolResult = McpToolResult.error("Tool execution failed: no result");
             }
+        } catch (IllegalArgumentException e) {
+            // Argument validation errors are authored by the tool and safe to surface
+            LOG.warn("Tool '{}' rejected its arguments: {}", name, e.getMessage());
+            toolResult = McpToolResult.error("Invalid tool arguments: " + e.getMessage());
         } catch (Exception e) {
+            // Unexpected failures stay in the server log; the message may leak internals
             LOG.warn("Tool '{}' threw while executing", name, e);
-            toolResult = McpToolResult.error("Tool execution failed: " + e.getMessage());
+            toolResult = McpToolResult.error("Tool execution failed; see the server log for details");
         }
 
-        AUDIT_LOG.info("MCP tools/call: user='{}' tool='{}' arguments={} isError={}",
-                caller.getUserName(), name, toJsonSafe(arguments), toolResult.isError());
+        // Argument values may contain secrets (event parameters, contributed tool
+        // inputs), so the audit trail records only the argument names.
+        AUDIT_LOG.info("MCP tools/call: user='{}' tool='{}' argumentKeys={} isError={}",
+                caller.getUserName(), name, arguments.keySet(), toolResult.isError());
 
         final ObjectNode result = mapper.createObjectNode();
         if (modern) {
@@ -491,14 +500,6 @@ public class McpRequestHandler {
             return tool.getToolName();
         } catch (RuntimeException e) {
             return tool.getClass().getName();
-        }
-    }
-
-    private String toJsonSafe(Map<String, Object> arguments) {
-        try {
-            return mapper.writeValueAsString(arguments);
-        } catch (JsonProcessingException e) {
-            return String.valueOf(arguments);
         }
     }
 

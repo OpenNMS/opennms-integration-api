@@ -77,8 +77,14 @@ public class FindNodeByIpTool implements McpToolProvider {
     public McpToolResult execute(McpToolContext context) {
         final Map<String, Object> arguments = context.getArguments();
         final String ip = JsonSupport.stringArgument(arguments, "ip", null);
-        if (ip == null) {
+        if (ip == null || ip.isBlank()) {
             return McpToolResult.error("Missing required argument: ip");
+        }
+        // Only accept IP literals: InetAddress.getByName() would resolve host
+        // names via DNS (and an empty string to loopback), letting callers
+        // trigger lookups or match unintended addresses.
+        if (!isIpLiteral(ip)) {
+            return McpToolResult.error("Invalid IP address: " + ip);
         }
         final String location = JsonSupport.stringArgument(arguments, "location",
                 nodeDao.getDefaultLocationName());
@@ -96,5 +102,30 @@ public class FindNodeByIpTool implements McpToolProvider {
             return McpToolResult.text("No node found for IP " + ip + " in location " + location);
         }
         return McpToolResult.text(JsonSupport.toJson(JsonSupport.nodeSummary(node)));
+    }
+
+    /**
+     * True if the string is an IPv4 or IPv6 literal (optionally with an IPv6
+     * zone id). Host names are rejected so no DNS resolution can be triggered.
+     */
+    static boolean isIpLiteral(String value) {
+        final int percent = value.indexOf('%');
+        final String address = percent >= 0 ? value.substring(0, percent) : value;
+        if (address.indexOf(':') >= 0) {
+            // Strings containing ':' are never resolved via DNS; restricting the
+            // character set keeps getByName() to pure IPv6 literal parsing.
+            return address.matches("[0-9a-fA-F:.]+");
+        }
+        final String[] octets = address.split("\\.", -1);
+        if (octets.length != 4) {
+            return false;
+        }
+        for (String octet : octets) {
+            if (octet.isEmpty() || octet.length() > 3 || !octet.chars().allMatch(Character::isDigit)
+                    || Integer.parseInt(octet) > 255) {
+                return false;
+            }
+        }
+        return true;
     }
 }

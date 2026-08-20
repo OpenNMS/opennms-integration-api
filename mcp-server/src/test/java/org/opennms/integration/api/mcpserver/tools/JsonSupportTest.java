@@ -99,6 +99,33 @@ public class JsonSupportTest {
     }
 
     @Test
+    public void ipLiteralsAreRecognized() {
+        for (String valid : List.of("192.168.1.1", "10.0.0.255", "::1", "fe80::1%en0",
+                "2001:db8::8a2e:370:7334", "::ffff:192.0.2.1")) {
+            assertThat(valid, FindNodeByIpTool.isIpLiteral(valid), equalTo(true));
+        }
+        for (String invalid : List.of("example.com", "localhost", "999.1.1.1", "1.2.3",
+                "1.2.3.4.5", "a.b.c.d", "192.168.1.")) {
+            assertThat(invalid, FindNodeByIpTool.isIpLiteral(invalid), equalTo(false));
+        }
+    }
+
+    @Test
+    public void findNodeByIpRejectsHostNamesWithoutResolving() {
+        final org.opennms.integration.api.v1.dao.InterfaceToNodeCache cache =
+                mock(org.opennms.integration.api.v1.dao.InterfaceToNodeCache.class);
+        final org.opennms.integration.api.v1.dao.NodeDao nodeDao =
+                mock(org.opennms.integration.api.v1.dao.NodeDao.class);
+        final FindNodeByIpTool tool = new FindNodeByIpTool(cache, nodeDao);
+
+        for (String bad : List.of("example.com", "", "   ")) {
+            final McpToolResult result = tool.execute(context(Map.of("ip", bad)));
+            assertThat(result.isError(), equalTo(true));
+        }
+        verify(cache, never()).getFirstNodeId(any(), any());
+    }
+
+    @Test
     public void updateAlarmsRecordsTheAuthenticatedUser() {
         final AlarmDao alarmDao = mock(AlarmDao.class);
         final McpToolResult result = new UpdateAlarmsTool(alarmDao).execute(context(Map.of(
