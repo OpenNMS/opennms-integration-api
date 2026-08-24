@@ -29,4 +29,15 @@
         <bundle>blueprint:mvn:org.opennms.integration.api.sample/sample-project/${project.version}/xml/blueprint-sentinel</bundle>
     </feature>
 
+    <feature name="opennms-mcp-server" description="OpenNMS MCP Server" version="${project.version}">
+        <!-- No version on purpose: the Integration API feature bundled with the
+             OpenNMS container satisfies this; the mcp-server bundle embeds the
+             v1.mcp extension point it needs beyond that. -->
+        <feature dependency="true">opennms-integration-api</feature>
+        <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-annotations/${jackson.version}</bundle>
+        <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-core/${jackson.version}</bundle>
+        <bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-databind/${jackson.version}</bundle>
+        <bundle>mvn:org.opennms.integration.api/mcp-server/${project.version}</bundle>
+    </feature>
+
 </features>

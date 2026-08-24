@@ -36,6 +36,7 @@
         <module>utils</module>
         <module>karaf-features</module>
         <module>sample</module>
+        <module>mcp-server</module>
         <module>test-api</module>
         <module>config</module>
         <module>test-suites</module>
@@ -50,6 +51,7 @@
         <javax-activation.version>1.1.1</javax-activation.version>
         <junit.version>4.13.2</junit.version>
         <guava.version>33.2.1-jre</guava.version>
+        <jackson.version>2.18.7</jackson.version>
         <karaf.version>4.3.6</karaf.version>
         <log4j.version>2.23.1</log4j.version>
         <re2j.version>1.7</re2j.version>
