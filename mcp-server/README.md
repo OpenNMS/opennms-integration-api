@@ -9,7 +9,7 @@ such as Claude Code, implementing the stateless protocol revision **2026-07-28**
 From the OpenNMS Karaf shell (`ssh -p 8101 admin@localhost`):
 
 ```
-feature:repo-add mvn:org.opennms.integration.api/karaf-features/2.0.1/xml
+feature:repo-add mvn:org.opennms.integration.api/karaf-features/2.0.2-SNAPSHOT/xml
 feature:install opennms-mcp-server
 ```
 
