@@ -121,7 +121,12 @@ jobs:
       - run:
           name: Deploy the artifacts
           command: |
-            mvn -s .circleci.settings.xml -DskipTests deploy
+            PROJECT_VERSION=$(mvn -s .circleci.settings.xml -q -DforceStdout help:evaluate -Dexpression=project.version)
+            if [[ "$PROJECT_VERSION" == *-SNAPSHOT ]]; then
+              mvn -s .circleci.settings.xml -DskipTests deploy
+            else
+              echo "Skipping deploy: $PROJECT_VERSION is not a SNAPSHOT version. Release deploys are done manually per RELEASING.md."
+            fi
 
 workflows:
   version: 2
